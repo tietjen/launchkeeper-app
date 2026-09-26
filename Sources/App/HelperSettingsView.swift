@@ -16,6 +16,10 @@ struct HelperSettingsView: View {
             Section("Hilfsprogramm für Administratorrechte") {
                 LabeledContent("Zustand", value: stateText)
                 if let version = helper.version { LabeledContent("Version", value: version) }
+                if helper.isOutdated {
+                    Text("Es läuft noch eine ältere Version des Hilfsprogramms. Sie beendet sich nach einer Minute ohne Auftrag von selbst; sofort geht es mit „Entfernen“ und danach „Einrichten“.")
+                        .font(.callout).foregroundStyle(.orange)
+                }
                 Text("Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.")
                     .font(.callout).foregroundStyle(.secondary)
                 HStack {

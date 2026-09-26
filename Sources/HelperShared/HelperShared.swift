@@ -22,6 +22,10 @@ public enum HelperIdentity {
     public static let daemonPlistName = helperID + ".plist"
     /// Apple Developer team that signs both.
     public static let teamID = "Y2LTPLFG6D"
+    /// The helper protocol/build version. Compiled into both sides: the app
+    /// compares it with what the running helper reports and asks for a
+    /// restart of the helper when they differ.
+    public static let version = "0.1.1"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
@@ -74,8 +78,11 @@ public enum HelperRight {
     /// Executes one privileged action.
     /// - Parameters:
     ///   - request: JSON of a `PrivilegedRequest`.
-    ///   - authorization: `AuthorizationExternalForm` bytes of an authorization
-    ///     that already holds `HelperRight.name` (the user just authenticated).
+    ///   - authorization: `AuthorizationExternalForm` bytes of an (empty)
+    ///     authorization of the client. The helper asks for `HelperRight.name`
+    ///     on it with interaction allowed — macOS shows Touch ID / password
+    ///     in the client's session. (Apple's EvenBetterAuthorizationSample
+    ///     pattern: the check happens once, where the action happens.)
     ///   - reply: JSON of a `PrivilegedOutcome`.
     func perform(_ request: Data, authorization: Data, reply: @escaping @Sendable (Data) -> Void)
 

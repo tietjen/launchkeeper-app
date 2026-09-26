@@ -132,6 +132,9 @@ final class PrivilegedRoutingTests: XCTestCase {
     func testHelperOutcomeMapping() {
         let outcome = ActionOutcome.from(privileged: PrivilegedOutcome(state: "error", detail: "not authorized"))
         XCTAssertEqual(outcome.state, .failed("not authorized"))
+        // A cancelled Touch ID / password dialog: refused, nothing changed — not an error.
+        let cancelled = ActionOutcome.from(privileged: PrivilegedOutcome(state: "refused", detail: "not authorized"))
+        XCTAssertEqual(cancelled.state, .refused("Anmeldung abgebrochen oder abgelehnt — nichts geändert"))
         let done = ActionOutcome.from(privileged: PrivilegedOutcome(state: "done", steps: [["/bin/rm -- /x", "delete"]]))
         XCTAssertEqual(done.state, .done)
         XCTAssertEqual(done.steps.first?.description, "delete")

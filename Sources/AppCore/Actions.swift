@@ -130,6 +130,8 @@ public struct ActionOutcome: Equatable, Sendable {
         let state: State
         switch privileged.state {
         case "done": state = .done
+        case "refused" where privileged.detail == "not authorized":
+            state = .refused(String(localized: "Anmeldung abgebrochen oder abgelehnt — nichts geändert"))
         case "refused": state = .refused(privileged.detail ?? "refused")
         default: state = .failed(privileged.detail ?? privileged.state)
         }

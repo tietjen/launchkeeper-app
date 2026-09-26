@@ -28,6 +28,11 @@ final class HelperStatus {
     /// `true` when the helper is registered and allowed — admin actions can run.
     var isReady: Bool { status == .enabled }
 
+    /// `true` when the running helper is an older build than this app's
+    /// (it restarts by itself after a quiet minute; "Entfernen" + "Einrichten"
+    /// forces it).
+    var isOutdated: Bool { version.map { $0 != HelperIdentity.version } ?? false }
+
     /// Reads the registration state (and the helper version when enabled).
     func refresh() {
         status = service.status
@@ -77,13 +82,15 @@ final class HelperStatus {
 /// Talks to the helper. All calls block and run off the main thread.
 enum HelperClient {
 
-    /// Asks the user to authenticate for LaunchKeeper's right (Touch ID or
-    /// admin password — the macOS dialog shows `HelperRight.prompt`).
+    /// Creates the (empty) authorization the helper asks the user on.
     ///
-    /// Defines the right first when it does not exist yet (adding new rights
-    /// is allowed for everyone; the helper does the same on start).
-    /// - Returns: The authorization's external form for the helper, or `nil`
-    ///   when the user cancelled or authentication failed.
+    /// The app does not request the right itself: the right has no grace
+    /// period, so a grant obtained here would be used up before the helper
+    /// could check it (live 2026-09-26). The helper requests it with
+    /// interaction allowed; macOS shows Touch ID / password in this session.
+    /// The right is defined first when missing (adding new rights is allowed
+    /// for everyone; the helper does the same on start).
+    /// - Returns: The authorization's external form, or `nil` on failure.
     static func authorize() -> Data? {
         var authRef: AuthorizationRef?
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess, let authRef else { return nil }
@@ -91,26 +98,12 @@ enum HelperClient {
             _ = AuthorizationRightSet(authRef, HelperRight.name, HelperRight.definition as CFDictionary,
                                       HelperRight.prompt as CFString, nil, nil)
         }
-        let granted = HelperRight.name.withCString { name -> Bool in
-            var item = AuthorizationItem(name: name, valueLength: 0, value: nil, flags: 0)
-            return withUnsafeMutablePointer(to: &item) { itemPointer in
-                var rights = AuthorizationRights(count: 1, items: itemPointer)
-                return AuthorizationCopyRights(authRef, &rights, nil,
-                                               [.interactionAllowed, .extendRights, .preAuthorize],
-                                               nil) == errAuthorizationSuccess
-            }
-        }
-        guard granted else {
-            AuthorizationFree(authRef, [])
-            return nil
-        }
         var external = AuthorizationExternalForm()
         guard AuthorizationMakeExternalForm(authRef, &external) == errAuthorizationSuccess else {
             AuthorizationFree(authRef, [])
             return nil
         }
-        // The helper reads the grant through the external form; the local
-        // reference must stay alive until then — freed after the call returns.
+        // The reference must outlive the helper's use of the external form.
         pendingReferences.append(authRef)
         return withUnsafeBytes(of: &external) { Data($0) }
     }
@@ -192,8 +185,7 @@ struct PrivilegedPerformer: ActionPerforming {
                                  steps: [], messages: [], undo: nil)
         }
         guard let authorization = HelperClient.authorize() else {
-            return ActionOutcome(state: .refused("Anmeldung abgebrochen — nichts geändert"), steps: [], messages: [],
-                                 undo: nil)
+            return ActionOutcome(state: .failed("keine Autorisierung möglich"), steps: [], messages: [], undo: nil)
         }
         return .from(privileged: HelperClient.perform(privileged, authorization: authorization))
     }
