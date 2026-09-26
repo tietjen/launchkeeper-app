@@ -25,7 +25,8 @@ jobs:
           xcodebuild -version
           swift --version
       - name: Build
-        run: swift build
+        # On failure, a verbose rebuild shows the frontend/linker invocations.
+        run: swift build || { swift build -v 2>&1 | grep -vE '^\[|remark:' | tail -120; exit 1; }
       - name: Test (AppCore + HelperCore — no helper, no window)
         run: swift test
       - name: App bundle (unsigned, universal)
