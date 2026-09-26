@@ -5,7 +5,7 @@ The macOS app for [launchkeeper](https://github.com/tietjen/launchkeeper) —
 a read-only inventory, one gate without bypass, dry-run before every change,
 snapshots/quarantine instead of deletion, verification after every write.
 
-**Status: in development (Phase 5: privileged helper — admin actions with Touch ID, same gate as the CLI).**
+**Status: in development (Phase 7: watch + notifications; the privileged helper for admin actions with Touch ID is in).**
 
 ## Build
 
@@ -28,13 +28,23 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
   quarantine name / package id" — and resolves, gates, plans and verifies with
   the same engines as the CLI, as root. Every execution needs LaunchKeeper's
   own authorization right (`de.paranoidsecurity.LaunchKeeper.modify`: admin,
-  not shared, no grace period → Touch ID or password each time), requested by
-  the app and verified again by the helper. `sudo` steps of a plan run
+  not shared, no grace period → Touch ID or password each time). The app sends
+  an empty authorization; the helper requests the right on it with interaction
+  allowed, so macOS asks in the user's session right before the action. The
+  app never sends requests to a helper of another version and offers a restart. `sudo` steps of a plan run
   directly, but only for an allowlist of tools at fixed paths. Audit lines go
   to `/Library/Logs/launchkeeper/operations.log`.
 - Set up once: LaunchKeeper › Settings (⌘,) › Einrichten, then allow it in
   System Settings › General › Login Items & Extensions. Keep the app in
   /Applications — launchd starts the helper from inside the bundle.
+- Watch (Phase 7): the CLI's `InventoryWatcher` inside the app. Every scan of
+  the app (launch, ⌘R, after an action, FSEvents on autostart locations, a full
+  check every ten minutes) is compared with the last complete one; incomplete
+  scans are never compared. New or changed entries become macOS notifications
+  (a click selects the entry); changes LaunchKeeper made itself are listed as
+  its own, never notified. Events go to `~/Library/Logs/launchkeeper/watch.log`,
+  the same JSON lines as `launchkeeper watch`. While on, an eye in the menu bar;
+  optional launch at login (`SMAppService.mainApp`).
 - Coming: Sparkle updates.
 
 ## Conventions

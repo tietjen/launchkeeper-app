@@ -19,6 +19,8 @@ struct ActionSheet: View {
     @State private var model: ActionModel
     /// Whether the privileged helper is set up — decides what admin plans offer.
     @Environment(HelperStatus.self) private var helper
+    /// Told when an action runs, so the watch labels its differences as LaunchKeeper's own.
+    @Environment(WatchModel.self) private var watch
     /// Called once when the sheet closes after something was executed.
     private let onChanged: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -252,7 +254,13 @@ struct ActionSheet: View {
                 Button("Abbrechen") { dismiss() }.disabled(true)
             case .planned:
                 Button("Abbrechen", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
-                Button(model.executesPrivileged ? "Ausführen (Touch ID)" : "Ausführen") { Task { await model.execute() } }
+                Button(model.executesPrivileged ? "Ausführen (Touch ID)" : "Ausführen") {
+                    Task {
+                        watch.ownActionStarted()
+                        await model.execute()
+                        watch.ownActionFinished()
+                    }
+                }
                     .keyboardShortcut(.defaultAction)
                     .disabled(!model.canExecute)
             case .finished:

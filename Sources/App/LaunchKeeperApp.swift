@@ -12,8 +12,22 @@ import AppCore
 /// reopened window and a slow scan is not started twice.
 @main
 struct LaunchKeeperApp: App {
+    /// Identifier of the main window group (prefix of its windows' identifiers).
+    static let mainWindowID = "main"
+
     /// The scanned inventory and the window's filter state.
-    @State private var store = InventoryStore()
+    @State private var store: InventoryStore
+    /// The watch (Phase 7): compares every scan, notifies new entries.
+    @State private var watch: WatchModel
+    /// Launch at login.
+    @State private var loginItem = LoginItem()
+    /// Opens entries from notifications and the menu bar.
+    private let router: EntryRouter
+    /// Keeps the notification delegate and the watch switch alive for the app's lifetime.
+    private let notifier: WatchNotifier
+    private let watchController: WatchController
+    /// Shows the menu-bar item while the watch is on.
+    @AppStorage(WatchSettings.enabled) private var watchEnabled = false
     /// App leftovers; LaunchServices via AppKit comes from `LivePresence`.
     @State private var leftovers = LeftoversModel(sources: { LivePresence.sources() })
     /// Quarantine entries shared with the CLI.
@@ -23,16 +37,33 @@ struct LaunchKeeperApp: App {
     /// Basic vs. expert detail view; same key as the toolbar toggle and `DetailView`.
     @AppStorage("expertMode") private var expertMode = false
 
+    /// Wires store, watch, notifications and router; starts the watch when it was on.
+    init() {
+        UserDefaults.standard.register(defaults: [WatchSettings.notify: true])
+        let store = InventoryStore()
+        let watch = WatchModel(store: store)
+        let router = EntryRouter(store: store)
+        let notifier = WatchNotifier(router: router) { UserDefaults.standard.bool(forKey: WatchSettings.notify) }
+        watch.notifier = notifier
+        _store = State(initialValue: store)
+        _watch = State(initialValue: watch)
+        self.router = router
+        self.notifier = notifier
+        watchController = WatchController(watch: watch)
+    }
+
     var body: some Scene {
-        WindowGroup("LaunchKeeper") {
+        WindowGroup("LaunchKeeper", id: Self.mainWindowID) {
             ContentView()
                 .environment(store)
+                .environment(watch)
+                .modifier(RegisterWindowOpener(router: router))
                 .environment(leftovers)
                 .environment(quarantine)
                 .environment(helper)
                 .frame(minWidth: 980, minHeight: 560)
                 // First scan on launch; a full one, so the BTM dump is fresh.
-                .task { await store.refresh() }
+                .task { await store.refresh(reason: .launch) }
         }
         // ⌘R reuses the session's BTM dump (seconds), ⇧⌘R asks the daemon
         // again (can take minutes after it sat idle).
@@ -51,7 +82,11 @@ struct LaunchKeeperApp: App {
         }
         // ⌘, — the privileged helper's state and controls.
         Settings {
-            HelperSettingsView().environment(helper)
+            HelperSettingsView().environment(helper).environment(loginItem)
+        }
+        // While the watch is on: an eye in the menu bar, also with no window open.
+        MenuBarExtra("LaunchKeeper", systemImage: "eye", isInserted: $watchEnabled) {
+            WatchMenu(router: router).environment(watch)
         }
     }
 }

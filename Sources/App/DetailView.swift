@@ -274,6 +274,7 @@ struct NextStepRow: View {
     @Environment(LeftoversModel.self) private var leftovers
     @Environment(QuarantineModel.self) private var quarantine
     @Environment(HelperStatus.self) private var helper
+    @Environment(WatchModel.self) private var watch
     /// The action sheet for `step.action`.
     @State private var showAction = false
     /// Set after a copy, for a short confirmation.
@@ -293,11 +294,12 @@ struct NextStepRow: View {
                         .sheet(isPresented: $showAction) {
                             ActionSheet(request: action, performer: Performer.make(store: store)) {
                                 // Something changed: read the inventory and the side views again.
-                                Task { await store.refresh(reuseBTM: true) }
+                                Task { await store.refresh(reuseBTM: true, reason: .action) }
                                 Task { await leftovers.reload() }
                                 quarantine.reload()
                             }
                             .environment(helper)
+                            .environment(watch)
                         }
                 } else if let command = step.command {
                     Button(copied ? "Kopiert ✓" : "Befehl kopieren") { copy(command) }

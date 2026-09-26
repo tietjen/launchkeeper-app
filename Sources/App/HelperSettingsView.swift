@@ -1,6 +1,7 @@
 //
 //  HelperSettingsView.swift
-//  LaunchKeeper — Settings (⌘,): the privileged helper's state and controls.
+//  LaunchKeeper — Settings (⌘,): the privileged helper's state and controls,
+//  the watch and launch at login.
 //
 
 import SwiftUI
@@ -41,6 +42,7 @@ struct HelperSettingsView: View {
                 }
                 if let error = helper.lastError { Text(error).foregroundStyle(.red).font(.callout) }
             }
+            WatchSettingsSection()
         }
         .formStyle(.grouped)
         .frame(width: 520)

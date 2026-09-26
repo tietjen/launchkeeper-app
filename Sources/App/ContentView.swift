@@ -12,7 +12,7 @@ import LaunchKeeperKit
 ///
 /// The sidebar picks either a slice of the inventory (all, orphans, one
 /// category) — shown as a table with a detail column — or one of the
-/// dedicated views (background, packages, app leftovers, quarantine).
+/// dedicated views (background, packages, app leftovers, quarantine, watch).
 /// All data comes from the `InventoryStore` in the environment.
 struct ContentView: View {
     @Environment(InventoryStore.self) private var store
@@ -22,6 +22,9 @@ struct ContentView: View {
     @State private var selectedLeftover: String?
     /// Selected row in the background view (`BackgroundEntry.id` — unique, unlike the BTM identifier).
     @State private var selectedBackground: String?
+    /// Selected record in the watch view.
+    @State private var selectedRecord: WatchRecord.ID?
+    @Environment(WatchModel.self) private var watch
     @Environment(LeftoversModel.self) private var leftovers
     /// Basic vs. expert detail view (shared with the menu command and `DetailView`).
     @AppStorage("expertMode") private var expertMode = false
@@ -40,6 +43,7 @@ struct ContentView: View {
                 case .receipts: ReceiptsPane(selection: $selectedPackage)
                 case .leftovers: LeftoversPane(selection: $selectedLeftover)
                 case .quarantine: QuarantinePane()
+                case .watch: WatchPane(selection: $selectedRecord)
                 case .all, .orphans, .category:
                     InventoryTable(selectedKey: $store.selectedKey, sortOrder: $sortOrder)
                         .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
@@ -93,6 +97,10 @@ struct ContentView: View {
             } else { nothingSelected }
         case .quarantine:
             nothingSelected
+        case .watch:
+            if let record = watch.records.first(where: { $0.id == selectedRecord }) {
+                WatchRecordDetail(record: record)
+            } else { nothingSelected }
         }
     }
 
@@ -107,6 +115,7 @@ struct ContentView: View {
 /// have entries, and the dedicated views.
 struct SidebarView: View {
     @Environment(InventoryStore.self) private var store
+    @Environment(WatchModel.self) private var watch
 
     var body: some View {
         @Bindable var store = store
@@ -125,6 +134,9 @@ struct SidebarView: View {
                 Label("Pakete", systemImage: "shippingbox").tag(SidebarSelection.receipts)
                 Label("App-Reste", systemImage: "leaf").tag(SidebarSelection.leftovers)
                 Label("Quarantäne", systemImage: "archivebox").tag(SidebarSelection.quarantine)
+                Label("Beobachtung", systemImage: watch.isRunning ? "eye" : "eye.slash")
+                    .badge(watch.records.filter { !$0.isOwn && $0.event.kind != .removed }.count)
+                    .tag(SidebarSelection.watch)
             }
         }
         .listStyle(.sidebar)

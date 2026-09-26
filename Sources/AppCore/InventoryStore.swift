@@ -102,13 +102,48 @@ public enum SidebarSelection: Hashable, Sendable {
     case leftovers
     /// What cleanup moved away and can bring back.
     case quarantine
+    /// What the watch noticed since it was switched on (Phase 7).
+    case watch
 
     /// `true` when the selection filters the inventory table; `false` for a dedicated view.
     public var isInventory: Bool {
         switch self {
         case .all, .orphans, .category: return true
-        case .background, .receipts, .leftovers, .quarantine: return false
+        case .background, .receipts, .leftovers, .quarantine, .watch: return false
         }
+    }
+}
+
+// MARK: - Scan reasons
+
+/// Why a scan runs. The watch (Phase 7) compares every scan with the one
+/// before; the reason decides whether a difference was caused by
+/// LaunchKeeper itself and how the event is labelled.
+public enum ScanReason: Equatable, Sendable {
+    /// The first scan after launch.
+    case launch
+    /// The user asked (⌘R, toolbar).
+    case user
+    /// After an action LaunchKeeper executed — its differences are LaunchKeeper's own.
+    case action
+    /// The watch: a file-system event or the periodic check (the text says which).
+    case watch(String)
+
+    /// The trigger text stored with watch events (same style as the CLI's `watch`).
+    public var trigger: String {
+        switch self {
+        case .launch: return "start"
+        case .user: return "manual rescan"
+        case .action: return "LaunchKeeper action"
+        case .watch(let text): return text
+        }
+    }
+
+    /// Merges two queued reasons into one rescan. An action wins, so its
+    /// differences are never reported as someone else's.
+    func merged(with other: ScanReason) -> ScanReason {
+        if self == .action || other == .action { return .action }
+        return other
     }
 }
 
@@ -171,6 +206,15 @@ public final class InventoryStore {
     public var btmDumpCache: BTMDumpCache { btmCache }
     private let scanner: @Sendable (BTMDumpCache) -> ScanReport
 
+    /// Called on the main actor after every finished scan, with its reason.
+    /// The watch hangs itself in here, so every scan — manual, after an
+    /// action or its own — is compared once and nothing is scanned twice.
+    public var onScan: ((ScanReport, ScanReason) -> Void)?
+
+    /// A rescan requested while a scan was running (watch or action only).
+    /// Dropping it could hide a change that happened during the scan.
+    private var queued: (reuseBTM: Bool, reason: ScanReason)?
+
     /// Creates the store.
     /// - Parameter scanner: Produces a scan report. Defaults to a full
     ///   `ScanCoordinator` scan of this Mac; tests inject a stub.
@@ -182,11 +226,20 @@ public final class InventoryStore {
 
     /// Scans the Mac again and replaces the store's contents.
     ///
-    /// - Parameter reuseBTM: `true` reuses the session's Background Task
-    ///   Management dump (quick refresh, ⌘R); `false` asks the daemon again
-    ///   (⇧⌘R), which can take minutes after the daemon sat idle.
-    public func refresh(reuseBTM: Bool = false) async {
-        guard !isScanning else { return }
+    /// - Parameters:
+    ///   - reuseBTM: `true` reuses the session's Background Task
+    ///     Management dump (quick refresh, ⌘R); `false` asks the daemon again
+    ///     (⇧⌘R), which can take minutes after the daemon sat idle.
+    ///   - reason: Why the scan runs; passed to `onScan`. A watch or action
+    ///     rescan that arrives while a scan runs is queued, not dropped.
+    public func refresh(reuseBTM: Bool = false, reason: ScanReason = .user) async {
+        guard !isScanning else {
+            if reason != .user && reason != .launch {
+                queued = queued.map { (reuseBTM: $0.reuseBTM && reuseBTM, reason: $0.reason.merged(with: reason)) }
+                    ?? (reuseBTM: reuseBTM, reason: reason)
+            }
+            return
+        }
         isScanning = true
         status = reuseBTM || btmCache.text != nil
             ? String(localized: "Inventar wird gelesen …")
@@ -206,6 +259,11 @@ public final class InventoryStore {
         receipts = box.receipts
         isScanning = false
         status = ""
+        onScan?(box.report, reason)
+        if let next = queued {
+            queued = nil
+            await refresh(reuseBTM: next.reuseBTM, reason: next.reason)
+        }
     }
 
     /// Replaces the rows and scan diagnostics with a finished report.
@@ -229,7 +287,7 @@ public final class InventoryStore {
             case .orphans: guard row.item.orphaned else { return false }
             case .category(let category): guard matches(row, category) else { return false }
             // Dedicated views do not filter the table (it is not shown for them).
-            case .background, .receipts, .leftovers, .quarantine: break
+            case .background, .receipts, .leftovers, .quarantine, .watch: break
             }
             return Self.matches(row, search: search)
         }
@@ -248,7 +306,7 @@ public final class InventoryStore {
             case .all: return true
             case .orphans: return row.item.orphaned
             case .category(let category): return matches(row, category)
-            case .background, .receipts, .leftovers, .quarantine: return false
+            case .background, .receipts, .leftovers, .quarantine, .watch: return false
             }
         }.count
     }
@@ -295,6 +353,22 @@ public final class InventoryStore {
         if hideApple && row.isAppleInternal { hideApple = false }
         selection = .all
         selectedKey = row.id
+    }
+
+    /// Selects an entry by its stable key (a watch event, a notification).
+    ///
+    /// Clears the search and shows Apple's entries when needed, so the row
+    /// is visible in the table.
+    /// - Parameter key: The entry key.
+    /// - Returns: `false` when the entry is not in the inventory (any more).
+    @discardableResult
+    public func reveal(key: String) -> Bool {
+        guard let row = rows.first(where: { $0.id == key }) else { return false }
+        search = ""
+        if hideApple && row.isAppleInternal { hideApple = false }
+        selection = .all
+        selectedKey = row.id
+        return true
     }
 
     /// The current scan's entries by display id — for views built from the

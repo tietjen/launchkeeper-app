@@ -232,6 +232,7 @@ struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
     @Environment(InventoryStore.self) private var store
     @Environment(HelperStatus.self) private var helper
+    @Environment(WatchModel.self) private var watch
     /// The entry whose restore sheet is open.
     @State private var restoring: String?
 
@@ -272,9 +273,10 @@ struct QuarantinePane: View {
         .sheet(item: Binding(get: { restoring.map(RestoreTarget.init) }, set: { restoring = $0?.name })) { target in
             ActionSheet(request: .restore(quarantine: target.name), performer: Performer.make(store: store)) {
                 model.reload()
-                Task { await store.refresh(reuseBTM: true) }
+                Task { await store.refresh(reuseBTM: true, reason: .action) }
             }
             .environment(helper)
+            .environment(watch)
         }
     }
 }
