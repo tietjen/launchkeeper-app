@@ -80,7 +80,7 @@ struct ContentView: View {
             } else { nothingSelected }
         case .background:
             if let view = store.background,
-               let entry = BackgroundEntry.entries(from: view).first(where: { $0.id == selectedBackground }) {
+               let entry = BackgroundEntry.entries(from: view, items: store.itemsByDisplayID).first(where: { $0.id == selectedBackground }) {
                 BackgroundDetail(entry: entry)
             } else { nothingSelected }
         case .quarantine:

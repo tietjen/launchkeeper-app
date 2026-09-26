@@ -52,7 +52,7 @@ struct BackgroundPane: View {
 
     var body: some View {
         if let view = store.background {
-            let entries = BackgroundEntry.entries(from: view)
+            let entries = BackgroundEntry.entries(from: view, items: store.itemsByDisplayID)
             List(selection: $selection) {
                 Section {
                     PaneIntro(text: "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.")

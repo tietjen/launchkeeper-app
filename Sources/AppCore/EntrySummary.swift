@@ -136,9 +136,37 @@ public struct EntrySummary: Equatable, Sendable {
         }
     }
 
+    /// What an interpreter or launcher entry really runs, in plain words —
+    /// e.g. "führt aus: Skript /usr/local/bin/sync.sh (über bash)".
+    ///
+    /// Reads the kit's `runs-kind`/`runs-target` metadata (LaunchKeeperKit
+    /// 0.9.4, `EffectiveProgram`). `nil` when the executable is the program.
+    /// - Parameter item: The entry.
+    public static func runsFact(for item: BackgroundItem) -> String? {
+        guard let kind = item.metadata["runs-kind"].flatMap(EffectiveProgram.Kind.init(rawValue:)) else { return nil }
+        let target = item.metadata["runs-target"] ?? ""
+        let via = item.executable.map { ($0 as NSString).lastPathComponent } ?? "?"
+        switch kind {
+        case .script: return String(localized: "führt aus: Skript \(target) (über \(via))")
+        case .module: return String(localized: "führt aus: Modul \(target) (über \(via))")
+        case .binary: return String(localized: "führt aus: Programm \(target) (über \(via))")
+        case .app: return String(localized: "öffnet: \(target) (über \(via))")
+        case .inline: return String(localized: "führt eine Befehlszeile aus (über \(via)): \(oneLine(target))")
+        case .none: return String(localized: "startet \(via) ohne erkennbares Skript")
+        }
+    }
+
+    /// Inline code as one readable line of at most 80 characters.
+    static func oneLine(_ code: String) -> String {
+        let flat = code.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
+        return flat.count > 80 ? String(flat.prefix(77)) + "…" : flat
+    }
+
     /// State, signature, origin and app as short facts.
     static func facts(for item: BackgroundItem) -> [String] {
         var out: [String] = []
+        // What really runs comes first when the executable is only an interpreter.
+        if let runs = runsFact(for: item) { out.append(runs) }
         // State first: that is what users look for ("does this run?").
         if item.running { out.append(String(localized: "läuft gerade")) }
         else if item.loaded { out.append(String(localized: "geladen")) }

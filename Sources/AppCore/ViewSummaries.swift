@@ -18,16 +18,20 @@ public enum PackageSummary {
     /// - Parameter row: A row of the packages view.
     /// - Returns: Headline, verdict, facts and next steps.
     public static func build(for row: ReceiptsView.Row) -> EntrySummary {
-        let present = row.fileCount - row.missingFiles
+        // Judge by the package's own files (kit 0.9.4): shared folders such as
+        // /Applications always exist and made gone apps look "partially installed".
+        let total = row.ownFileCount ?? row.fileCount
+        let missingOwn = row.ownMissingFiles ?? row.missingFiles
+        let present = total - missingOwn
         let headline: String
         let verdict: EntrySummary.Verdict
-        if row.fileCount > 0, row.missingFiles == row.fileCount {
+        if total > 0, missingOwn == total {
             // Typical after an app was dragged to the Trash: the receipt stays forever.
             headline = String(localized: "Installationsbeleg ohne Dateien — das Programm wurde entfernt, der Beleg blieb")
             verdict = .leftover
-        } else if row.missingFiles > 0 {
+        } else if missingOwn > 0 {
             headline = String(localized: "Teilweise noch installiert")
-            verdict = .review(String(localized: "\(row.missingFiles) von \(row.fileCount) Dateien fehlen"))
+            verdict = .review(String(localized: "\(missingOwn) von \(total) eigenen Dateien fehlen"))
         } else {
             headline = String(localized: "Installiertes Paket")
             verdict = .ok
@@ -35,7 +39,10 @@ public enum PackageSummary {
         var facts: [String] = []
         if let version = row.version { facts.append(String(localized: "Version \(version)")) }
         if let installed = row.installedAt { facts.append(String(localized: "installiert am \(String(installed.prefix(10)))")) }
-        facts.append(String(localized: "\(present) von \(row.fileCount) Dateien vorhanden"))
+        facts.append(String(localized: "\(present) von \(total) eigenen Dateien vorhanden"))
+        if total != row.fileCount {
+            facts.append(String(localized: "der Beleg listet \(row.fileCount) Pfade, davon \(row.fileCount - total) geteilte Ordner wie /Applications"))
+        }
         if !row.items.isEmpty { facts.append(String(localized: "startet: \(row.items.joined(separator: ", "))")) }
 
         var steps: [EntrySummary.NextStep] = []
@@ -120,14 +127,19 @@ public struct BackgroundEntry: Identifiable {
     public let id: String
     /// `true` for a component of a registration without developer name.
     public let unnamed: Bool
+    /// What the (first) component really runs, from its inventory entry —
+    /// the answer to "which script is this 'bash'?".
+    public let runs: String?
 
     /// Creates an entry.
     /// - Parameters:
     ///   - row: The kit's row.
     ///   - unnamed: Whether the row stands for one component of an unnamed registration.
-    public init(row: BackgroundView.Row, unnamed: Bool) {
+    ///   - runs: What the component really runs (`EntrySummary.runsFact`), if known.
+    public init(row: BackgroundView.Row, unnamed: Bool, runs: String? = nil) {
         self.row = row
         self.unnamed = unnamed
+        self.runs = runs
         id = row.identifier + "|" + row.components.map(\.id).joined(separator: ",")
     }
 
@@ -138,7 +150,8 @@ public struct BackgroundEntry: Identifiable {
     public var subtitle: String {
         if unnamed {
             let what = row.components.first.map { $0.label ?? $0.name } ?? ""
-            return String(localized: "ohne Entwicklerangabe · \(what)")
+            guard let runs else { return String(localized: "ohne Entwicklerangabe · \(what)") }
+            return String(localized: "ohne Entwicklerangabe · \(what) · \(runs)")
         }
         let kind = row.kind == .developer ? String(localized: "Entwickler") : String(localized: "App")
         let parts = row.components.prefix(2).map { $0.label ?? $0.name }
@@ -151,12 +164,18 @@ public struct BackgroundEntry: Identifiable {
     /// Unnamed = the container identifier "Unknown Developer" (how BTM names
     /// developer records without a name), or an identifier shared by several
     /// rows (the kit splits exactly those per component).
-    /// - Parameter view: The background view of one scan.
+    /// - Parameters:
+    ///   - view: The background view of one scan.
+    ///   - items: The same scan's entries by display id — to say what each
+    ///     component really runs. Empty when unknown.
     /// - Returns: One entry per row, same order.
-    public static func entries(from view: BackgroundView) -> [BackgroundEntry] {
+    public static func entries(from view: BackgroundView,
+                               items: [String: BackgroundItem] = [:]) -> [BackgroundEntry] {
         let counts = Dictionary(view.background.map { ($0.identifier, 1) }, uniquingKeysWith: +)
         return view.background.map { row in
-            BackgroundEntry(row: row, unnamed: row.identifier == "Unknown Developer" || (counts[row.identifier] ?? 0) > 1)
+            let runs = row.components.first.flatMap { items[$0.id] }.flatMap(EntrySummary.runsFact(for:))
+            return BackgroundEntry(row: row, unnamed: row.identifier == "Unknown Developer" || (counts[row.identifier] ?? 0) > 1,
+                                   runs: runs)
         }
     }
 }
@@ -180,6 +199,7 @@ public enum BackgroundSummary {
         if let component {
             summary.facts.insert(String(localized: "Tatsächlich: \(component.label ?? component.name)"), at: 1)
         }
+        if let runs = entry.runs { summary.facts.insert(runs, at: 2) }
         return summary
     }
 

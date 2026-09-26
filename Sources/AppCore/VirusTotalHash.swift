@@ -26,7 +26,11 @@ public enum VirusTotalHash {
     ///   - fileManager: File access (tests use a temp tree).
     /// - Returns: Absolute path of the file to hash.
     public static func target(of item: BackgroundItem, fileManager: FileManager = .default) -> String? {
-        let candidates = [SignatureCheck.target(of: item), item.executable].compactMap { $0 }
+        // Behind a launcher (`arch -arm64 /opt/x/tool`) the real binary is the
+        // one worth looking up, not /usr/bin/arch (which is Apple's anyway).
+        let behindLauncher = item.metadata["runs-kind"] == EffectiveProgram.Kind.binary.rawValue
+            ? item.metadata["runs-target"] : nil
+        let candidates = [behindLauncher, SignatureCheck.target(of: item), item.executable].compactMap { $0 }
         for candidate in candidates {
             guard let file = programFile(candidate, fileManager: fileManager) else { continue }
             if PathUtils.isApplePlatformPath(PathUtils.canonicalize(file, fileManager: fileManager)) { return nil }

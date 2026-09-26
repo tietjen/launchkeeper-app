@@ -293,6 +293,12 @@ public final class InventoryStore {
         selectedKey = row.id
     }
 
+    /// The current scan's entries by display id — for views built from the
+    /// same scan that refer to entries that way (background components).
+    public var itemsByDisplayID: [String: BackgroundItem] {
+        Dictionary(rows.map { ($0.item.id, $0.item) }, uniquingKeysWith: { first, _ in first })
+    }
+
     /// Looks up a row by its stable key.
     /// - Parameter key: The table selection; `nil` when nothing is selected.
     /// - Returns: The row, or `nil` when the key is unknown (e.g. gone after a rescan).
