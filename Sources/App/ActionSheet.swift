@@ -40,7 +40,10 @@ struct ActionSheet: View {
                 VStack(alignment: .leading, spacing: 12) { content }
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(minHeight: 160, maxHeight: 420)
+            .frame(minHeight: 120, maxHeight: 360)
+            // Outside the scroll view: a long plan must never push the reason
+            // why "Ausführen" is unavailable (and the way out) out of sight.
+            adminFooter
             buttons
         }
         .padding(20)
@@ -69,17 +72,6 @@ struct ActionSheet: View {
             }
         case .planned(let outcome):
             planView(outcome, heading: "Das würde passieren — noch ist nichts geändert:")
-            if outcome.needsAdmin, case .planned = outcome.state {
-                if helper.isOutdated && model.request.privileged != nil {
-                    outdatedNotice
-                } else if helperUsable && model.request.privileged != nil {
-                    Label("Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort.",
-                          systemImage: "touchid")
-                        .font(.callout)
-                } else {
-                    adminNotice
-                }
-            }
         case .executing(let outcome):
             HStack(spacing: 8) {
                 ProgressView().controlSize(.small)
@@ -88,6 +80,22 @@ struct ActionSheet: View {
             planView(outcome, heading: "Plan:")
         case .finished(let outcome):
             resultView(outcome)
+        }
+    }
+
+    /// How a plan with administrator steps can run: via the helper (Touch ID),
+    /// after restarting an outdated helper, or after setting it up.
+    @ViewBuilder private var adminFooter: some View {
+        if case .planned(let outcome) = model.phase, outcome.needsAdmin, case .planned = outcome.state {
+            if helper.isOutdated && model.request.privileged != nil {
+                outdatedNotice
+            } else if helperUsable && model.request.privileged != nil {
+                Label("Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort.",
+                      systemImage: "touchid")
+                    .font(.callout)
+            } else {
+                adminNotice
+            }
         }
     }
 
