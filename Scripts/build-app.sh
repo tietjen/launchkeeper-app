@@ -105,22 +105,26 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
+# Inside-out in both modes: a nested binary left unsigned fails the outer
+# signature ("code object is not signed at all"). --no-sign signs ad hoc
+# (CI, no certificate) — no timestamp, no Developer ID.
 if [ "$SIGN" = 1 ]; then
   echo "==> codesign ($IDENTITY), inside-out, hardened runtime"
-  # The helper's identifier is what the app's XPC requirement checks.
-  codesign --force --options runtime --timestamp --identifier "$HELPER_ID" --sign "$IDENTITY" \
-    "$APP/Contents/MacOS/LaunchKeeperHelper"
-  # Sparkle's parts first (innermost out), all re-signed with our identity,
-  # so no library-validation exception is needed.
-  SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
-  for PART in "$SPARKLE/XPCServices/Downloader.xpc" "$SPARKLE/XPCServices/Installer.xpc" \
-              "$SPARKLE/Updater.app" "$SPARKLE/Autoupdate" "$APP/Contents/Frameworks/Sparkle.framework"; do
-    codesign --force --options runtime --timestamp --sign "$IDENTITY" "$PART"
-  done
-  codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP/Contents/MacOS/$APP_NAME"
-  codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP"
-  codesign --verify --strict --verbose=2 "$APP"
+  SIGN_ARGS=(--force --options runtime --timestamp --sign "$IDENTITY")
 else
-  codesign --force --sign - "$APP"
+  echo "==> codesign ad hoc, inside-out (--no-sign)"
+  SIGN_ARGS=(--force --options runtime --sign -)
 fi
+# The helper's identifier is what the app's XPC requirement checks.
+codesign "${SIGN_ARGS[@]}" --identifier "$HELPER_ID" "$APP/Contents/MacOS/LaunchKeeperHelper"
+# Sparkle's parts first (innermost out), all re-signed with our identity,
+# so no library-validation exception is needed.
+SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
+for PART in "$SPARKLE/XPCServices/Downloader.xpc" "$SPARKLE/XPCServices/Installer.xpc" \
+            "$SPARKLE/Updater.app" "$SPARKLE/Autoupdate" "$APP/Contents/Frameworks/Sparkle.framework"; do
+  codesign "${SIGN_ARGS[@]}" "$PART"
+done
+codesign "${SIGN_ARGS[@]}" "$APP/Contents/MacOS/$APP_NAME"
+codesign "${SIGN_ARGS[@]}" "$APP"
+codesign --verify --strict --verbose=2 "$APP"
 echo "==> $APP ($VERSION, build $BUILD)"
