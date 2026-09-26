@@ -8,6 +8,7 @@
 import XCTest
 @testable import AppCore
 import LaunchKeeperKit
+import HelperShared
 
 /// Answers plan and execute with fixed outcomes and records the calls.
 final class StubPerformer: ActionPerforming, @unchecked Sendable {
@@ -94,5 +95,45 @@ final class ActionsTests: XCTestCase {
         item.control = Controllability(level: .reversible, actions: ["disable", "enable"], reason: "x", mechanism: .launchd)
         XCTAssertEqual(EntrySummary.build(for: item).nextSteps.first?.action,
                        .remediation(operation: "disable", key: "com.vendor.agent"))
+    }
+}
+
+// MARK: - Phase 5: routing to the helper
+
+@MainActor
+final class PrivilegedRoutingTests: XCTestCase {
+    func testRequestsMapToHelperRequestsExceptLeftovers() {
+        XCTAssertEqual(ActionRequest.remediation(operation: "remove", key: "k").privileged,
+                       PrivilegedRequest(kind: .remove, target: "k"))
+        XCTAssertEqual(ActionRequest.uninstall(package: "com.x").privileged, PrivilegedRequest(kind: .uninstall, target: "com.x"))
+        XCTAssertEqual(ActionRequest.restore(quarantine: "n").privileged, PrivilegedRequest(kind: .restore, target: "n"))
+        XCTAssertNil(ActionRequest.leftovers(bundleID: "org.x").privileged)
+    }
+
+    func testAdminPlansGoToTheHelperOnlyWhenItIsThere() async {
+        let adminPlan = ActionOutcome(state: .planned,
+                                      steps: [ActionOutcome.Step(id: 0, command: "/usr/bin/sudo launchctl disable system/x",
+                                                                 description: "x", needsAdmin: true)],
+                                      messages: [], undo: nil)
+        let local = StubPerformer(planned: adminPlan, executed: ActionOutcome(state: .done, steps: [], messages: [], undo: nil))
+        let helper = StubPerformer(planned: adminPlan,
+                                   executed: ActionOutcome(state: .done, steps: [], messages: ["via helper"], undo: nil))
+        let model = ActionModel(request: .remediation(operation: "disable", key: "x"), performer: local)
+        await model.plan()
+        XCTAssertFalse(model.canExecute, "no helper, no admin execution")
+        model.privileged = helper
+        XCTAssertTrue(model.canExecute)
+        XCTAssertTrue(model.executesPrivileged)
+        await model.execute()
+        XCTAssertEqual(local.calls, [false], "the app process never executes an admin plan")
+        XCTAssertEqual(helper.calls, [true])
+    }
+
+    func testHelperOutcomeMapping() {
+        let outcome = ActionOutcome.from(privileged: PrivilegedOutcome(state: "error", detail: "not authorized"))
+        XCTAssertEqual(outcome.state, .failed("not authorized"))
+        let done = ActionOutcome.from(privileged: PrivilegedOutcome(state: "done", steps: [["/bin/rm -- /x", "delete"]]))
+        XCTAssertEqual(done.state, .done)
+        XCTAssertEqual(done.steps.first?.description, "delete")
     }
 }

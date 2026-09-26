@@ -41,6 +41,24 @@ echo "==> assemble $APP"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN/$APP_NAME" "$APP/Contents/MacOS/$APP_NAME"
+# Privileged helper (Phase 5): binary next to the app's, launchd plist where
+# SMAppService.daemon(plistName:) looks for it. BundleProgram is relative to
+# the bundle, so the app may live anywhere — /Applications is recommended.
+HELPER_ID="de.paranoidsecurity.LaunchKeeper.Helper"
+cp "$BIN/LaunchKeeperHelper" "$APP/Contents/MacOS/LaunchKeeperHelper"
+mkdir -p "$APP/Contents/Library/LaunchDaemons"
+cat > "$APP/Contents/Library/LaunchDaemons/$HELPER_ID.plist" <<HPLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$HELPER_ID</string>
+  <key>BundleProgram</key><string>Contents/MacOS/LaunchKeeperHelper</string>
+  <key>MachServices</key><dict><key>$HELPER_ID</key><true/></dict>
+  <key>AssociatedBundleIdentifiers</key><array><string>$BUNDLE_ID</string></array>
+</dict>
+</plist>
+HPLIST
 for BUNDLE in "$BIN"/*.bundle; do [ -e "$BUNDLE" ] && cp -R "$BUNDLE" "$APP/Contents/Resources/"; done
 # App icon: no asset catalog without Xcode — iconutil turns the .iconset into .icns.
 iconutil -c icns Assets/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
@@ -70,6 +88,9 @@ PLIST
 
 if [ "$SIGN" = 1 ]; then
   echo "==> codesign ($IDENTITY), inside-out, hardened runtime"
+  # The helper's identifier is what the app's XPC requirement checks.
+  codesign --force --options runtime --timestamp --identifier "$HELPER_ID" --sign "$IDENTITY" \
+    "$APP/Contents/MacOS/LaunchKeeperHelper"
   codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP/Contents/MacOS/$APP_NAME"
   codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP"
   codesign --verify --strict --verbose=2 "$APP"

@@ -16,6 +16,8 @@ import AppCore
 struct ActionSheet: View {
     /// Drives plan and execution; one per sheet.
     @State private var model: ActionModel
+    /// Whether the privileged helper is set up — decides what admin plans offer.
+    @Environment(HelperStatus.self) private var helper
     /// Called once when the sheet closes after something was executed.
     private let onChanged: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -42,7 +44,12 @@ struct ActionSheet: View {
         }
         .padding(20)
         .frame(width: 600)
-        .task { await model.plan() }
+        .task {
+            helper.refresh()
+            await model.plan()
+        }
+        .onChange(of: helper.isReady) { _, ready in model.privileged = ready ? PrivilegedPerformer() : nil }
+        .onAppear { model.privileged = helper.isReady ? PrivilegedPerformer() : nil }
     }
 
     // MARK: Content per phase
@@ -57,7 +64,13 @@ struct ActionSheet: View {
         case .planned(let outcome):
             planView(outcome, heading: "Das würde passieren — noch ist nichts geändert:")
             if outcome.needsAdmin, case .planned = outcome.state {
-                adminNotice
+                if helper.isReady && model.request.privileged != nil {
+                    Label("Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort.",
+                          systemImage: "touchid")
+                        .font(.callout)
+                } else {
+                    adminNotice
+                }
             }
         case .executing(let outcome):
             HStack(spacing: 8) {
@@ -111,8 +124,20 @@ struct ActionSheet: View {
         let command = model.request.cliCommand(apply: true)
         return VStack(alignment: .leading, spacing: 6) {
             Label("Braucht Administratorrechte", systemImage: "lock.fill").font(.headline)
-            Text("Die App führt Schritte mit Administratorrechten erst mit ihrem Hilfsprogramm aus (Touch ID) — das kommt als Nächstes. Im Terminal geht es schon jetzt; dort fragt macOS nach deinem Passwort:")
-                .font(.callout)
+            if model.request.privileged == nil {
+                Text("Diese Aktion führt die App noch nicht mit Administratorrechten aus. Im Terminal geht es; dort fragt macOS nach deinem Passwort:")
+                    .font(.callout)
+            } else {
+                Text("Schritte mit Administratorrechten führt LaunchKeeper über sein Hilfsprogramm aus — mit Touch ID bei jeder Ausführung. Einmal einrichten:")
+                    .font(.callout)
+                HStack {
+                    Button(helper.status == .requiresApproval ? "In den Systemeinstellungen erlauben" : "Hilfsprogramm einrichten") {
+                        if helper.status == .requiresApproval { helper.openSettings() } else { helper.register() }
+                    }
+                    if let error = helper.lastError { Text(error).font(.caption).foregroundStyle(.red) }
+                }
+                Text("Oder jetzt im Terminal:").font(.callout)
+            }
             HStack {
                 Text(command).font(.callout.monospaced()).textSelection(.enabled)
                 Spacer()
@@ -152,7 +177,7 @@ struct ActionSheet: View {
                 Button("Abbrechen") { dismiss() }.disabled(true)
             case .planned:
                 Button("Abbrechen", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
-                Button("Ausführen") { Task { await model.execute() } }
+                Button(model.executesPrivileged ? "Ausführen (Touch ID)" : "Ausführen") { Task { await model.execute() } }
                     .keyboardShortcut(.defaultAction)
                     .disabled(!model.canExecute)
             case .finished:

@@ -273,6 +273,7 @@ struct NextStepRow: View {
     @Environment(InventoryStore.self) private var store
     @Environment(LeftoversModel.self) private var leftovers
     @Environment(QuarantineModel.self) private var quarantine
+    @Environment(HelperStatus.self) private var helper
     /// The action sheet for `step.action`.
     @State private var showAction = false
     /// Set after a copy, for a short confirmation.
@@ -296,6 +297,7 @@ struct NextStepRow: View {
                                 Task { await leftovers.reload() }
                                 quarantine.reload()
                             }
+                            .environment(helper)
                         }
                 } else if let command = step.command {
                     Button(copied ? "Kopiert ✓" : "Befehl kopieren") { copy(command) }

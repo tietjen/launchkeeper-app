@@ -16,6 +16,7 @@
 
 import Foundation
 import Observation
+import HelperShared
 import LaunchKeeperKit
 
 // MARK: - Request
@@ -44,6 +45,21 @@ public enum ActionRequest: Hashable, Sendable {
         case .leftovers: return String(localized: "Reste in die Quarantäne verschieben")
         case .restore: return String(localized: "Aus der Quarantäne wiederherstellen")
         case .uninstall: return String(localized: "Paket deinstallieren")
+        }
+    }
+
+    /// The request as the privileged helper takes it, or `nil` when the
+    /// helper does not run it (app leftovers: the presence check needs the
+    /// user's LaunchServices, which a daemon does not have).
+    public var privileged: PrivilegedRequest? {
+        switch self {
+        case .remediation(let operation, let key):
+            guard let kind = PrivilegedRequest.Kind(rawValue: operation),
+                  [.disable, .enable, .remove].contains(kind) else { return nil }
+            return PrivilegedRequest(kind: kind, target: key)
+        case .restore(let name): return PrivilegedRequest(kind: .restore, target: name)
+        case .uninstall(let id): return PrivilegedRequest(kind: .uninstall, target: id)
+        case .leftovers: return nil
         }
     }
 
@@ -105,6 +121,22 @@ public struct ActionOutcome: Equatable, Sendable {
     /// Creates an outcome.
     public init(state: State, steps: [Step], messages: [String], undo: String?) {
         self.state = state; self.steps = steps; self.messages = messages; self.undo = undo
+    }
+
+    /// Maps the privileged helper's answer into an outcome.
+    /// - Parameter privileged: The helper's reply.
+    /// - Returns: The outcome; helper errors (not authorized, unreachable) become `.failed`.
+    public static func from(privileged: PrivilegedOutcome) -> ActionOutcome {
+        let state: State
+        switch privileged.state {
+        case "done": state = .done
+        case "refused": state = .refused(privileged.detail ?? "refused")
+        default: state = .failed(privileged.detail ?? privileged.state)
+        }
+        let steps = privileged.steps.enumerated().map { index, pair in
+            Step(id: index, command: pair.first ?? "", description: pair.dropFirst().first ?? "", needsAdmin: true)
+        }
+        return ActionOutcome(state: state, steps: steps, messages: privileged.messages, undo: privileged.undo)
     }
 
     /// Maps an engine status and plan into an outcome.
@@ -240,21 +272,33 @@ public final class ActionModel {
     /// The current phase.
     public private(set) var phase: Phase = .planning
     private let performer: ActionPerforming
+    /// Executes plans with administrator steps through the privileged
+    /// helper — `nil` while the helper is not set up (then such plans are shown only).
+    public var privileged: ActionPerforming?
 
     /// Creates the model; call `plan()` to start.
     /// - Parameters:
     ///   - request: What to do.
-    ///   - performer: Runs the engines (tests inject a stub).
-    public init(request: ActionRequest, performer: ActionPerforming) {
+    ///   - performer: Plans, and executes plans without admin steps (tests inject a stub).
+    ///   - privileged: Executes plans with admin steps (the helper), if available.
+    public init(request: ActionRequest, performer: ActionPerforming, privileged: ActionPerforming? = nil) {
         self.request = request
         self.performer = performer
+        self.privileged = privileged
+    }
+
+    /// `true` when the plan needs administrator rights and will go through the helper (Touch ID).
+    public var executesPrivileged: Bool {
+        guard case .planned(let outcome) = phase else { return false }
+        return outcome.needsAdmin
     }
 
     /// Whether "Ausführen" is available: a plan exists, the gate allowed it,
-    /// and no step needs administrator rights.
+    /// and — for a plan with administrator steps — the helper is available
+    /// and the request is one the helper runs.
     public var canExecute: Bool {
-        guard case .planned(let outcome) = phase else { return false }
-        return outcome.state == .planned && !outcome.steps.isEmpty && !outcome.needsAdmin
+        guard case .planned(let outcome) = phase, outcome.state == .planned, !outcome.steps.isEmpty else { return false }
+        return !outcome.needsAdmin || (privileged != nil && request.privileged != nil)
     }
 
     /// Computes the plan (dry-run). Nothing changes on the Mac.
@@ -269,7 +313,9 @@ public final class ActionModel {
     public func execute() async {
         guard canExecute, case .planned(let plan) = phase else { return }
         phase = .executing(plan)
-        let performer = self.performer, request = self.request
+        // Administrator steps never run in the app process: they go to the helper.
+        guard let performer = plan.needsAdmin ? privileged : self.performer else { return }
+        let request = self.request
         let outcome = await Task.detached(priority: .userInitiated) { performer.perform(request, apply: true) }.value
         phase = .finished(outcome)
     }

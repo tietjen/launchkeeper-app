@@ -231,6 +231,7 @@ struct LeftoverRow: View {
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
     @Environment(InventoryStore.self) private var store
+    @Environment(HelperStatus.self) private var helper
     /// The entry whose restore sheet is open.
     @State private var restoring: String?
 
@@ -273,6 +274,7 @@ struct QuarantinePane: View {
                 model.reload()
                 Task { await store.refresh(reuseBTM: true) }
             }
+            .environment(helper)
         }
     }
 }

@@ -15,24 +15,48 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .executable(name: "LaunchKeeper", targets: ["LaunchKeeper"]),
+        .executable(name: "LaunchKeeperHelper", targets: ["LaunchKeeperHelper"]),
     ],
     dependencies: [kit],
     targets: [
         // UI-free logic: loading, filtering, counting — tested without a window.
         .target(
             name: "AppCore",
-            dependencies: [.product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            dependencies: ["HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
             path: "Sources/AppCore"
         ),
         .executableTarget(
             name: "LaunchKeeper",
-            dependencies: ["AppCore", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            dependencies: ["AppCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
             path: "Sources/App",
             resources: [.process("Resources")]
         ),
+        // What app and privileged helper must agree on — no dependencies.
+        .target(name: "HelperShared", path: "Sources/HelperShared"),
+        // The helper's logic, testable without a daemon: root runner, executor.
+        .target(
+            name: "HelperCore",
+            dependencies: ["HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            path: "Sources/HelperCore"
+        ),
+        // The privileged helper daemon (SMAppService). Its Info.plist is
+        // embedded in __TEXT,__info_plist so the binary carries its identity.
+        .executableTarget(
+            name: "LaunchKeeperHelper",
+            dependencies: ["HelperCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            path: "Sources/Helper",
+            exclude: ["Info.plist"],
+            linkerSettings: [.unsafeFlags(["-Xlinker", "-sectcreate", "-Xlinker", "__TEXT", "-Xlinker", "__info_plist",
+                                           "-Xlinker", "Sources/Helper/Info.plist"])]
+        ),
+        .testTarget(
+            name: "HelperCoreTests",
+            dependencies: ["HelperCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            path: "Tests/HelperCoreTests"
+        ),
         .testTarget(
             name: "AppCoreTests",
-            dependencies: ["AppCore", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            dependencies: ["AppCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
             path: "Tests/AppCoreTests"
         ),
     ]

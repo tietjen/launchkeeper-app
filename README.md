@@ -5,7 +5,7 @@ The macOS app for [launchkeeper](https://github.com/tietjen/launchkeeper) —
 a read-only inventory, one gate without bypass, dry-run before every change,
 snapshots/quarantine instead of deletion, verification after every write.
 
-**Status: in development (Phase 4a: actions without administrator rights — plan first, then execute; admin actions come with the helper).**
+**Status: in development (Phase 5: privileged helper — admin actions with Touch ID, same gate as the CLI).**
 
 ## Build
 
@@ -21,9 +21,21 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
 
 - `AppCore` — UI-free logic on top of `LaunchKeeperKit` (loading, filtering, counting); tested.
 - `LaunchKeeper` — the SwiftUI app: sidebar by category, table, detail.
-- Coming: a privileged helper (SMAppService daemon, XPC, Touch ID) that never runs
-  commands it is sent — only "operation + entry key" through the same gate and
-  engine as the CLI — and Sparkle updates.
+- `HelperShared` / `HelperCore` / `LaunchKeeperHelper` — the privileged helper
+  (Phase 5): an SMAppService daemon inside the app bundle, reached over XPC with
+  code-signing requirements on both sides (team-signed app ↔ team-signed
+  helper). It never runs commands it is sent — only "operation + entry key /
+  quarantine name / package id" — and resolves, gates, plans and verifies with
+  the same engines as the CLI, as root. Every execution needs LaunchKeeper's
+  own authorization right (`de.paranoidsecurity.LaunchKeeper.modify`: admin,
+  not shared, no grace period → Touch ID or password each time), requested by
+  the app and verified again by the helper. `sudo` steps of a plan run
+  directly, but only for an allowlist of tools at fixed paths. Audit lines go
+  to `/Library/Logs/launchkeeper/operations.log`.
+- Set up once: LaunchKeeper › Settings (⌘,) › Einrichten, then allow it in
+  System Settings › General › Login Items & Extensions. Keep the app in
+  /Applications — launchd starts the helper from inside the bundle.
+- Coming: Sparkle updates.
 
 ## Conventions
 

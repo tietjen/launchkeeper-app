@@ -18,6 +18,8 @@ struct LaunchKeeperApp: App {
     @State private var leftovers = LeftoversModel(sources: { LivePresence.sources() })
     /// Quarantine entries shared with the CLI.
     @State private var quarantine = QuarantineModel()
+    /// The privileged helper's registration state (Settings, action sheets).
+    @State private var helper = HelperStatus()
     /// Basic vs. expert detail view; same key as the toolbar toggle and `DetailView`.
     @AppStorage("expertMode") private var expertMode = false
 
@@ -27,6 +29,7 @@ struct LaunchKeeperApp: App {
                 .environment(store)
                 .environment(leftovers)
                 .environment(quarantine)
+                .environment(helper)
                 .frame(minWidth: 980, minHeight: 560)
                 // First scan on launch; a full one, so the BTM dump is fresh.
                 .task { await store.refresh() }
@@ -45,6 +48,10 @@ struct LaunchKeeperApp: App {
                 Button("Vollständig neu einlesen") { Task { await store.refresh() } }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
             }
+        }
+        // ⌘, — the privileged helper's state and controls.
+        Settings {
+            HelperSettingsView().environment(helper)
         }
     }
 }
