@@ -1,10 +1,24 @@
+//
+//  ContentView.swift
+//  LaunchKeeper — the main window: sidebar, inventory table / dedicated
+//  views, detail column, toolbar and scan status.
+//
+
 import SwiftUI
 import AppCore
 import LaunchKeeperKit
 
+/// The main window: a three-column `NavigationSplitView`.
+///
+/// The sidebar picks either a slice of the inventory (all, orphans, one
+/// category) — shown as a table with a detail column — or one of the
+/// dedicated views (background, packages, app leftovers, quarantine).
+/// All data comes from the `InventoryStore` in the environment.
 struct ContentView: View {
     @Environment(InventoryStore.self) private var store
+    /// The selected table row, by stable entry key (survives rescans).
     @State private var selectedKey: String?
+    /// The table's sort order; name ascending until the user clicks a header.
     @State private var sortOrder = [KeyPathComparator(\InventoryRow.name)]
 
     var body: some View {
@@ -48,6 +62,8 @@ struct ContentView: View {
     }
 }
 
+/// The sidebar: inventory slices with entry counts, the categories that
+/// have entries, and the dedicated views.
 struct SidebarView: View {
     @Environment(InventoryStore.self) private var store
 
@@ -73,12 +89,20 @@ struct SidebarView: View {
         .listStyle(.sidebar)
     }
 
+    /// One sidebar row with its entry count as badge.
+    /// - Parameters:
+    ///   - selection: What the row selects.
+    ///   - title: The visible title.
+    ///   - symbol: SF Symbol name.
     private func row(_ selection: SidebarSelection, _ title: String, _ symbol: String) -> some View {
         Label(title, systemImage: symbol)
             .badge(store.count(selection))
             .tag(selection)
     }
 
+    /// SF Symbol for a category.
+    /// - Parameter category: The Autoruns-style category.
+    /// - Returns: A symbol name that exists on macOS 14.
     static func symbol(_ category: ItemCategory) -> String {
         switch category {
         case .launchItems: return "gearshape.2"
@@ -97,6 +121,10 @@ struct SidebarView: View {
     }
 }
 
+/// The inventory table for the current sidebar slice, sortable by every column.
+///
+/// Selection is bound to the stable entry key, so a rescan keeps the
+/// selected entry selected as long as it still exists.
 struct InventoryTable: View {
     @Environment(InventoryStore.self) private var store
     @Binding var selectedKey: String?
@@ -126,6 +154,8 @@ struct InventoryTable: View {
     }
 }
 
+/// Up to three status symbols for a row, most important first
+/// (the order `InventoryRow.badges` defines).
 struct BadgeStrip: View {
     let badges: [InventoryRow.Badge]
 
@@ -139,6 +169,7 @@ struct BadgeStrip: View {
         }
     }
 
+    /// SF Symbol for a badge.
     static func symbol(_ badge: InventoryRow.Badge) -> String {
         switch badge {
         case .orphan: return "exclamationmark.triangle.fill"
@@ -150,6 +181,7 @@ struct BadgeStrip: View {
         }
     }
 
+    /// Colour code for a badge: orange = orphan, red = unsigned, yellow = review hint.
     static func color(_ badge: InventoryRow.Badge) -> Color {
         switch badge {
         case .orphan: return .orange
@@ -161,6 +193,7 @@ struct BadgeStrip: View {
         }
     }
 
+    /// Tooltip text explaining a badge in plain words.
     static func title(_ badge: InventoryRow.Badge) -> String {
         switch badge {
         case .orphan: return String(localized: "Verwaist — die Quelle fehlt")
@@ -173,6 +206,8 @@ struct BadgeStrip: View {
     }
 }
 
+/// A floating capsule at the bottom of the window: progress while a scan
+/// runs, a warning while the inventory is incomplete. Invisible otherwise.
 struct StatusBar: View {
     @Environment(InventoryStore.self) private var store
 

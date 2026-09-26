@@ -1,3 +1,9 @@
+//
+//  SideModelsTests.swift
+//  AppCoreTests — leftovers (off-main load, gone-only default), dedicated
+//  sidebar views, quarantine listing, signature-check target selection.
+//
+
 import XCTest
 @testable import AppCore
 import LaunchKeeperKit

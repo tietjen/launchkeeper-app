@@ -1,12 +1,25 @@
+//
+//  DetailView.swift
+//  LaunchKeeper — the detail column for one inventory entry.
+//
+
 import SwiftUI
 import AppKit
 import AppCore
 import LaunchKeeperKit
 
+/// Everything known about one entry: identity and state, files, findings,
+/// provenance and signature (with an on-demand deep check), what control
+/// is possible and why, the evidence sources and all metadata.
+///
+/// Read-only in Phase 2; the controls arrive with Phase 4.
 struct DetailView: View {
+    /// The row to show.
     let row: InventoryRow
     private var item: BackgroundItem { row.item }
+    /// Result of "Signatur gründlich prüfen"; reset when another entry is shown (`.id`).
     @State private var verification: SignatureVerification?
+    /// `true` while the deep signature check runs.
     @State private var verifying = false
 
     var body: some View {
@@ -100,6 +113,7 @@ struct DetailView: View {
         .id(item.key)   // a new entry starts without the previous verification
     }
 
+    /// "aktiviert · geladen · läuft (PID 123)" — the entry's live state in one line.
     private var stateText: String {
         var parts = [item.enabled ? String(localized: "aktiviert") : String(localized: "deaktiviert")]
         if item.loaded { parts.append(String(localized: "geladen")) }
@@ -107,6 +121,7 @@ struct DetailView: View {
         return parts.joined(separator: " · ")
     }
 
+    /// Provenance kind plus package id and version when a receipt is known.
     private var provenanceText: String {
         guard let provenance = item.provenance else { return "unknown" }
         var text = provenance.kind.rawValue
@@ -115,12 +130,19 @@ struct DetailView: View {
         return text
     }
 
+    /// Control level, allowed actions and mechanism in one line,
+    /// e.g. "reversible — disable, enable (pluginkit)".
+    /// - Parameter control: The entry's control matrix entry.
     private func controlText(_ control: Controllability) -> String {
         let actions = control.actions.isEmpty ? "" : " — " + control.actions.joined(separator: ", ")
         let via = control.mechanism.map { " (\($0.rawValue))" } ?? ""
         return control.level.rawValue + actions + via
     }
 
+    /// A labelled, selectable path with a "Reveal in Finder" button when the file exists.
+    /// - Parameters:
+    ///   - title: The row label.
+    ///   - path: The absolute path.
     private func pathRow(_ title: LocalizedStringKey, _ path: String) -> some View {
         LabeledContent(title) {
             HStack {

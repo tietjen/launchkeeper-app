@@ -1,10 +1,23 @@
+//
+//  ViewsPanes.swift
+//  LaunchKeeper — the dedicated views beside the inventory table:
+//  background (Login Items & Extensions), packages, app leftovers, quarantine.
+//
+
 import SwiftUI
 import AppKit
 import AppCore
 import LaunchKeeperKit
 
-/// LaunchServices and running apps come from AppKit — only the app links it.
+/// The live presence sources for the app-leftover check.
+///
+/// LaunchServices and the running apps are AppKit APIs (`NSWorkspace`);
+/// they are assembled here because AppCore deliberately does not link AppKit.
 enum LivePresence {
+    /// Builds the three sources the "app is gone" verdict needs: installed
+    /// bundle ids (application folders, extensions, running apps),
+    /// LaunchServices and Spotlight.
+    /// - Returns: Sources for `AppLeftoverScanner.scan(sources:)`.
     static func sources() -> AppPresenceSources {
         let runner = SystemCommandRunner()
         var installed = SystemAppPresence.installedBundleIdentifiers(home: NSHomeDirectory())
@@ -17,12 +30,21 @@ enum LivePresence {
     }
 }
 
+/// Selects a file in a Finder window.
+/// - Parameter path: Absolute path of the file or folder.
 func revealInFinder(_ path: String) {
     NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
 }
 
 // MARK: - Hintergrund (System Settings › Login Items & Extensions, rebuilt)
 
+/// System Settings › General › Login Items & Extensions, rebuilt from the
+/// inventory (CLI `launchkeeper background`): "Open at Login", then one row
+/// per app or developer with the switch the pane shows and its components.
+///
+/// The switch is the components' Background Task Management bit — exactly
+/// what System Settings shows. A launchd override is invisible there and is
+/// marked separately (verified against the real pane, CLI V0.5.2).
 struct BackgroundPane: View {
     @Environment(InventoryStore.self) private var store
 
@@ -74,6 +96,7 @@ struct BackgroundPane: View {
     }
 }
 
+/// The state of a background row's switch as a coloured word.
 struct ToggleBadge: View {
     let toggle: BackgroundView.Toggle
 
@@ -90,6 +113,8 @@ struct ToggleBadge: View {
 
 // MARK: - Pakete (receipts)
 
+/// Installer packages (receipts) behind the inventory: version, install
+/// date, files listed vs. missing, and the entries attributed to each.
 struct ReceiptsPane: View {
     @Environment(InventoryStore.self) private var store
     @State private var onlyMissing = false
@@ -125,6 +150,8 @@ struct ReceiptsPane: View {
 
 // MARK: - App-Reste
 
+/// What gone apps left behind. Loaded on first appearance (about 30 s),
+/// shows only apps that are provably gone unless "show all" is on.
 struct LeftoversPane: View {
     @Environment(LeftoversModel.self) private var model
 
@@ -155,6 +182,8 @@ struct LeftoversPane: View {
     }
 }
 
+/// One gone app: its leftover paths (with "Reveal in Finder" and a lock
+/// for paths that need admin rights) and the reasons behind the verdict.
 struct LeftoverRow: View {
     let candidate: AppLeftoverCandidate
 
@@ -183,6 +212,7 @@ struct LeftoverRow: View {
         }
     }
 
+    /// Why the candidate has its verdict — the proofs and the app evidence for "gone".
     private var reason: String {
         switch candidate.presence {
         case .present(let why), .unknown(let why): return why
@@ -196,6 +226,9 @@ struct LeftoverRow: View {
 
 // MARK: - Quarantäne
 
+/// What cleanup moved away: one row per quarantine entry with its moved
+/// paths. Restore and purge arrive with Phase 4; until then the CLI command
+/// is shown.
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
 

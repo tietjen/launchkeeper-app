@@ -1,3 +1,9 @@
+//
+//  InventoryStoreTests.swift
+//  AppCoreTests — sidebar filtering, search, Apple toggle, badges, and that
+//  scans run off the main thread with the session BTM cache.
+//
+
 import XCTest
 @testable import AppCore
 import LaunchKeeperKit

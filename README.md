@@ -25,4 +25,14 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
   commands it is sent — only "operation + entry key" through the same gate and
   engine as the CLI — and Sparkle updates.
 
+## Conventions
+
+- **Comments to industry best practice:** DocC `///` on every type, property,
+  initializer and function (summary line, then `- Parameters:` /
+  `- Returns:` / `- Throws:` where they apply); inline `//` comments say *why*
+  — constraints, safety rules, lessons from live runs — never what the code
+  plainly does. A file header names what the file is for.
+- UI text is German by default (`defaultLocalization: "de"`), English follows.
+- Swift 6 strict concurrency; scans and checks never run on the main thread.
+
 MIT License.
