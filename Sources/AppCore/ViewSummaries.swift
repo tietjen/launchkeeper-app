@@ -103,6 +103,64 @@ public enum LeftoverSummary {
 
 // MARK: - Background rows
 
+/// One row of the background view with a **unique** identity and the words
+/// needed to tell look-alike rows apart.
+///
+/// Why this exists: registrations without a developer name ("Unknown
+/// Developer" — unsigned tools, scripts) are one BTM container, but System
+/// Settings shows one row per component, named after its executable. All
+/// those rows share the container identifier, so it cannot identify a row
+/// (live 2026-09-26: four rows rendered as "sleepwatcher", selected together,
+/// and the detail showed a different one). Apps with both an app and a
+/// developer registration (Docker, iStat Menus) also appear twice by name.
+public struct BackgroundEntry: Identifiable {
+    /// The kit's row.
+    public let row: BackgroundView.Row
+    /// Container identifier plus the display ids of its components — unique within one scan.
+    public let id: String
+    /// `true` for a component of a registration without developer name.
+    public let unnamed: Bool
+
+    /// Creates an entry.
+    /// - Parameters:
+    ///   - row: The kit's row.
+    ///   - unnamed: Whether the row stands for one component of an unnamed registration.
+    public init(row: BackgroundView.Row, unnamed: Bool) {
+        self.row = row
+        self.unnamed = unnamed
+        id = row.identifier + "|" + row.components.map(\.id).joined(separator: ",")
+    }
+
+    /// The label System Settings shows.
+    public var title: String { row.name }
+
+    /// What tells this row apart from others with the same title.
+    public var subtitle: String {
+        if unnamed {
+            let what = row.components.first.map { $0.label ?? $0.name } ?? ""
+            return String(localized: "ohne Entwicklerangabe · \(what)")
+        }
+        let kind = row.kind == .developer ? String(localized: "Entwickler") : String(localized: "App")
+        let parts = row.components.prefix(2).map { $0.label ?? $0.name }
+        let more = row.components.count > 2 ? String(localized: " + \(row.components.count - 2) weitere") : ""
+        return parts.isEmpty ? kind : kind + " · " + parts.joined(separator: ", ") + more
+    }
+
+    /// Wraps the kit's rows, marking unnamed ones.
+    ///
+    /// Unnamed = the container identifier "Unknown Developer" (how BTM names
+    /// developer records without a name), or an identifier shared by several
+    /// rows (the kit splits exactly those per component).
+    /// - Parameter view: The background view of one scan.
+    /// - Returns: One entry per row, same order.
+    public static func entries(from view: BackgroundView) -> [BackgroundEntry] {
+        let counts = Dictionary(view.background.map { ($0.identifier, 1) }, uniquingKeysWith: +)
+        return view.background.map { row in
+            BackgroundEntry(row: row, unnamed: row.identifier == "Unknown Developer" || (counts[row.identifier] ?? 0) > 1)
+        }
+    }
+}
+
 /// One app or developer row of System Settings › Login Items & Extensions.
 public enum BackgroundSummary {
     /// Deep link to System Settings › General › Login Items & Extensions.
@@ -112,6 +170,20 @@ public enum BackgroundSummary {
     /// - Parameter row: A row of the background view.
     /// - Returns: Headline, verdict, facts and next steps (open System
     ///   Settings, jump to each component's inventory entry).
+    public static func build(for entry: BackgroundEntry) -> EntrySummary {
+        var summary = build(for: entry.row)
+        guard entry.unnamed else { return summary }
+        // Say plainly why the row carries a program name and what it really is.
+        let component = entry.row.components.first
+        summary.headline = String(localized: "Hintergrundobjekt ohne Entwicklerangabe")
+        summary.facts.insert(String(localized: "Die Systemeinstellung nennt es „\(entry.row.name)“, weil macOS keinen Entwickler kennt (nicht signiert oder ein Skript) und deshalb den Programmnamen zeigt — Namen wie „bash“ oder „arch“ können darum mehrfach vorkommen."), at: 0)
+        if let component {
+            summary.facts.insert(String(localized: "Tatsächlich: \(component.label ?? component.name)"), at: 1)
+        }
+        return summary
+    }
+
+    /// Builds the summary for one kit row (no unnamed-row explanation).
     public static func build(for row: BackgroundView.Row) -> EntrySummary {
         let headline: String
         switch row.toggle {

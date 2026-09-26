@@ -47,11 +47,12 @@ func revealInFinder(_ path: String) {
 /// marked separately (verified against the real pane, CLI V0.5.2).
 struct BackgroundPane: View {
     @Environment(InventoryStore.self) private var store
-    /// Selected app/developer row, by BTM identifier.
+    /// Selected row, by `BackgroundEntry.id` (unique — the BTM identifier is not).
     @Binding var selection: String?
 
     var body: some View {
         if let view = store.background {
+            let entries = BackgroundEntry.entries(from: view)
             List(selection: $selection) {
                 Section {
                     PaneIntro(text: "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.")
@@ -63,41 +64,45 @@ struct BackgroundPane: View {
                             .help(item.bundlePath ?? item.identifier)
                     }
                 }
-                Section("Im Hintergrund erlauben") {
-                    ForEach(view.background, id: \.identifier) { row in
-                        DisclosureGroup {
-                            ForEach(row.components, id: \.id) { component in
-                                HStack {
-                                    Image(systemName: component.enabled ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(component.enabled ? .green : .secondary)
-                                    Text(component.name)
-                                    if component.launchdDisabled {
-                                        Text("launchd: deaktiviert").font(.caption).foregroundStyle(.orange)
-                                    }
-                                    if component.leftover { Text("Rest").font(.caption).foregroundStyle(.secondary) }
-                                    else if component.orphaned { Text("verwaist").font(.caption).foregroundStyle(.orange) }
-                                    Spacer()
-                                    Text(component.type).font(.caption).foregroundStyle(.secondary)
-                                }
-                            }
-                        } label: {
-                            HStack {
-                                Text(row.name)
-                                Spacer()
-                                ToggleBadge(toggle: row.toggle)
-                            }
-                        }
-                        .tag(row.identifier)
-                    }
+                Section("Im Hintergrund erlauben — Apps und Entwickler") {
+                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry).tag(entry.id) }
                 }
-                Section {
-                    Text("Der Schalter ist das, was die Systemeinstellung zeigt. Ein launchd-Override ist dort unsichtbar und wird hier getrennt angezeigt. LaunchKeeper schreibt nicht in die Hintergrundaufgaben-Verwaltung — umschalten in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen.")
-                        .font(.callout).foregroundStyle(.secondary)
+                let unnamed = entries.filter(\.unnamed)
+                if !unnamed.isEmpty {
+                    Section {
+                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry).tag(entry.id) }
+                    } header: {
+                        Text("Im Hintergrund erlauben — ohne Entwicklerangabe")
+                    } footer: {
+                        Text("Für diese Einträge kennt macOS keinen Entwickler — meist nicht signierte Werkzeuge oder Skripte. Die Systemeinstellung zeigt sie deshalb unter dem Namen des Programms, das sie startet; so können Namen wie „bash“ oder „arch“ mehrfach erscheinen. Die zweite Zeile nennt, was tatsächlich dahintersteckt.")
+                            .font(.callout).foregroundStyle(.secondary)
+                    }
                 }
             }
         } else {
             ContentUnavailableView("Noch nicht eingelesen", systemImage: "clock",
                                    description: Text("Die Ansicht entsteht aus dem Inventar — ⌘R."))
+        }
+    }
+}
+
+/// One background row: the name System Settings shows, what tells it apart
+/// (kind, components or the real identity of an unnamed entry), and the switch.
+struct BackgroundEntryRow: View {
+    let entry: BackgroundEntry
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 1) {
+                Text(entry.title)
+                Text(entry.subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            }
+            Spacer()
+            if entry.row.components.contains(where: \.launchdDisabled) {
+                Image(systemName: "exclamationmark.circle").foregroundStyle(.orange)
+                    .help("Mindestens eine Komponente ist per launchd deaktiviert — in der Systemeinstellung unsichtbar")
+            }
+            ToggleBadge(toggle: entry.row.toggle)
         }
     }
 }
@@ -310,11 +315,13 @@ struct LeftoverDetail: View {
 
 /// Detail of one background row: the switch, its components and where to change it.
 struct BackgroundDetail: View {
-    let row: BackgroundView.Row
+    let entry: BackgroundEntry
+    private var row: BackgroundView.Row { entry.row }
 
     var body: some View {
         Form {
-            SummarySections(title: row.name, summary: BackgroundSummary.build(for: row))
+            SummarySections(title: entry.unnamed ? "\(row.name) — \(entry.row.components.first?.label ?? "")" : row.name,
+                            summary: BackgroundSummary.build(for: entry))
             Section("Komponenten") {
                 ForEach(row.components, id: \.id) { component in
                     HStack {

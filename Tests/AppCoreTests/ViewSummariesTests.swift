@@ -112,6 +112,34 @@ final class ViewSummariesTests: XCTestCase {
         XCTAssertEqual(summary.nextSteps.last?.kind, .showEntry("07"))
     }
 
+    /// Live 2026-09-26: four "Unknown Developer" rows shared one identifier —
+    /// rendered alike, selected together, the detail showed another row.
+    func testUnnamedRowsGetUniqueIdsAndAnExplanation() throws {
+        func component(_ id: String, _ label: String) -> String {
+            #"{"id":"\#(id)","name":"\#(label)","label":"\#(label)","type":"legacy agent","category":"launch-items","btmEnabled":true,"launchdDisabled":false,"enabled":true,"running":false,"orphaned":false,"leftover":false}"#
+        }
+        let json = """
+        {"loginItems":[],"note":"","background":[
+         {"name":"arch","kind":"developer","identifier":"Unknown Developer","toggle":"on","rawDisposition":[],"components":[\(component("03", "local.brother.loginserver"))]},
+         {"name":"sleepwatcher","kind":"developer","identifier":"Unknown Developer","toggle":"on","rawDisposition":[],"components":[\(component("09", "homebrew.mxcl.sleepwatcher"))]},
+         {"name":"Docker","kind":"app","identifier":"2.com.docker.docker","toggle":"on","rawDisposition":[],"components":[\(component("11", "com.docker.helper"))]},
+         {"name":"Docker","kind":"developer","identifier":"Docker Inc","toggle":"on","rawDisposition":[],"components":[\(component("12", "com.docker.vmnetd"))]}
+        ]}
+        """
+        let view = try JSONDecoder().decode(BackgroundView.self, from: Data(json.utf8))
+        let entries = BackgroundEntry.entries(from: view)
+        XCTAssertEqual(Set(entries.map(\.id)).count, 4, "every row needs its own identity")
+        XCTAssertEqual(entries.map(\.unnamed), [true, true, false, false])
+        XCTAssertEqual(entries[0].subtitle, "ohne Entwicklerangabe · local.brother.loginserver")
+        XCTAssertEqual(entries[2].subtitle, "App · com.docker.helper")
+        XCTAssertEqual(entries[3].subtitle, "Entwickler · com.docker.vmnetd", "the two Docker rows are told apart")
+
+        let summary = BackgroundSummary.build(for: entries[0])
+        XCTAssertEqual(summary.headline, "Hintergrundobjekt ohne Entwicklerangabe")
+        XCTAssertTrue(summary.facts[0].contains("„arch“"))
+        XCTAssertEqual(summary.facts[1], "Tatsächlich: local.brother.loginserver")
+    }
+
     func testShowJumpsToTheEntryAndClearsFilters() {
         var item = BackgroundItem(key: "com.apple.x", displayName: "x", type: .launchAgentSystem,
                                   path: "/System/Library/LaunchAgents/com.apple.x.plist", label: "com.apple.x")

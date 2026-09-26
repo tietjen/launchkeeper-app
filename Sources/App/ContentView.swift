@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var selectedPackage: String?
     /// Selected bundle id in the app-leftovers view.
     @State private var selectedLeftover: String?
-    /// Selected app/developer row (BTM identifier) in the background view.
+    /// Selected row in the background view (`BackgroundEntry.id` — unique, unlike the BTM identifier).
     @State private var selectedBackground: String?
     @Environment(LeftoversModel.self) private var leftovers
     /// Basic vs. expert detail view (shared with the menu command and `DetailView`).
@@ -79,8 +79,9 @@ struct ContentView: View {
                 LeftoverDetail(candidate: candidate)
             } else { nothingSelected }
         case .background:
-            if let row = store.background?.background.first(where: { $0.identifier == selectedBackground }) {
-                BackgroundDetail(row: row)
+            if let view = store.background,
+               let entry = BackgroundEntry.entries(from: view).first(where: { $0.id == selectedBackground }) {
+                BackgroundDetail(entry: entry)
             } else { nothingSelected }
         case .quarantine:
             nothingSelected
