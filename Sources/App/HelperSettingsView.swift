@@ -29,6 +29,10 @@ struct HelperSettingsView: View {
                     }
                     Button("Neu prüfen") { helper.refresh() }
                 }
+                if helper.status == .requiresApproval {
+                    Text("Erlaube „LaunchKeeper“ in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen unter „Im Hintergrund erlauben“, dann „Neu prüfen“.")
+                        .font(.callout)
+                }
                 if let error = helper.lastError { Text(error).foregroundStyle(.red).font(.callout) }
             }
         }

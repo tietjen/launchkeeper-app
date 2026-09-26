@@ -31,6 +31,8 @@ final class HelperStatus {
     /// Reads the registration state (and the helper version when enabled).
     func refresh() {
         status = service.status
+        // A working helper makes any earlier registration error obsolete.
+        if isReady { lastError = nil }
         guard isReady else { version = nil; return }
         Task.detached {
             let answer = HelperClient.version()
@@ -48,7 +50,13 @@ final class HelperStatus {
             lastError = error.localizedDescription
         }
         refresh()
-        if status == .requiresApproval { SMAppService.openSystemSettingsLoginItems() }
+        // The first registration of a daemon fails with "Operation not
+        // permitted" until the user allows it — that is the expected first
+        // step, not an error (seen live 2026-09-26). Show the way instead.
+        if status == .requiresApproval {
+            lastError = nil
+            SMAppService.openSystemSettingsLoginItems()
+        }
     }
 
     /// Unregisters the helper (the app's admin actions stop working until registered again).
