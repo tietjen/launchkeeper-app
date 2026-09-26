@@ -42,11 +42,24 @@ public enum SidebarSelection: Hashable, Sendable {
     case all
     case orphans
     case category(ItemCategory)
+    /// Phase 2 views beside the inventory table.
+    case background, receipts, leftovers, quarantine
+
+    public var isInventory: Bool {
+        switch self {
+        case .all, .orphans, .category: return true
+        case .background, .receipts, .leftovers, .quarantine: return false
+        }
+    }
 }
 
-/// Moves a finished report across the actor boundary. The scan result is
-/// immutable once built; the box only carries it.
-struct ReportBox: @unchecked Sendable { let report: ScanReport }
+/// Moves finished results across the actor boundary. Built once in the
+/// background task, never mutated afterwards; the box only carries them.
+struct ScanBox: @unchecked Sendable {
+    let report: ScanReport
+    let background: BackgroundView
+    let receipts: ReceiptsView
+}
 
 /// The app's view of the inventory. Scans run off the main thread; the BTM
 /// dump is kept for the session (a cold one takes minutes, V0.9 cache).
@@ -59,6 +72,10 @@ public final class InventoryStore {
     public private(set) var checks: [String] = []
     public private(set) var warnings: [String] = []
     public private(set) var incompleteLayers: [String] = []
+    /// System Settings › Login Items & Extensions, rebuilt (V0.5 view).
+    public private(set) var background: BackgroundView?
+    /// Installer packages behind the inventory (V0.6 view).
+    public private(set) var receipts: ReceiptsView?
     /// Shown while scanning — a cold BTM dump explains itself.
     public private(set) var status = ""
 
@@ -85,8 +102,15 @@ public final class InventoryStore {
         btmCache.preferCached = reuseBTM
         let scanner = self.scanner
         let cache = btmCache
-        let box = await Task.detached(priority: .userInitiated) { ReportBox(report: scanner(cache)) }.value
+        let box = await Task.detached(priority: .userInitiated) { () -> ScanBox in
+            let report = scanner(cache)
+            // The receipts view probes every listed path — off the main thread too.
+            return ScanBox(report: report, background: BackgroundView.build(from: report),
+                           receipts: ReceiptsView.build(from: report))
+        }.value
         apply(box.report)
+        background = box.background
+        receipts = box.receipts
         isScanning = false
         status = ""
     }
@@ -108,6 +132,7 @@ public final class InventoryStore {
             case .all: break
             case .orphans: guard row.item.orphaned else { return false }
             case .category(let category): guard matches(row, category) else { return false }
+            case .background, .receipts, .leftovers, .quarantine: break
             }
             return Self.matches(row, search: search)
         }
@@ -121,6 +146,7 @@ public final class InventoryStore {
             case .all: return true
             case .orphans: return row.item.orphaned
             case .category(let category): return matches(row, category)
+            case .background, .receipts, .leftovers, .quarantine: return false
             }
         }.count
     }

@@ -6,6 +6,8 @@ import LaunchKeeperKit
 struct DetailView: View {
     let row: InventoryRow
     private var item: BackgroundItem { row.item }
+    @State private var verification: SignatureVerification?
+    @State private var verifying = false
 
     var body: some View {
         Form {
@@ -45,6 +47,32 @@ struct DetailView: View {
                 LabeledContent("Signatur", value: item.codeSignatureStatus ?? "–")
                 if let team = item.teamIdentifier ?? item.metadata["signature-team"] { LabeledContent("Team", value: team) }
                 if let developer = item.developer { LabeledContent("Entwickler", value: developer) }
+                if let target = SignatureCheck.target(of: item) {
+                    if let verification {
+                        LabeledContent("Siegel", value: verification.sealValid ? String(localized: "intakt") : verification.sealDetail)
+                        LabeledContent("Gatekeeper", value: [verification.assessment, verification.assessmentSource]
+                                        .compactMap { $0 }.joined(separator: " · "))
+                        LabeledContent("Hardened Runtime", value: verification.hardenedRuntime ? "ja" : "nein")
+                        if !verification.authorities.isEmpty {
+                            LabeledContent("Kette") { Text(verification.authorities.joined(separator: " → ")).textSelection(.enabled) }
+                        }
+                        if let sha = verification.sha256 {
+                            LabeledContent("SHA-256") { Text(sha).font(.caption.monospaced()).textSelection(.enabled) }
+                        }
+                    } else {
+                        Button {
+                            verifying = true
+                            Task {
+                                verification = await SignatureCheck.verify(path: target)
+                                verifying = false
+                            }
+                        } label: {
+                            if verifying { ProgressView().controlSize(.small) } else { Text("Signatur gründlich prüfen") }
+                        }
+                        .disabled(verifying)
+                        .help("codesign --verify --strict, Gatekeeper, Zertifikatskette, SHA-256")
+                    }
+                }
             }
 
             if let control = item.control {
@@ -69,6 +97,7 @@ struct DetailView: View {
             }
         }
         .formStyle(.grouped)
+        .id(item.key)   // a new entry starts without the previous verification
     }
 
     private var stateText: String {

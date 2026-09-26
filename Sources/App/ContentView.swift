@@ -13,11 +13,20 @@ struct ContentView: View {
             SidebarView()
                 .navigationSplitViewColumnWidth(min: 200, ideal: 230)
         } content: {
-            InventoryTable(selectedKey: $selectedKey, sortOrder: $sortOrder)
-                .navigationSplitViewColumnWidth(min: 480, ideal: 640)
-                .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
+            Group {
+                switch store.selection {
+                case .background: BackgroundPane()
+                case .receipts: ReceiptsPane()
+                case .leftovers: LeftoversPane()
+                case .quarantine: QuarantinePane()
+                case .all, .orphans, .category:
+                    InventoryTable(selectedKey: $selectedKey, sortOrder: $sortOrder)
+                        .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
+                }
+            }
+            .navigationSplitViewColumnWidth(min: 480, ideal: 640)
         } detail: {
-            if let row = store.row(for: selectedKey) {
+            if store.selection.isInventory, let row = store.row(for: selectedKey) {
                 DetailView(row: row)
             } else {
                 ContentUnavailableView("Kein Eintrag gewählt", systemImage: "sidebar.right",
@@ -53,6 +62,12 @@ struct SidebarView: View {
                 ForEach(store.categories, id: \.self) { category in
                     row(.category(category), category.title, Self.symbol(category))
                 }
+            }
+            Section("Ansichten") {
+                Label("Hintergrund", systemImage: "switch.2").tag(SidebarSelection.background)
+                Label("Pakete", systemImage: "shippingbox").tag(SidebarSelection.receipts)
+                Label("App-Reste", systemImage: "leaf").tag(SidebarSelection.leftovers)
+                Label("Quarantäne", systemImage: "archivebox").tag(SidebarSelection.quarantine)
             }
         }
         .listStyle(.sidebar)
