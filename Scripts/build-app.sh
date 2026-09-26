@@ -36,7 +36,7 @@ echo "==> swift build (release ${ARCHS[*]})"
 swift build -c release "${ARCHS[@]}"
 BIN="$(swift build -c release "${ARCHS[@]}" --show-bin-path)"
 # Resource accessor patch, then rebuild so the patched accessor is compiled in.
-for ACCESSOR in $(find .build -path "*release/LaunchKeeper.build/DerivedSources/resource_bundle_accessor.swift" 2>/dev/null); do
+for ACCESSOR in $(find .build -path "*release/LaunchKeeperGUI.build/DerivedSources/resource_bundle_accessor.swift" 2>/dev/null); do
   if ! grep -q "Bundle.main.resourceURL ??" "$ACCESSOR"; then
     sed -i '' 's|Bundle\.main\.bundleURL|(Bundle.main.resourceURL ?? Bundle.main.bundleURL)|g' "$ACCESSOR"
     PATCHED=1
@@ -47,7 +47,8 @@ if [ "${PATCHED:-0}" = 1 ]; then swift build -c release "${ARCHS[@]}"; fi
 echo "==> assemble $APP"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
-cp "$BIN/$APP_NAME" "$APP/Contents/MacOS/$APP_NAME"
+# The SwiftPM product is LaunchKeeperGUI (see Package.swift); the bundle keeps "LaunchKeeper".
+cp "$BIN/LaunchKeeperGUI" "$APP/Contents/MacOS/$APP_NAME"
 # Sparkle.framework (universal in the xcframework) with its Updater.app and
 # XPC services. SwiftPM sets no rpath for an embedded framework — add it.
 SPARKLE_FRAMEWORK=".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
@@ -72,7 +73,9 @@ cat > "$APP/Contents/Library/LaunchDaemons/$HELPER_ID.plist" <<HPLIST
 </dict>
 </plist>
 HPLIST
-for BUNDLE in "$BIN"/*.bundle; do [ -e "$BUNDLE" ] && cp -R "$BUNDLE" "$APP/Contents/Resources/"; done
+# Only the app's own resource bundle — a glob would also ship stale bundles
+# of earlier target names left in .build.
+cp -R "$BIN/launchkeeper-app_LaunchKeeperGUI.bundle" "$APP/Contents/Resources/"
 # App icon: no asset catalog without Xcode — iconutil turns the .iconset into .icns.
 iconutil -c icns Assets/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 BUILD=$(git rev-list --count HEAD 2>/dev/null || echo 1)

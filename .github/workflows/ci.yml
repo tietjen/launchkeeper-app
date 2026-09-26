@@ -26,12 +26,7 @@ jobs:
           swift --version
       - name: Build
         # On failure, a verbose rebuild shows the frontend/linker invocations.
-        run: |
-          swift build || {
-            M=.build/arm64-apple-macosx/debug/LaunchKeeper.build/output-file-map.json
-            ls -la .build/arm64-apple-macosx/debug/LaunchKeeper.build | head -30
-            python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); print("\n".join(sorted(m)))' "$M"
-            pwd; ls -la Sources/App | head; exit 1; }
+        run: swift build
       - name: Test (AppCore + HelperCore — no helper, no window)
         run: swift test
       - name: App bundle (unsigned, universal)

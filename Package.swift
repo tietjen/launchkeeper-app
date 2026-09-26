@@ -14,7 +14,11 @@ let package = Package(
     defaultLocalization: "de",
     platforms: [.macOS(.v14)],
     products: [
-        .executable(name: "LaunchKeeper", targets: ["LaunchKeeper"]),
+        // Not "LaunchKeeper": the kit's CLI target is "launchkeeper", and on a
+        // case-insensitive file system both would share one .build directory
+        // (their output-file-maps overwrote each other — CI, 2026-09-26).
+        // build-app.sh installs the binary as Contents/MacOS/LaunchKeeper.
+        .executable(name: "LaunchKeeperGUI", targets: ["LaunchKeeperGUI"]),
         .executable(name: "LaunchKeeperHelper", targets: ["LaunchKeeperHelper"]),
     ],
     dependencies: [
@@ -30,7 +34,7 @@ let package = Package(
             path: "Sources/AppCore"
         ),
         .executableTarget(
-            name: "LaunchKeeper",
+            name: "LaunchKeeperGUI",
             dependencies: ["AppCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper"),
                            .product(name: "Sparkle", package: "Sparkle")],
             path: "Sources/App",
