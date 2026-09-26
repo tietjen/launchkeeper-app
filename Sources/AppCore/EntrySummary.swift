@@ -214,12 +214,34 @@ public struct EntrySummary: Equatable, Sendable {
     static func verdict(for item: BackgroundItem) -> Verdict {
         if item.metadata["btm-leftover"] == "true" { return .leftover }
         if item.orphaned { return .orphan(item.orphanReasons.first ?? String(localized: "Quelle fehlt")) }
-        if let flag = item.riskFlags.first { return .review(flag) }
+        if let flag = item.riskFlags.first { return .review(riskText(flag)) }
         if let status = item.codeSignatureStatus, status.contains("unsigned") || status.contains("not signed"),
            !ListFilter.isAppleInternal(item) {
             return .review(String(localized: "nicht signiert — Herkunft prüfen"))
         }
         return .ok
+    }
+
+    /// The kit's risk flags in plain words — hints to look closer, never a malware verdict.
+    /// - Parameter flag: A `RiskAnalyzer` flag.
+    /// - Returns: A short German explanation; unknown flags come back unchanged.
+    static func riskText(_ flag: String) -> String {
+        switch flag {
+        case "third-party-plist-runs-system-binary":
+            return String(localized: "fremder Eintrag startet ein macOS-Programm — Apples Signatur bürgt nur für das Programm, nicht dafür, was der Eintrag damit tut")
+        case "shell-interpreter-service":
+            return String(localized: "startet eine Shell oder einen Interpreter — prüfen, welches Skript läuft")
+        case "unsigned-executable":
+            return String(localized: "Programm ist nicht (oder nur ad hoc) signiert")
+        case "temp-or-hidden-path":
+            return String(localized: "Programm liegt in einem temporären oder versteckten Ordner")
+        case "user-writable-daemon-binary":
+            return String(localized: "Systemdienst, dessen Programm ohne Administratorrechte geändert werden kann")
+        case "downloads-executable":
+            return String(localized: "Programm wird direkt aus „Downloads“ gestartet")
+        default:
+            return flag
+        }
     }
 
     /// Next steps from the control matrix, plus the VirusTotal hash and "show in Finder".

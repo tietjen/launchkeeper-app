@@ -94,4 +94,14 @@ final class EntrySummaryTests: XCTestCase {
         XCTAssertEqual(EntrySummary.cliAddress(cron), "'cron:alice:crontab:/opt/x --flag'")
         XCTAssertEqual(EntrySummary.authorityName("Apple Development: x (Y)"), "x")
     }
+
+    func testRiskFlagsReadAsPlainGerman() {
+        var item = BackgroundItem(key: "de.x.probe", displayName: "probe", type: .launchAgentUser,
+                                  path: "/Users/t/Library/LaunchAgents/de.x.probe.plist", label: "de.x.probe",
+                                  executable: "/usr/bin/curl", domain: .user)
+        item.riskFlags = ["third-party-plist-runs-system-binary"]
+        guard case .review(let why) = EntrySummary.build(for: item).verdict else { return XCTFail("expected review") }
+        XCTAssertTrue(why.hasPrefix("fremder Eintrag startet ein macOS-Programm"), why)
+        XCTAssertEqual(EntrySummary.riskText("something-new"), "something-new", "unknown flags stay visible")
+    }
 }
