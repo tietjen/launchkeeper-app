@@ -22,6 +22,8 @@ struct ActionSheet: View {
     /// Called once when the sheet closes after something was executed.
     private let onChanged: () -> Void
     @Environment(\.dismiss) private var dismiss
+    /// Opens LaunchKeeper's own Settings window (helper setup and restart).
+    @Environment(\.openSettings) private var openSettings
 
     /// Creates the sheet and its model.
     /// - Parameters:
@@ -86,7 +88,9 @@ struct ActionSheet: View {
     /// How a plan with administrator steps can run: via the helper (Touch ID),
     /// after restarting an outdated helper, or after setting it up.
     @ViewBuilder private var adminFooter: some View {
-        if case .planned(let outcome) = model.phase, outcome.needsAdmin, case .planned = outcome.state {
+        if model.helperFailedBeforeRunning {
+            helperRepair
+        } else if case .planned(let outcome) = model.phase, outcome.needsAdmin, case .planned = outcome.state {
             if helper.isOutdated && model.request.privileged != nil {
                 outdatedNotice
             } else if helperUsable && model.request.privileged != nil {
@@ -135,6 +139,41 @@ struct ActionSheet: View {
         }
     }
 
+    /// The helper did not run the request: offer the repair in one click —
+    /// restart it and plan again, or open LaunchKeeper's Settings.
+    private var helperRepair: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("Das Hilfsprogramm hat nichts ausgeführt — auf dem Mac ist nichts geändert.",
+                  systemImage: "wrench.and.screwdriver").font(.headline)
+            Text("Meist hilft ein Neustart des Hilfsprogramms. Danach wird der Plan neu berechnet und du kannst es noch einmal versuchen.")
+                .font(.callout)
+            HStack {
+                Button("Neu starten und erneut versuchen") {
+                    Task {
+                        await helper.restart()
+                        await model.plan()
+                    }
+                }
+                .keyboardShortcut(.defaultAction)
+                settingsButton
+                if helper.status == .requiresApproval {
+                    Button("In den Systemeinstellungen erlauben") { helper.openSettings() }
+                }
+            }
+            if let error = helper.lastError { Text(error).font(.caption).foregroundStyle(.red) }
+        }
+        .padding(10)
+        .background(.quaternary, in: RoundedRectangle(cornerRadius: 8))
+    }
+
+    /// Closes the sheet and opens the helper section in LaunchKeeper's Settings.
+    private var settingsButton: some View {
+        Button("Einstellungen öffnen") {
+            dismiss()
+            openSettings()
+        }
+    }
+
     /// An older helper is running: offer the restart right here.
     private var outdatedNotice: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -143,6 +182,7 @@ struct ActionSheet: View {
                 .font(.callout)
             HStack {
                 Button("Hilfsprogramm neu starten") { Task { await helper.restart() } }
+                settingsButton
                 if helper.status == .requiresApproval {
                     Button("In den Systemeinstellungen erlauben") { helper.openSettings() }
                 }
@@ -168,6 +208,7 @@ struct ActionSheet: View {
                     Button(helper.status == .requiresApproval ? "In den Systemeinstellungen erlauben" : "Hilfsprogramm einrichten") {
                         if helper.status == .requiresApproval { helper.openSettings() } else { helper.register() }
                     }
+                    settingsButton
                     if let error = helper.lastError { Text(error).font(.caption).foregroundStyle(.red) }
                 }
                 Text("Oder jetzt im Terminal:").font(.callout)
@@ -219,7 +260,8 @@ struct ActionSheet: View {
                     onChanged()
                     dismiss()
                 }
-                .keyboardShortcut(.defaultAction)
+                // Return goes to the repair button when the helper failed.
+                .keyboardShortcut(model.helperFailedBeforeRunning ? .cancelAction : .defaultAction)
             }
         }
     }

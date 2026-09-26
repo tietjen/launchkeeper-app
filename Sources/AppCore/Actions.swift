@@ -311,10 +311,24 @@ public final class ActionModel {
         phase = .planned(outcome)
     }
 
+    /// Whether the last execution went through the privileged helper.
+    public private(set) var lastRunPrivileged = false
+
+    /// `true` when the helper failed before executing anything: it was not
+    /// reachable, outdated, or refused the authorization. Such outcomes carry
+    /// no executed steps, so nothing on the Mac changed and the fix is on the
+    /// helper's side (restart or set up again), not on the entry's.
+    public var helperFailedBeforeRunning: Bool {
+        guard lastRunPrivileged, case .finished(let outcome) = phase,
+              case .failed = outcome.state else { return false }
+        return outcome.steps.isEmpty
+    }
+
     /// Executes the planned action — only when `canExecute`.
     public func execute() async {
         guard canExecute, case .planned(let plan) = phase else { return }
         phase = .executing(plan)
+        lastRunPrivileged = plan.needsAdmin
         // Administrator steps never run in the app process: they go to the helper.
         guard let performer = plan.needsAdmin ? privileged : self.performer else { return }
         let request = self.request

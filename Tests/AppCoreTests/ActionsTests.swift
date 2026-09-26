@@ -129,6 +129,29 @@ final class PrivilegedRoutingTests: XCTestCase {
         XCTAssertEqual(helper.calls, [true])
     }
 
+    func testHelperFailureWithoutStepsOffersHelperRepair() async {
+        let adminPlan = ActionOutcome(state: .planned,
+                                      steps: [ActionOutcome.Step(id: 0, command: "/usr/bin/sudo /bin/mv -- /x /q",
+                                                                 description: "x", needsAdmin: true)],
+                                      messages: [], undo: nil)
+        let unreachable = ActionOutcome(state: .failed("helper not reachable"), steps: [], messages: [], undo: nil)
+        let model = ActionModel(request: .remediation(operation: "remove", key: "x"),
+                                performer: StubPerformer(planned: adminPlan, executed: adminPlan),
+                                privileged: StubPerformer(planned: adminPlan, executed: unreachable))
+        await model.plan()
+        await model.execute()
+        XCTAssertTrue(model.helperFailedBeforeRunning)
+
+        // A failure inside the engine (steps ran) is about the entry, not the helper.
+        let partial = ActionOutcome(state: .failed("mv failed"), steps: adminPlan.steps, messages: [], undo: nil)
+        let engineModel = ActionModel(request: .remediation(operation: "remove", key: "x"),
+                                      performer: StubPerformer(planned: adminPlan, executed: adminPlan),
+                                      privileged: StubPerformer(planned: adminPlan, executed: partial))
+        await engineModel.plan()
+        await engineModel.execute()
+        XCTAssertFalse(engineModel.helperFailedBeforeRunning)
+    }
+
     func testHelperOutcomeMapping() {
         let outcome = ActionOutcome.from(privileged: PrivilegedOutcome(state: "error", detail: "not authorized"))
         XCTAssertEqual(outcome.state, .failed("not authorized"))
