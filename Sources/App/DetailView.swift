@@ -266,11 +266,15 @@ struct SummarySections: View {
 
 /// One next step: title and explanation, and what can be done with it now.
 ///
-/// Operations are not executed by the app yet (Phase 4a); until then the row
-/// offers the equivalent CLI command — a dry run — to copy into Terminal.
+/// Operations open the action sheet ("Ausführen…"): plan first, execution
+/// on a second click. Steps without an action keep "Befehl kopieren".
 struct NextStepRow: View {
     let step: EntrySummary.NextStep
     @Environment(InventoryStore.self) private var store
+    @Environment(LeftoversModel.self) private var leftovers
+    @Environment(QuarantineModel.self) private var quarantine
+    /// The action sheet for `step.action`.
+    @State private var showAction = false
     /// Set after a copy, for a short confirmation.
     @State private var copied = false
     /// `true` while the SHA-256 is being computed (large binaries take a moment).
@@ -282,10 +286,20 @@ struct NextStepRow: View {
             HStack(alignment: .firstTextBaseline) {
                 explanation(adminLock: step.requiresAdmin)
                 Spacer()
-                if let command = step.command {
+                if let action = step.action {
+                    Button("Ausführen…") { showAction = true }
+                        .help("Zeigt erst den Plan — geändert wird erst nach einem zweiten Klick.")
+                        .sheet(isPresented: $showAction) {
+                            ActionSheet(request: action, performer: Performer.make(store: store)) {
+                                // Something changed: read the inventory and the side views again.
+                                Task { await store.refresh(reuseBTM: true) }
+                                Task { await leftovers.reload() }
+                                quarantine.reload()
+                            }
+                        }
+                } else if let command = step.command {
                     Button(copied ? "Kopiert ✓" : "Befehl kopieren") { copy(command) }
-                        .help("\(command) — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply. "
-                              + "Direkt in der App: bald.")
+                        .help("\(command) — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply.")
                 }
             }
         case .copyHash(let path):

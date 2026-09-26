@@ -230,6 +230,9 @@ struct LeftoverRow: View {
 /// is shown.
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
+    @Environment(InventoryStore.self) private var store
+    /// The entry whose restore sheet is open.
+    @State private var restoring: String?
 
     var body: some View {
         Group {
@@ -244,9 +247,12 @@ struct QuarantinePane: View {
                         }
                         if entry.forgot { Text("Paketbeleg vergessen — Kopie liegt in der Quarantäne").font(.caption) }
                         HStack {
+                            Button("Wiederherstellen…") { restoring = entry.name }
+                                .disabled(entry.status == "restored")
                             Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
-                            Text("Wiederherstellen/Endgültig löschen folgt in Phase 4 — bis dahin: launchkeeper quarantine restore \(entry.name)")
-                                .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            Spacer()
+                            Text("Endgültig löschen folgt mit dem Hilfsprogramm")
+                                .font(.caption).foregroundStyle(.secondary)
                         }
                     } label: {
                         HStack {
@@ -262,6 +268,12 @@ struct QuarantinePane: View {
         }
         .toolbar { Button { model.reload() } label: { Label("Neu laden", systemImage: "arrow.clockwise") } }
         .onAppear { model.reload() }
+        .sheet(item: Binding(get: { restoring.map(RestoreTarget.init) }, set: { restoring = $0?.name })) { target in
+            ActionSheet(request: .restore(quarantine: target.name), performer: Performer.make(store: store)) {
+                model.reload()
+                Task { await store.refresh(reuseBTM: true) }
+            }
+        }
     }
 }
 
@@ -340,4 +352,10 @@ struct BackgroundDetail: View {
         }
         .formStyle(.grouped)
     }
+}
+
+/// Identifies the quarantine entry of an open restore sheet (`sheet(item:)` needs `Identifiable`).
+struct RestoreTarget: Identifiable {
+    let name: String
+    var id: String { name }
 }

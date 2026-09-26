@@ -5,7 +5,7 @@ The macOS app for [launchkeeper](https://github.com/tietjen/launchkeeper) —
 a read-only inventory, one gate without bypass, dry-run before every change,
 snapshots/quarantine instead of deletion, verification after every write.
 
-**Status: in development (read-only so far: inventory with basic/expert detail, background, packages, app leftovers, quarantine — actions next).**
+**Status: in development (Phase 4a: actions without administrator rights — plan first, then execute; admin actions come with the helper).**
 
 ## Build
 

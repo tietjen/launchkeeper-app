@@ -67,11 +67,14 @@ public struct EntrySummary: Equatable, Sendable {
         /// The equivalent CLI command, dry-run form — offered for copying until
         /// the app runs actions itself.
         public var command: String?
+        /// What "Ausführen…" asks the engines to do (Phase 4a); `nil` for steps that are not actions.
+        public var action: ActionRequest?
 
         /// Creates a step.
-        public init(title: String, detail: String, kind: Kind, requiresAdmin: Bool, command: String?) {
+        public init(title: String, detail: String, kind: Kind, requiresAdmin: Bool, command: String?,
+                    action: ActionRequest? = nil) {
             self.title = title; self.detail = detail; self.kind = kind
-            self.requiresAdmin = requiresAdmin; self.command = command
+            self.requiresAdmin = requiresAdmin; self.command = command; self.action = action
         }
     }
 
@@ -239,21 +242,24 @@ public struct EntrySummary: Equatable, Sendable {
                     ? String(localized: "Verschiebt den Rest in die Quarantäne — jederzeit wiederherstellbar.")
                     : String(localized: "Löscht die verwaiste Startdatei; vorher wird eine Sicherung angelegt."),
                 kind: .operation("remove"), requiresAdmin: admin,
-                command: "launchkeeper remove \(address)"))
+                command: "launchkeeper remove \(address)",
+                action: .remediation(operation: "remove", key: item.key)))
         }
         if actions.contains("disable"), item.enabled {
             steps.append(NextStep(
                 title: String(localized: "Deaktivieren (umkehrbar)"),
                 detail: String(localized: "Verhindert den automatischen Start; Aktivieren macht es rückgängig."),
                 kind: .operation("disable"), requiresAdmin: admin,
-                command: "launchkeeper disable \(address)"))
+                command: "launchkeeper disable \(address)",
+                action: .remediation(operation: "disable", key: item.key)))
         }
         if actions.contains("enable"), !item.enabled {
             steps.append(NextStep(
                 title: String(localized: "Wieder aktivieren"),
                 detail: String(localized: "Hebt die Deaktivierung auf."),
                 kind: .operation("enable"), requiresAdmin: admin,
-                command: "launchkeeper enable \(address)"))
+                command: "launchkeeper enable \(address)",
+                action: .remediation(operation: "enable", key: item.key)))
         }
         if let hashTarget {
             steps.append(NextStep(

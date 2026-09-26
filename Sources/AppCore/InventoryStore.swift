@@ -165,6 +165,10 @@ public final class InventoryStore {
     public var hideApple = true
 
     private let btmCache = BTMDumpCache()
+
+    /// The session's Background Task Management dump, shared with actions
+    /// (`EnginePerformer`) so they do not pay a cold dump of their own.
+    public var btmDumpCache: BTMDumpCache { btmCache }
     private let scanner: @Sendable (BTMDumpCache) -> ScanReport
 
     /// Creates the store.

@@ -51,13 +51,15 @@ public enum PackageSummary {
                 title: String(localized: "Deinstallieren (Vorschau)"),
                 detail: String(localized: "Nimmt nur Dateien, die noch unverändert vom Paket stammen, und verschiebt sie in die Quarantäne — wiederherstellbar. Veränderte und geteilte Dateien bleiben."),
                 kind: .operation("uninstall"), requiresAdmin: true,
-                command: "launchkeeper uninstall \(EntrySummary.quote(row.id))"))
+                command: "launchkeeper uninstall \(EntrySummary.quote(row.id))",
+                action: .uninstall(package: row.id)))
         } else {
             steps.append(EntrySummary.NextStep(
                 title: String(localized: "Beleg entfernen"),
                 detail: String(localized: "Vergisst den Installationsbeleg; eine Kopie bleibt in der Quarantäne."),
                 kind: .operation("uninstall"), requiresAdmin: true,
-                command: "launchkeeper uninstall \(EntrySummary.quote(row.id))"))
+                command: "launchkeeper uninstall \(EntrySummary.quote(row.id))",
+                action: .uninstall(package: row.id)))
         }
         return EntrySummary(headline: headline, facts: facts, verdict: verdict, nextSteps: steps)
     }
@@ -86,7 +88,8 @@ public enum LeftoverSummary {
                 title: String(localized: "In die Quarantäne verschieben"),
                 detail: String(localized: "Räumt Einstellungen, Caches und App-Daten weg — wiederherstellbar, falls die App zurückkommt."),
                 kind: .operation("leftovers"), requiresAdmin: candidate.paths.contains(where: \.needsRoot),
-                command: "launchkeeper leftovers \(EntrySummary.quote(candidate.bundleIdentifier))"))
+                command: "launchkeeper leftovers \(EntrySummary.quote(candidate.bundleIdentifier))",
+                action: .leftovers(bundleID: candidate.bundleIdentifier)))
         case .present(let why):
             headline = String(localized: "Daten einer installierten App")
             verdict = .ok
