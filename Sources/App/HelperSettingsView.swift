@@ -1,16 +1,19 @@
 //
 //  HelperSettingsView.swift
 //  LaunchKeeper — Settings (⌘,): the privileged helper's state and controls,
-//  the watch and launch at login.
+//  the watch, launch at login and updates.
 //
 
 import SwiftUI
 import AppCore
 import HelperShared
+import Sparkle
 
 /// Shows whether the helper is registered and allowed, and sets it up or removes it.
 struct HelperSettingsView: View {
     @Environment(HelperStatus.self) private var helper
+    /// Sparkle's updater for the "Updates" section; `nil` outside the release bundle.
+    let updater: SPUUpdater?
 
     var body: some View {
         Form {
@@ -43,6 +46,7 @@ struct HelperSettingsView: View {
                 if let error = helper.lastError { Text(error).foregroundStyle(.red).font(.callout) }
             }
             WatchSettingsSection()
+            UpdateSettingsSection(updater: updater)
         }
         .formStyle(.grouped)
         .frame(width: 520)

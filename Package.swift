@@ -17,7 +17,11 @@ let package = Package(
         .executable(name: "LaunchKeeper", targets: ["LaunchKeeper"]),
         .executable(name: "LaunchKeeperHelper", targets: ["LaunchKeeperHelper"]),
     ],
-    dependencies: [kit],
+    dependencies: [
+        kit,
+        // In-app updates (Phase 8): EdDSA-signed DMGs from the GitHub releases feed.
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0"),
+    ],
     targets: [
         // UI-free logic: loading, filtering, counting — tested without a window.
         .target(
@@ -27,7 +31,8 @@ let package = Package(
         ),
         .executableTarget(
             name: "LaunchKeeper",
-            dependencies: ["AppCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper")],
+            dependencies: ["AppCore", "HelperShared", .product(name: "LaunchKeeperKit", package: "launchkeeper"),
+                           .product(name: "Sparkle", package: "Sparkle")],
             path: "Sources/App",
             resources: [.process("Resources")]
         ),

@@ -1,0 +1,74 @@
+name: Release
+
+# Tag v<version> -> universal app, Developer ID signature, notarization and
+# stapling (app + DMG), Sparkle EdDSA signature, appcast.xml, GitHub release.
+# The in-app feed is releases/latest/download/appcast.xml, so publishing the
+# release is what ships the update. The version must match VERSION and
+# CHANGELOG.md (Scripts/release.sh checks both).
+#
+# Repository secrets (Settings -> Secrets and variables -> Actions):
+#   MACOS_CERTIFICATE_P12        Developer ID Application certificate, .p12, base64-encoded
+#   MACOS_CERTIFICATE_PASSWORD   password of that .p12
+#   APPLE_ID                     Apple ID used for notarization
+#   APPLE_APP_PASSWORD           app-specific password for that Apple ID
+#   APPLE_TEAM_ID                10-character Team ID
+#   SPARKLE_ED_PRIVATE_KEY       Sparkle EdDSA private key (base64) — the SparkMenu key
+#   CODESIGN_IDENTITY            optional: full identity string if it differs from the script default
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, sign, notarize, publish
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the build number is the commit count
+
+      - name: Import Developer ID certificate into a temporary keychain
+        env:
+          MACOS_CERTIFICATE_P12: ${{ secrets.MACOS_CERTIFICATE_P12 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          echo "$MACOS_CERTIFICATE_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/cert.p12" -P "$MACOS_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security find-identity -v -p codesigning "$KEYCHAIN" | grep -c "Developer ID Application"
+
+      - name: Build, sign, notarize, package
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+          CODESIGN_IDENTITY: ${{ secrets.CODESIGN_IDENTITY }}
+        run: |
+          set -euo pipefail
+          Scripts/release.sh "${GITHUB_REF_NAME#v}"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          printf '\nUniversal (Apple silicon + Intel), Developer ID signed, notarized and stapled. Verify: `shasum -a 256 -c SHA256SUMS`.\n' \
+            >> dist/release/release-notes.md
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/release/LaunchKeeper-$VERSION.dmg" dist/release/appcast.xml dist/release/SHA256SUMS \
+            --title "LaunchKeeper $VERSION" --notes-file dist/release/release-notes.md

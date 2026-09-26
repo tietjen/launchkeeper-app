@@ -1,6 +1,8 @@
 #!/bin/bash
 # Build LaunchKeeper.app from the SwiftPM package (no Xcode project).
 #   Scripts/build-app.sh [--version X.Y.Z] [--universal] [--no-sign]
+# The version defaults to the VERSION file (the release script checks the tag
+# against it); the build number is the commit count, which Sparkle compares.
 # LAUNCHKEEPER_KIT_PATH=../launchkeeper builds against a local kit checkout.
 # Lessons from SparkMenu (wiki "Swift & macOS Development"): patch the SwiftPM
 # resource accessor (Bundle.main.bundleURL misses Contents/Resources on other
@@ -8,7 +10,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-VERSION="0.1.0"
+VERSION="$(tr -d '[:space:]' < VERSION)"
 ARCHS=(--arch arm64)
 SIGN=1
 while [ $# -gt 0 ]; do
@@ -20,6 +22,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 IDENTITY="${CODESIGN_IDENTITY:-Developer ID Application: Jan Tietjen (Y2LTPLFG6D)}"
+# Sparkle (Phase 8): the feed is the appcast of the latest GitHub release;
+# the public key is SparkMenu's (TJ, 2026-09-26: one EdDSA key for both apps,
+# private half in Vaultwarden "Sparkle EdDSA Private Key (SparkMenu)").
+FEED_URL="https://github.com/tietjen/launchkeeper-app/releases/latest/download/appcast.xml"
+SPARKLE_PUBLIC_KEY="Rpi6AeS/KJGAqiLQJaMhCgL/78B9KDxkP71QyV4IoMw="
 APP_NAME="LaunchKeeper"
 BUNDLE_ID="de.paranoidsecurity.LaunchKeeper"
 DIST="dist"
@@ -39,8 +46,14 @@ if [ "${PATCHED:-0}" = 1 ]; then swift build -c release "${ARCHS[@]}"; fi
 
 echo "==> assemble $APP"
 rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
 cp "$BIN/$APP_NAME" "$APP/Contents/MacOS/$APP_NAME"
+# Sparkle.framework (universal in the xcframework) with its Updater.app and
+# XPC services. SwiftPM sets no rpath for an embedded framework — add it.
+SPARKLE_FRAMEWORK=".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+[ -d "$SPARKLE_FRAMEWORK" ] || { echo "Sparkle.framework missing — run: swift package resolve" >&2; exit 1; }
+cp -R "$SPARKLE_FRAMEWORK" "$APP/Contents/Frameworks/"
+install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/$APP_NAME"
 # Privileged helper (Phase 5): binary next to the app's, launchd plist where
 # SMAppService.daemon(plistName:) looks for it. BundleProgram is relative to
 # the bundle, so the app may live anywhere — /Applications is recommended.
@@ -82,6 +95,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
   <key>NSHumanReadableCopyright</key><string>© 2026 Jan Tietjen — MIT License</string>
   <key>NSHighResolutionCapable</key><true/>
+  <key>SUFeedURL</key><string>$FEED_URL</string>
+  <key>SUPublicEDKey</key><string>$SPARKLE_PUBLIC_KEY</string>
+  <key>SUEnableAutomaticChecks</key><true/>
 </dict>
 </plist>
 PLIST
@@ -91,6 +107,13 @@ if [ "$SIGN" = 1 ]; then
   # The helper's identifier is what the app's XPC requirement checks.
   codesign --force --options runtime --timestamp --identifier "$HELPER_ID" --sign "$IDENTITY" \
     "$APP/Contents/MacOS/LaunchKeeperHelper"
+  # Sparkle's parts first (innermost out), all re-signed with our identity,
+  # so no library-validation exception is needed.
+  SPARKLE="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
+  for PART in "$SPARKLE/XPCServices/Downloader.xpc" "$SPARKLE/XPCServices/Installer.xpc" \
+              "$SPARKLE/Updater.app" "$SPARKLE/Autoupdate" "$APP/Contents/Frameworks/Sparkle.framework"; do
+    codesign --force --options runtime --timestamp --sign "$IDENTITY" "$PART"
+  done
   codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP/Contents/MacOS/$APP_NAME"
   codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP"
   codesign --verify --strict --verbose=2 "$APP"

@@ -5,7 +5,20 @@ The macOS app for [launchkeeper](https://github.com/tietjen/launchkeeper) —
 a read-only inventory, one gate without bypass, dry-run before every change,
 snapshots/quarantine instead of deletion, verification after every write.
 
-**Status: in development (Phase 7: watch + notifications; the privileged helper for admin actions with Touch ID is in).**
+**Status: test releases (0.1.x) — inventory, actions with the privileged helper, watch, in-app updates.**
+
+## Installation (macOS 14+)
+
+Download `LaunchKeeper-<version>.dmg` from the
+[releases](https://github.com/tietjen/launchkeeper-app/releases), open it and
+drag LaunchKeeper into Applications. The app is universal (Apple silicon +
+Intel), signed with a Developer ID and notarized; the DMG carries a stapled
+ticket, so Gatekeeper accepts it offline too. Keep the app in /Applications —
+launchd starts its privileged helper from inside the bundle.
+
+Updates arrive in the app (LaunchKeeper › Nach Updates suchen …, or
+automatically): Sparkle installs only DMGs signed with the project's EdDSA
+key. The helper comes with the update and restarts in the new version.
 
 ## Build
 
@@ -14,6 +27,16 @@ Scripts/build-app.sh                                   # → dist/LaunchKeeper.a
 LAUNCHKEEPER_KIT_PATH=../launchkeeper Scripts/build-app.sh   # against a local launchkeeper checkout
 swift test                                             # AppCore tests
 ```
+
+### Cutting a release (maintainer)
+
+Bump `VERSION`, add a `## [x.y.z]` section to `CHANGELOG.md`, commit, then push
+the tag `vx.y.z` to GitHub: `.github/workflows/release.yml` runs
+`Scripts/release.sh` (universal build, notarize + staple app and DMG, Sparkle
+signature, `appcast.xml`) and publishes the release — the in-app feed is
+`releases/latest/download/appcast.xml`. Rehearse locally without Apple:
+`Scripts/release.sh x.y.z --no-notarize` (needs `rbw` unlocked for the
+Sparkle key).
 
 Requirements: macOS 14+, Swift 6 (Xcode 16+).
 

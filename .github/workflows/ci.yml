@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Build and test (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: Build
+        run: swift build
+      - name: Test (AppCore + HelperCore — no helper, no window)
+        run: swift test
+      - name: App bundle (unsigned, universal)
+        run: Scripts/build-app.sh --universal --no-sign

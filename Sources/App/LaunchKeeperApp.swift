@@ -26,6 +26,8 @@ struct LaunchKeeperApp: App {
     /// Keeps the notification delegate and the watch switch alive for the app's lifetime.
     private let notifier: WatchNotifier
     private let watchController: WatchController
+    /// Sparkle (Phase 8); inert when not running from the release bundle.
+    private let updater = Updater()
     /// Shows the menu-bar item while the watch is on.
     @AppStorage(WatchSettings.enabled) private var watchEnabled = false
     /// App leftovers; LaunchServices via AppKit comes from `LivePresence`.
@@ -68,6 +70,10 @@ struct LaunchKeeperApp: App {
         // ⌘R reuses the session's BTM dump (seconds), ⇧⌘R asks the daemon
         // again (can take minutes after it sat idle).
         .commands {
+            // App menu: "Nach Updates suchen …" right below "Über LaunchKeeper".
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(updater: updater.updater)
+            }
             // "Darstellung" (the View menu): the detail mode, next to the sidebar commands.
             CommandGroup(after: .sidebar) {
                 Toggle("Expertenmodus", isOn: $expertMode)
@@ -82,7 +88,7 @@ struct LaunchKeeperApp: App {
         }
         // ⌘, — the privileged helper's state and controls.
         Settings {
-            HelperSettingsView().environment(helper).environment(loginItem)
+            HelperSettingsView(updater: updater.updater).environment(helper).environment(loginItem)
         }
         // While the watch is on: an eye in the menu bar, also with no window open.
         MenuBarExtra("LaunchKeeper", systemImage: "eye", isInserted: $watchEnabled) {
