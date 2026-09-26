@@ -56,19 +56,7 @@ struct DetailView: View {
 
     /// Headline, verdict, facts and next steps — what a user needs to decide.
     @ViewBuilder private var basicSections: some View {
-        let summary = EntrySummary.build(for: item)
-        Section {
-            VerdictBanner(verdict: summary.verdict)
-            Text(summary.headline).font(.title3)
-            if !summary.facts.isEmpty {
-                Text(summary.facts.joined(separator: " · ")).foregroundStyle(.secondary)
-            }
-        } header: {
-            Text(item.displayName).font(.headline).textSelection(.enabled)
-        }
-        Section("Nächste Schritte") {
-            ForEach(summary.nextSteps) { step in NextStepRow(step: step) }
-        }
+        SummarySections(title: item.displayName, summary: EntrySummary.build(for: item))
     }
 
     // MARK: - Expert mode
@@ -250,36 +238,70 @@ struct VerdictBanner: View {
     }
 }
 
+/// The basic-mode block every detail uses: title, traffic light, plain
+/// headline, facts, and the next steps.
+struct SummarySections: View {
+    /// Shown as the section header (entry, package or bundle id).
+    let title: String
+    /// What to show.
+    let summary: EntrySummary
+
+    var body: some View {
+        Section {
+            VerdictBanner(verdict: summary.verdict)
+            Text(summary.headline).font(.title3)
+            if !summary.facts.isEmpty {
+                Text(summary.facts.joined(separator: " · ")).foregroundStyle(.secondary)
+            }
+        } header: {
+            Text(title).font(.headline).textSelection(.enabled)
+        }
+        if !summary.nextSteps.isEmpty {
+            Section("Nächste Schritte") {
+                ForEach(summary.nextSteps) { step in NextStepRow(step: step) }
+            }
+        }
+    }
+}
+
 /// One next step: title and explanation, and what can be done with it now.
 ///
 /// Operations are not executed by the app yet (Phase 4a); until then the row
 /// offers the equivalent CLI command — a dry run — to copy into Terminal.
 struct NextStepRow: View {
     let step: EntrySummary.NextStep
+    @Environment(InventoryStore.self) private var store
+    /// Set after a copy, for a short confirmation.
+    @State private var copied = false
+    /// `true` while the SHA-256 is being computed (large binaries take a moment).
+    @State private var hashing = false
 
     var body: some View {
         switch step.kind {
         case .operation:
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 4) {
-                        Text(step.title).bold()
-                        if step.requiresAdmin {
-                            Image(systemName: "lock.fill").font(.caption).foregroundStyle(.secondary)
-                                .help("Braucht Administratorrechte")
-                        }
-                    }
-                    Text(step.detail).font(.callout).foregroundStyle(.secondary)
-                }
+                explanation(adminLock: step.requiresAdmin)
                 Spacer()
                 if let command = step.command {
-                    Button("Befehl kopieren") {
-                        NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(command, forType: .string)
-                    }
-                    .help("\(command) — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply. "
-                          + "Direkt in der App: bald.")
+                    Button(copied ? "Kopiert ✓" : "Befehl kopieren") { copy(command) }
+                        .help("\(command) — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply. "
+                              + "Direkt in der App: bald.")
                 }
+            }
+        case .copyHash(let path):
+            HStack(alignment: .firstTextBaseline) {
+                explanation(adminLock: false)
+                Spacer()
+                Button {
+                    hashing = true
+                    Task {
+                        if let hash = await VirusTotalHash.sha256(of: path) { copy(hash) }
+                        hashing = false
+                    }
+                } label: {
+                    if hashing { ProgressView().controlSize(.small) } else { Text(copied ? "Kopiert ✓" : "Hash kopieren") }
+                }
+                .disabled(hashing)
             }
         case .reveal(let path):
             Button { revealInFinder(path) } label: {
@@ -287,11 +309,48 @@ struct NextStepRow: View {
             }
             .buttonStyle(.link)
             .help(path)
+        case .openURL(let url):
+            HStack(alignment: .firstTextBaseline) {
+                explanation(adminLock: false)
+                Spacer()
+                Button("Öffnen") { if let url = URL(string: url) { NSWorkspace.shared.open(url) } }
+            }
+        case .showEntry(let displayID):
+            Button { store.show(displayID: displayID) } label: {
+                Label(step.title, systemImage: "arrow.right.circle")
+            }
+            .buttonStyle(.link)
+            .help(step.detail)
         case .info:
             VStack(alignment: .leading, spacing: 2) {
                 Label(step.title, systemImage: "info.circle")
                 Text(step.detail).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
             }
+        }
+    }
+
+    /// Title (with a lock for admin-only steps) and the one-sentence detail.
+    private func explanation(adminLock: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
+                Text(step.title).bold()
+                if adminLock {
+                    Image(systemName: "lock.fill").font(.caption).foregroundStyle(.secondary)
+                        .help("Braucht Administratorrechte")
+                }
+            }
+            Text(step.detail).font(.callout).foregroundStyle(.secondary)
+        }
+    }
+
+    /// Puts text on the general pasteboard and shows "Kopiert ✓" for two seconds.
+    private func copy(_ text: String) {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        copied = true
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            copied = false
         }
     }
 }

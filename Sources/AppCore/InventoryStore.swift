@@ -156,6 +156,9 @@ public final class InventoryStore {
 
     /// The sidebar's current selection.
     public var selection: SidebarSelection = .all
+    /// The selected inventory row, by stable entry key. Lives in the store
+    /// (not the view) so other views can jump to an entry (`show(displayID:)`).
+    public var selectedKey: String?
     /// The search field's text; matched against names, labels, keys, paths, ids.
     public var search = ""
     /// Hides Apple's own entries — on by default, like the CLI's `list`.
@@ -274,6 +277,20 @@ public final class InventoryStore {
     /// Categories that currently have entries — empty ones stay out of the sidebar.
     public var categories: [ItemCategory] {
         ItemCategory.allCases.filter { count(.category($0)) > 0 }
+    }
+
+    /// Jumps to an inventory entry: all entries, no search filter, the entry selected.
+    ///
+    /// The dedicated views refer to entries by the display id of the scan
+    /// they were built from — the same scan the rows come from, so the id is
+    /// unambiguous here (it would not be across scans).
+    /// - Parameter displayID: `BackgroundItem.id` from the current scan.
+    public func show(displayID: String) {
+        guard let row = rows.first(where: { $0.item.id == displayID }) else { return }
+        search = ""
+        if hideApple && row.isAppleInternal { hideApple = false }
+        selection = .all
+        selectedKey = row.id
     }
 
     /// Looks up a row by its stable key.

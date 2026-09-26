@@ -47,10 +47,15 @@ func revealInFinder(_ path: String) {
 /// marked separately (verified against the real pane, CLI V0.5.2).
 struct BackgroundPane: View {
     @Environment(InventoryStore.self) private var store
+    /// Selected app/developer row, by BTM identifier.
+    @Binding var selection: String?
 
     var body: some View {
         if let view = store.background {
-            List {
+            List(selection: $selection) {
+                Section {
+                    PaneIntro(text: "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.")
+                }
                 Section("Beim Anmelden öffnen") {
                     if view.loginItems.isEmpty { Text("Keine").foregroundStyle(.secondary) }
                     ForEach(view.loginItems, id: \.identifier) { item in
@@ -82,6 +87,7 @@ struct BackgroundPane: View {
                                 ToggleBadge(toggle: row.toggle)
                             }
                         }
+                        .tag(row.identifier)
                     }
                 }
                 Section {
@@ -117,13 +123,18 @@ struct ToggleBadge: View {
 /// date, files listed vs. missing, and the entries attributed to each.
 struct ReceiptsPane: View {
     @Environment(InventoryStore.self) private var store
+    /// Selected package id.
+    @Binding var selection: String?
     @State private var onlyMissing = false
     @State private var sortOrder = [KeyPathComparator(\ReceiptsView.Row.id)]
 
     var body: some View {
         if let view = store.receipts, view.indexed {
             let rows = view.rows.filter { !onlyMissing || $0.missingFiles > 0 }.sorted(using: sortOrder)
-            Table(rows, sortOrder: $sortOrder) {
+            VStack(spacing: 0) {
+            PaneIntro(text: "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen.")
+                .padding(12)
+            Table(rows, selection: $selection, sortOrder: $sortOrder) {
                 TableColumn("Paket", value: \.id) { row in Text(row.id).textSelection(.enabled) }
                     .width(min: 200, ideal: 300)
                 TableColumn("Version") { row in Text(row.version ?? "–") }.width(min: 60, ideal: 90)
@@ -137,6 +148,7 @@ struct ReceiptsPane: View {
                 TableColumn("Einträge") { row in
                     Text(row.items.joined(separator: ", ")).lineLimit(1).foregroundStyle(.secondary)
                 }
+            }
             }
             .toolbar {
                 Toggle(isOn: $onlyMissing) { Label("Nur mit fehlenden Dateien", systemImage: "questionmark.folder") }
@@ -154,6 +166,8 @@ struct ReceiptsPane: View {
 /// shows only apps that are provably gone unless "show all" is on.
 struct LeftoversPane: View {
     @Environment(LeftoversModel.self) private var model
+    /// Selected bundle id.
+    @Binding var selection: String?
 
     var body: some View {
         @Bindable var model = model
@@ -168,8 +182,13 @@ struct LeftoversPane: View {
                 ContentUnavailableView("Keine Reste gefunden", systemImage: "sparkles",
                                        description: Text("Nichts, dessen App nachweislich fehlt."))
             } else {
-                List(model.visible, id: \.bundleIdentifier) { candidate in
-                    LeftoverRow(candidate: candidate)
+                List(selection: $selection) {
+                    Section {
+                        PaneIntro(text: "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben.")
+                    }
+                    ForEach(model.visible, id: \.bundleIdentifier) { candidate in
+                        LeftoverRow(candidate: candidate).tag(candidate.bundleIdentifier)
+                    }
                 }
             }
         }
@@ -182,44 +201,19 @@ struct LeftoversPane: View {
     }
 }
 
-/// One gone app: its leftover paths (with "Reveal in Finder" and a lock
-/// for paths that need admin rights) and the reasons behind the verdict.
+/// One line per candidate: bundle id, size and verdict. The paths and the
+/// reasons are in `LeftoverDetail`.
 struct LeftoverRow: View {
     let candidate: AppLeftoverCandidate
 
     var body: some View {
-        DisclosureGroup {
-            ForEach(candidate.paths, id: \.path) { path in
-                HStack {
-                    Text(path.kind).font(.caption).foregroundStyle(.secondary).frame(width: 130, alignment: .leading)
-                    Text(path.path).lineLimit(1).truncationMode(.middle).textSelection(.enabled)
-                    if path.needsRoot { Image(systemName: "lock").help("liegt in /Library — Entfernen braucht Admin-Rechte") }
-                    Spacer()
-                    Button { revealInFinder(path.path) } label: { Image(systemName: "magnifyingglass") }
-                        .buttonStyle(.borderless).help("Im Finder zeigen")
-                }
-            }
-            Text(reason).font(.callout).foregroundStyle(.secondary)
-        } label: {
-            HStack {
-                Text(candidate.bundleIdentifier)
-                Spacer()
-                Text(ByteCountFormatter.string(fromByteCount: Int64(candidate.totalBytes), countStyle: .file))
-                    .foregroundStyle(.secondary)
-                Text(candidate.presence.label).font(.caption)
-                    .foregroundStyle(candidate.presence.label == "gone" ? .orange : .secondary)
-            }
-        }
-    }
-
-    /// Why the candidate has its verdict — the proofs and the app evidence for "gone".
-    private var reason: String {
-        switch candidate.presence {
-        case .present(let why), .unknown(let why): return why
-        case .noAppEvidence: return String(localized: "Keine App gefunden — aber nichts zeigt, dass es je eine App war.")
-        case .gone(let proofs):
-            return proofs.joined(separator: " · ") + " — " + String(localized: "war eine App: ")
-                + candidate.appEvidence.joined(separator: ", ")
+        HStack {
+            Text(candidate.bundleIdentifier)
+            Spacer()
+            Text(ByteCountFormatter.string(fromByteCount: Int64(candidate.totalBytes), countStyle: .file))
+                .foregroundStyle(.secondary)
+            Text(candidate.presence.label).font(.caption)
+                .foregroundStyle(candidate.presence.label == "gone" ? .orange : .secondary)
         }
     }
 }
@@ -268,3 +262,75 @@ struct QuarantinePane: View {
 
 /// Receipt rows already carry the package id as `id`.
 extension ReceiptsView.Row: @retroactive Identifiable {}
+
+// MARK: - Shared
+
+/// The explanation at the top of a view: what it shows and what can be done there.
+struct PaneIntro: View {
+    let text: LocalizedStringKey
+
+    var body: some View {
+        Label { Text(text).font(.callout).foregroundStyle(.secondary) } icon: {
+            Image(systemName: "info.circle").foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Detail columns of the dedicated views
+
+/// Detail of one installer package: what it is, how much is left, next steps.
+struct PackageDetail: View {
+    let row: ReceiptsView.Row
+
+    var body: some View {
+        Form {
+            SummarySections(title: row.id, summary: PackageSummary.build(for: row))
+            if !row.items.isEmpty {
+                Section("Startet automatisch") {
+                    ForEach(row.items, id: \.self) { Text($0) }
+                }
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
+
+/// Detail of one app's leftovers: verdict with reasons, every path, next steps.
+struct LeftoverDetail: View {
+    let candidate: AppLeftoverCandidate
+
+    var body: some View {
+        Form {
+            SummarySections(title: candidate.bundleIdentifier, summary: LeftoverSummary.build(for: candidate))
+        }
+        .formStyle(.grouped)
+    }
+}
+
+/// Detail of one background row: the switch, its components and where to change it.
+struct BackgroundDetail: View {
+    let row: BackgroundView.Row
+
+    var body: some View {
+        Form {
+            SummarySections(title: row.name, summary: BackgroundSummary.build(for: row))
+            Section("Komponenten") {
+                ForEach(row.components, id: \.id) { component in
+                    HStack {
+                        Image(systemName: component.enabled ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(component.enabled ? .green : .secondary)
+                        VStack(alignment: .leading) {
+                            Text(component.name)
+                            Text(component.label ?? component.type).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if component.launchdDisabled { Text("launchd: aus").font(.caption).foregroundStyle(.orange) }
+                        if component.running { Text("läuft").font(.caption).foregroundStyle(.green) }
+                    }
+                }
+            }
+        }
+        .formStyle(.grouped)
+    }
+}

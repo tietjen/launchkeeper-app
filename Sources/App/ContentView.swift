@@ -16,8 +16,13 @@ import LaunchKeeperKit
 /// All data comes from the `InventoryStore` in the environment.
 struct ContentView: View {
     @Environment(InventoryStore.self) private var store
-    /// The selected table row, by stable entry key (survives rescans).
-    @State private var selectedKey: String?
+    /// Selected package (receipt id) in the packages view.
+    @State private var selectedPackage: String?
+    /// Selected bundle id in the app-leftovers view.
+    @State private var selectedLeftover: String?
+    /// Selected app/developer row (BTM identifier) in the background view.
+    @State private var selectedBackground: String?
+    @Environment(LeftoversModel.self) private var leftovers
     /// Basic vs. expert detail view (shared with the menu command and `DetailView`).
     @AppStorage("expertMode") private var expertMode = false
     /// The table's sort order; name ascending until the user clicks a header.
@@ -31,23 +36,18 @@ struct ContentView: View {
         } content: {
             Group {
                 switch store.selection {
-                case .background: BackgroundPane()
-                case .receipts: ReceiptsPane()
-                case .leftovers: LeftoversPane()
+                case .background: BackgroundPane(selection: $selectedBackground)
+                case .receipts: ReceiptsPane(selection: $selectedPackage)
+                case .leftovers: LeftoversPane(selection: $selectedLeftover)
                 case .quarantine: QuarantinePane()
                 case .all, .orphans, .category:
-                    InventoryTable(selectedKey: $selectedKey, sortOrder: $sortOrder)
+                    InventoryTable(selectedKey: $store.selectedKey, sortOrder: $sortOrder)
                         .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
                 }
             }
             .navigationSplitViewColumnWidth(min: 480, ideal: 640)
         } detail: {
-            if store.selection.isInventory, let row = store.row(for: selectedKey) {
-                DetailView(row: row)
-            } else {
-                ContentUnavailableView("Kein Eintrag gewählt", systemImage: "sidebar.right",
-                                       description: Text("Wähle links einen Eintrag, um Herkunft, Signatur und Steuerung zu sehen."))
-            }
+            detailColumn
         }
         .toolbar {
             ToolbarItemGroup {
@@ -63,6 +63,34 @@ struct ContentView: View {
             }
         }
         .overlay(alignment: .bottom) { StatusBar() }
+    }
+
+    /// The right column: the detail for whatever is selected in the current view.
+    @ViewBuilder private var detailColumn: some View {
+        switch store.selection {
+        case .all, .orphans, .category:
+            if let row = store.row(for: store.selectedKey) { DetailView(row: row) } else { nothingSelected }
+        case .receipts:
+            if let row = store.receipts?.rows.first(where: { $0.id == selectedPackage }) {
+                PackageDetail(row: row)
+            } else { nothingSelected }
+        case .leftovers:
+            if let candidate = leftovers.candidates.first(where: { $0.bundleIdentifier == selectedLeftover }) {
+                LeftoverDetail(candidate: candidate)
+            } else { nothingSelected }
+        case .background:
+            if let row = store.background?.background.first(where: { $0.identifier == selectedBackground }) {
+                BackgroundDetail(row: row)
+            } else { nothingSelected }
+        case .quarantine:
+            nothingSelected
+        }
+    }
+
+    /// Placeholder while nothing is selected.
+    private var nothingSelected: some View {
+        ContentUnavailableView("Nichts gewählt", systemImage: "sidebar.right",
+                               description: Text("Wähle links eine Zeile — rechts steht dann, was sie bedeutet und was du tun kannst."))
     }
 }
 
