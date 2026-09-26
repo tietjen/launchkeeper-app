@@ -18,6 +18,8 @@ struct ContentView: View {
     @Environment(InventoryStore.self) private var store
     /// The selected table row, by stable entry key (survives rescans).
     @State private var selectedKey: String?
+    /// Basic vs. expert detail view (shared with the menu command and `DetailView`).
+    @AppStorage("expertMode") private var expertMode = false
     /// The table's sort order; name ascending until the user clicks a header.
     @State private var sortOrder = [KeyPathComparator(\InventoryRow.name)]
 
@@ -49,6 +51,8 @@ struct ContentView: View {
         }
         .toolbar {
             ToolbarItemGroup {
+                Toggle(isOn: $expertMode) { Label("Expertenmodus", systemImage: "slider.horizontal.3") }
+                    .help("Alle Details statt der Kurzfassung zeigen (⌥⌘E)")
                 Toggle(isOn: $store.hideApple) { Label("Apple ausblenden", systemImage: "apple.logo") }
                     .help("Apples eigene Einträge aus- oder einblenden")
                 Button { Task { await store.refresh(reuseBTM: true) } } label: {

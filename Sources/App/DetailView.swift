@@ -8,15 +8,25 @@ import AppKit
 import AppCore
 import LaunchKeeperKit
 
-/// Everything known about one entry: identity and state, files, findings,
-/// provenance and signature (with an on-demand deep check), what control
-/// is possible and why, the evidence sources and all metadata.
+/// The detail column for one entry, in two modes.
 ///
-/// Read-only in Phase 2; the controls arrive with Phase 4.
+/// - **Basic** (default): what the entry is in one phrase, a traffic-light
+///   verdict, the key facts and the sensible next steps (`EntrySummary`).
+///   "Alle Details anzeigen" opens the expert sections below for this entry.
+/// - **Expert**: everything the scan knows — identity and state, files,
+///   findings, provenance and signature (with an on-demand deep check),
+///   control and why, the evidence sources and all metadata.
+///
+/// The mode is remembered (`expertMode` in the user defaults) and switched
+/// from the toolbar or "Darstellung › Expertenmodus" (⌥⌘E).
 struct DetailView: View {
     /// The row to show.
     let row: InventoryRow
     private var item: BackgroundItem { row.item }
+    /// Global mode, shared with the toolbar toggle and the menu command.
+    @AppStorage("expertMode") private var expertMode = false
+    /// Basic mode only: this entry's details were opened. Reset per entry (`.id`).
+    @State private var showAllDetails = false
     /// Result of "Signatur gründlich prüfen"; reset when another entry is shown (`.id`).
     @State private var verification: SignatureVerification?
     /// `true` while the deep signature check runs.
@@ -24,6 +34,47 @@ struct DetailView: View {
 
     var body: some View {
         Form {
+            if expertMode {
+                expertSections
+            } else {
+                basicSections
+                if showAllDetails {
+                    expertSections
+                } else {
+                    Section {
+                        Button("Alle Details anzeigen") { showAllDetails = true }
+                            .buttonStyle(.link)
+                    }
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .id(item.key)   // a new entry starts collapsed and without the previous verification
+    }
+
+    // MARK: - Basic mode
+
+    /// Headline, verdict, facts and next steps — what a user needs to decide.
+    @ViewBuilder private var basicSections: some View {
+        let summary = EntrySummary.build(for: item)
+        Section {
+            VerdictBanner(verdict: summary.verdict)
+            Text(summary.headline).font(.title3)
+            if !summary.facts.isEmpty {
+                Text(summary.facts.joined(separator: " · ")).foregroundStyle(.secondary)
+            }
+        } header: {
+            Text(item.displayName).font(.headline).textSelection(.enabled)
+        }
+        Section("Nächste Schritte") {
+            ForEach(summary.nextSteps) { step in NextStepRow(step: step) }
+        }
+    }
+
+    // MARK: - Expert mode
+
+    /// Every section the scan can fill — the full picture for experts.
+    @ViewBuilder private var expertSections: some View {
             Section {
                 LabeledContent("Name", value: item.displayName)
                 LabeledContent("Kategorie", value: item.category.title)
@@ -108,10 +159,7 @@ struct DetailView: View {
                     }
                 }
             }
-        }
-        .formStyle(.grouped)
-        .id(item.key)   // a new entry starts without the previous verification
-    }
+            }
 
     /// "aktiviert · geladen · läuft (PID 123)" — the entry's live state in one line.
     private var stateText: String {
@@ -154,6 +202,95 @@ struct DetailView: View {
                     .buttonStyle(.borderless)
                     .help("Im Finder zeigen")
                 }
+            }
+        }
+    }
+}
+
+// MARK: - Basic-mode building blocks
+
+/// The traffic light at the top of the basic view: colour, symbol and one sentence.
+struct VerdictBanner: View {
+    let verdict: EntrySummary.Verdict
+
+    var body: some View {
+        Label {
+            Text(text)
+        } icon: {
+            Image(systemName: symbol).foregroundStyle(color)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var text: String {
+        switch verdict {
+        case .ok: return String(localized: "Unauffällig")
+        case .leftover: return String(localized: "Nur noch ein Rest-Eintrag — harmlos, macOS räumt ihn selbst auf")
+        case .review(let why): return String(localized: "Ansehen empfohlen: \(why)")
+        case .orphan(let why): return String(localized: "Verwaist: \(why)")
+        }
+    }
+
+    private var symbol: String {
+        switch verdict {
+        case .ok: return "checkmark.seal.fill"
+        case .leftover: return "leaf.fill"
+        case .review: return "eye.fill"
+        case .orphan: return "exclamationmark.triangle.fill"
+        }
+    }
+
+    private var color: Color {
+        switch verdict {
+        case .ok: return .green
+        case .leftover: return .secondary
+        case .review: return .yellow
+        case .orphan: return .orange
+        }
+    }
+}
+
+/// One next step: title and explanation, and what can be done with it now.
+///
+/// Operations are not executed by the app yet (Phase 4a); until then the row
+/// offers the equivalent CLI command — a dry run — to copy into Terminal.
+struct NextStepRow: View {
+    let step: EntrySummary.NextStep
+
+    var body: some View {
+        switch step.kind {
+        case .operation:
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        Text(step.title).bold()
+                        if step.requiresAdmin {
+                            Image(systemName: "lock.fill").font(.caption).foregroundStyle(.secondary)
+                                .help("Braucht Administratorrechte")
+                        }
+                    }
+                    Text(step.detail).font(.callout).foregroundStyle(.secondary)
+                }
+                Spacer()
+                if let command = step.command {
+                    Button("Befehl kopieren") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(command, forType: .string)
+                    }
+                    .help("\(command) — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply. "
+                          + "Direkt in der App: bald.")
+                }
+            }
+        case .reveal(let path):
+            Button { revealInFinder(path) } label: {
+                Label(step.title, systemImage: "magnifyingglass")
+            }
+            .buttonStyle(.link)
+            .help(path)
+        case .info:
+            VStack(alignment: .leading, spacing: 2) {
+                Label(step.title, systemImage: "info.circle")
+                Text(step.detail).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
             }
         }
     }

@@ -18,6 +18,8 @@ struct LaunchKeeperApp: App {
     @State private var leftovers = LeftoversModel(sources: { LivePresence.sources() })
     /// Quarantine entries shared with the CLI.
     @State private var quarantine = QuarantineModel()
+    /// Basic vs. expert detail view; same key as the toolbar toggle and `DetailView`.
+    @AppStorage("expertMode") private var expertMode = false
 
     var body: some Scene {
         WindowGroup("LaunchKeeper") {
@@ -32,6 +34,11 @@ struct LaunchKeeperApp: App {
         // ⌘R reuses the session's BTM dump (seconds), ⇧⌘R asks the daemon
         // again (can take minutes after it sat idle).
         .commands {
+            // "Darstellung" (the View menu): the detail mode, next to the sidebar commands.
+            CommandGroup(after: .sidebar) {
+                Toggle("Expertenmodus", isOn: $expertMode)
+                    .keyboardShortcut("e", modifiers: [.command, .option])
+            }
             CommandGroup(after: .toolbar) {
                 Button("Neu einlesen") { Task { await store.refresh(reuseBTM: true) } }
                     .keyboardShortcut("r")
