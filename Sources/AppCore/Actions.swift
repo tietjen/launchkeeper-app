@@ -23,7 +23,8 @@ import LaunchKeeperKit
 
 /// Something the user asked the app to do.
 public enum ActionRequest: Hashable, Sendable {
-    /// `disable`, `enable` or `remove` for one inventory entry, by stable key.
+    /// `disable`, `enable`, `remove` or `remove-working` (kit 0.10: disable,
+    /// then quarantine a working plist) for one inventory entry, by stable key.
     case remediation(operation: String, key: String)
     /// Move a gone app's leftovers into the quarantine, by bundle id.
     case leftovers(bundleID: String)
@@ -40,6 +41,7 @@ public enum ActionRequest: Hashable, Sendable {
             case "disable": return String(localized: "Deaktivieren")
             case "enable": return String(localized: "Wieder aktivieren")
             case "remove": return String(localized: "Entfernen")
+            case Controllability.removeWorking: return String(localized: "In die Quarantäne verschieben")
             default: return operation
             }
         case .leftovers: return String(localized: "Reste in die Quarantäne verschieben")
@@ -55,7 +57,7 @@ public enum ActionRequest: Hashable, Sendable {
         switch self {
         case .remediation(let operation, let key):
             guard let kind = PrivilegedRequest.Kind(rawValue: operation),
-                  [.disable, .enable, .remove].contains(kind) else { return nil }
+                  [.disable, .enable, .remove, .removeWorking].contains(kind) else { return nil }
             return PrivilegedRequest(kind: kind, target: key)
         case .restore(let name): return PrivilegedRequest(kind: .restore, target: name)
         case .uninstall(let id): return PrivilegedRequest(kind: .uninstall, target: id)
@@ -69,7 +71,10 @@ public enum ActionRequest: Hashable, Sendable {
     public func cliCommand(apply: Bool) -> String {
         let base: String
         switch self {
-        case .remediation(let operation, let key): base = "launchkeeper \(operation) \(EntrySummary.quote(key))"
+        case .remediation(let operation, let key):
+            base = operation == Controllability.removeWorking
+                ? "launchkeeper remove \(EntrySummary.quote(key)) --working"
+                : "launchkeeper \(operation) \(EntrySummary.quote(key))"
         case .leftovers(let id): base = "launchkeeper leftovers \(EntrySummary.quote(id))"
         case .restore(let name): base = "launchkeeper quarantine restore \(EntrySummary.quote(name))"
         case .uninstall(let id): base = "launchkeeper uninstall \(EntrySummary.quote(id))"
@@ -230,11 +235,13 @@ public struct EnginePerformer: ActionPerforming, @unchecked Sendable {
         btmCache?.preferCached = true
         switch request {
         case .remediation(let name, let key):
-            guard let operation = RemediationOperation(rawValue: name) else {
+            // "remove-working" is `remove` with the working lock lifted (kit 0.10).
+            let working = name == Controllability.removeWorking
+            guard let operation = working ? .remove : RemediationOperation(rawValue: name) else {
                 return ActionOutcome(state: .refused("unknown operation \(name)"), steps: [], messages: [], undo: nil)
             }
             let engine = RemediationEngine(environment: RemediationEnvironment(runner: runner, btmCache: btmCache))
-            let result = engine.run(operation: operation, target: key, apply: apply)
+            let result = engine.run(operation: operation, target: key, apply: apply, allowWorking: working)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .leftovers(let id):
             let result = CleanupEngine(environment: CleanupEnvironment(runner: runner))

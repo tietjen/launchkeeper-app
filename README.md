@@ -45,6 +45,9 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
   its own, never notified. Events go to `~/Library/Logs/launchkeeper/watch.log`,
   the same JSON lines as `launchkeeper watch`. While on, an eye in the menu bar;
   optional launch at login (`SMAppService.mainApp`).
+- Taking away a working entry (kit 0.10, `remove --working`): offered after
+  "Deaktivieren" as "In die Quarantäne verschieben" — disabled, then its plist
+  moved into the quarantine (restorable in the app), never deleted.
 - Coming: Sparkle updates.
 
 ## Conventions

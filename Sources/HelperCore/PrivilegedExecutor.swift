@@ -67,13 +67,14 @@ public struct PrivilegedExecutor {
         btmCache.preferCached = true
 
         switch request.kind {
-        case .disable, .enable, .remove:
+        case .disable, .enable, .remove, .removeWorking:
             let operation: RemediationOperation = request.kind == .disable ? .disable
                 : request.kind == .enable ? .enable : .remove
             let engine = RemediationEngine(environment: RemediationEnvironment(
                 runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
                 quarantineRoot: quarantineRoot, btmCache: btmCache), audit: audit)
-            let result = engine.run(operation: operation, target: request.target, apply: true)
+            let result = engine.run(operation: operation, target: request.target, apply: true,
+                                    allowWorking: request.kind == .removeWorking)
             handOver(quarantineRoot: quarantineRoot, to: client)
             return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .restore, .purge, .uninstall:

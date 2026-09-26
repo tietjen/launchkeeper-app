@@ -261,6 +261,16 @@ public struct EntrySummary: Equatable, Sendable {
                 command: "launchkeeper enable \(address)",
                 action: .remediation(operation: "enable", key: item.key)))
         }
+        // A working entry that should go for good (kit 0.10): after disabling,
+        // because disabling is the gentler step and usually enough.
+        if actions.contains(Controllability.removeWorking) {
+            steps.append(NextStep(
+                title: String(localized: "In die Quarantäne verschieben"),
+                detail: String(localized: "Deaktiviert den Eintrag und verschiebt seine Startdatei in die Quarantäne — wiederherstellbar. Das Programm selbst bleibt; legt eine App die Datei neu an, startet sie trotzdem nicht, weil der Eintrag deaktiviert bleibt."),
+                kind: .operation(Controllability.removeWorking), requiresAdmin: admin,
+                command: "launchkeeper remove \(address) --working",
+                action: .remediation(operation: Controllability.removeWorking, key: item.key)))
+        }
         if let hashTarget {
             steps.append(NextStep(
                 title: String(localized: "Hash für VirusTotal kopieren"),

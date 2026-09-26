@@ -102,6 +102,20 @@ final class ActionsTests: XCTestCase {
 
 @MainActor
 final class PrivilegedRoutingTests: XCTestCase {
+    func testWorkingRemovalIsOfferedAfterDisablingAndRoutedAsSuch() {
+        var item = BackgroundItem(key: "com.vendor.agent", displayName: "agent", type: .launchAgentUser,
+                                  path: NSHomeDirectory() + "/Library/LaunchAgents/com.vendor.agent.plist",
+                                  label: "com.vendor.agent", domain: .user)
+        item.control = Controllability(level: .reversible, actions: ["disable", "enable", Controllability.removeWorking],
+                                       reason: "x", mechanism: .launchd)
+        let steps = EntrySummary.build(for: item).nextSteps.compactMap(\.action)
+        let working = ActionRequest.remediation(operation: Controllability.removeWorking, key: "com.vendor.agent")
+        XCTAssertEqual(steps.prefix(2), [.remediation(operation: "disable", key: "com.vendor.agent"), working],
+                       "disabling first — the gentler step — then the quarantine")
+        XCTAssertEqual(working.cliCommand(apply: true), "launchkeeper remove com.vendor.agent --working --apply")
+        XCTAssertEqual(working.privileged, PrivilegedRequest(kind: .removeWorking, target: "com.vendor.agent"))
+    }
+
     func testRequestsMapToHelperRequestsExceptLeftovers() {
         XCTAssertEqual(ActionRequest.remediation(operation: "remove", key: "k").privileged,
                        PrivilegedRequest(kind: .remove, target: "k"))

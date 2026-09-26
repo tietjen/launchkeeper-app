@@ -25,7 +25,7 @@ public enum HelperIdentity {
     /// The helper protocol/build version. Compiled into both sides: the app
     /// compares it with what the running helper reports and asks for a
     /// restart of the helper when they differ.
-    public static let version = "0.1.1"
+    public static let version = "0.1.2"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
@@ -99,6 +99,8 @@ public struct PrivilegedRequest: Codable, Equatable, Sendable {
     public enum Kind: String, Codable, Sendable {
         /// `disable` / `enable` / `remove` of one inventory entry, by stable key.
         case disable, enable, remove
+        /// `remove --working` (kit 0.10): disable a working entry and move its plist into the quarantine.
+        case removeWorking = "remove-working"
         /// Move a quarantine entry back.
         case restore
         /// Delete a quarantine entry for good.
