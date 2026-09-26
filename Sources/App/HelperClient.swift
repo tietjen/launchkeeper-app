@@ -66,12 +66,14 @@ final class HelperStatus {
 
     /// Unregisters the helper (the app's admin actions stop working until registered again).
     func unregister() async {
-        do {
-            try await service.unregister()
-            lastError = nil
-        } catch {
-            lastError = error.localizedDescription
+        // The completion-handler form keeps the (non-Sendable) SMAppService on
+        // the main actor; `await service.unregister()` would send it to a
+        // nonisolated context, which Swift 6.1 rejects.
+        let service = self.service
+        let failure: String? = await withCheckedContinuation { continuation in
+            service.unregister { error in continuation.resume(returning: error?.localizedDescription) }
         }
+        lastError = failure
         refresh()
     }
 
