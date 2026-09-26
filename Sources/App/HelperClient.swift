@@ -75,6 +75,18 @@ final class HelperStatus {
         refresh()
     }
 
+    /// Replaces a running helper with the one in this app's bundle.
+    ///
+    /// Unregistering boots the daemon out (ending the running process);
+    /// registering again lets launchd start the bundled build on the next
+    /// request. Needed for helpers before 0.1.1, which never exit on their
+    /// own and would keep answering with old code (live 2026-09-26).
+    func restart() async {
+        await unregister()
+        guard lastError == nil else { return }
+        register()
+    }
+
     /// Opens System Settings where the helper is allowed.
     func openSettings() { SMAppService.openSystemSettingsLoginItems() }
 }

@@ -7,6 +7,7 @@
 import SwiftUI
 import AppKit
 import AppCore
+import HelperShared
 
 /// Shows what an action will do before it does it, then the verified result.
 ///
@@ -48,9 +49,14 @@ struct ActionSheet: View {
             helper.refresh()
             await model.plan()
         }
-        .onChange(of: helper.isReady) { _, ready in model.privileged = ready ? PrivilegedPerformer() : nil }
-        .onAppear { model.privileged = helper.isReady ? PrivilegedPerformer() : nil }
+        .onChange(of: helperUsable) { _, usable in model.privileged = usable ? PrivilegedPerformer() : nil }
+        .onAppear { model.privileged = helperUsable ? PrivilegedPerformer() : nil }
     }
+
+    /// The helper can take requests: registered, allowed and running this
+    /// app's build. An outdated helper is never sent anything — it may check
+    /// authorization the old way and would fail after the Touch ID prompt.
+    private var helperUsable: Bool { helper.isReady && !helper.isOutdated }
 
     // MARK: Content per phase
 
@@ -64,7 +70,9 @@ struct ActionSheet: View {
         case .planned(let outcome):
             planView(outcome, heading: "Das würde passieren — noch ist nichts geändert:")
             if outcome.needsAdmin, case .planned = outcome.state {
-                if helper.isReady && model.request.privileged != nil {
+                if helper.isOutdated && model.request.privileged != nil {
+                    outdatedNotice
+                } else if helperUsable && model.request.privileged != nil {
                     Label("Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort.",
                           systemImage: "touchid")
                         .font(.callout)
@@ -117,6 +125,24 @@ struct ActionSheet: View {
             }
             .font(.callout)
         }
+    }
+
+    /// An older helper is running: offer the restart right here.
+    private var outdatedNotice: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("Hilfsprogramm veraltet", systemImage: "arrow.triangle.2.circlepath").font(.headline)
+            Text("Es läuft noch Version \(helper.version ?? "?") des Hilfsprogramms, diese App bringt \(HelperIdentity.version) mit. Nach dem Neustart kannst du ausführen.")
+                .font(.callout)
+            HStack {
+                Button("Hilfsprogramm neu starten") { Task { await helper.restart() } }
+                if helper.status == .requiresApproval {
+                    Button("In den Systemeinstellungen erlauben") { helper.openSettings() }
+                }
+                if let error = helper.lastError { Text(error).font(.caption).foregroundStyle(.red) }
+            }
+        }
+        .padding(10)
+        .background(.quaternary, in: RoundedRectangle(cornerRadius: 8))
     }
 
     /// Why the app does not execute this plan, and how to do it now.
