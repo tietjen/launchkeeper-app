@@ -26,8 +26,8 @@ jobs:
           swift --version
       - name: Build
         # On failure, a verbose rebuild shows the frontend/linker invocations.
-        run: swift build || { swift build -v 2>&1 | grep -vE '^\[|remark:' | tail -120; exit 1; }
+        run: swift build -Xswiftc -disable-batch-mode
       - name: Test (AppCore + HelperCore — no helper, no window)
-        run: swift test
+        run: swift test -Xswiftc -disable-batch-mode
       - name: App bundle (unsigned, universal)
         run: Scripts/build-app.sh --universal --no-sign
