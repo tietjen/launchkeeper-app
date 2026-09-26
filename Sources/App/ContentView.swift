@@ -51,10 +51,18 @@ struct ContentView: View {
         }
         .toolbar {
             ToolbarItemGroup {
-                Toggle(isOn: $expertMode) { Label("Expertenmodus", systemImage: "slider.horizontal.3") }
-                    .help("Alle Details statt der Kurzfassung zeigen (⌥⌘E)")
-                Toggle(isOn: $store.hideApple) { Label("Apple ausblenden", systemImage: "apple.logo") }
-                    .help("Apples eigene Einträge aus- oder einblenden")
+                // The icons show the current state (Basic/Expert, Apple hidden/shown);
+                // the help text says what a click does.
+                Toggle(isOn: $expertMode) {
+                    Label { Text("Expertenmodus") } icon: { ToolbarIcon.mode(expert: expertMode).image }
+                }
+                .help(expertMode ? "Expertenmodus — klicken für die Kurzfassung (⌥⌘E)"
+                                 : "Basismodus — klicken für alle Details (⌥⌘E)")
+                Toggle(isOn: $store.hideApple) {
+                    Label { Text("Apple ausblenden") } icon: { ToolbarIcon.apple(hidden: store.hideApple).image }
+                }
+                .help(store.hideApple ? "Apple-signierte Einträge sind ausgeblendet — klicken zum Anzeigen"
+                                      : "Apple-signierte Einträge werden angezeigt — klicken zum Ausblenden")
                 Button { Task { await store.refresh(reuseBTM: true) } } label: {
                     Label("Neu einlesen", systemImage: "arrow.clockwise")
                 }
