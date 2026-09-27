@@ -3409,6 +3409,22 @@
         }
       }
     },
+    "Nur im Terminal: launchkeeper quarantine restore %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur im Terminal: launchkeeper quarantine restore %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminal only: launchkeeper quarantine restore %@"
+          }
+        }
+      }
+    },
     "Nur mit fehlenden Dateien": {
       "localizations": {
         "de": {

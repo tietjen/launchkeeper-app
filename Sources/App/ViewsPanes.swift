@@ -248,6 +248,13 @@ struct QuarantinePane: View {
     /// The entry whose restore sheet is open.
     @State private var restoring: String?
 
+    /// An entry of the user's quarantine that moves something outside the
+    /// home: only root can put it back, and the helper restores only its own
+    /// entries (review 2026-09-27) — so the way back is the Terminal.
+    private func terminalOnly(_ entry: QuarantineManifest) -> Bool {
+        !model.isSystemEntry(entry) && entry.moves.contains { !$0.original.hasPrefix(NSHomeDirectory() + "/") }
+    }
+
     var body: some View {
         Group {
             if model.entries.isEmpty {
@@ -261,8 +268,19 @@ struct QuarantinePane: View {
                         }
                         if entry.forgot { Text("Paketbeleg vergessen — Kopie liegt in der Quarantäne").font(.caption) }
                         HStack {
-                            Button("Wiederherstellen…") { restoring = entry.name }
-                                .disabled(entry.status == "restored")
+                            if terminalOnly(entry) {
+                                // The helper restores only entries it keeps itself (root-owned tree);
+                                // this one is in the user's quarantine and needs root → Terminal.
+                                Text("Nur im Terminal: launchkeeper quarantine restore \(entry.name)")
+                                    .font(.caption.monospaced()).textSelection(.enabled)
+                                Button("Befehl kopieren") {
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString("launchkeeper quarantine restore \(entry.name)", forType: .string)
+                                }
+                            } else {
+                                Button("Wiederherstellen…") { restoring = entry.name }
+                                    .disabled(entry.status == "restored")
+                            }
                             Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
                             Spacer()
                             Text("Endgültig löschen folgt mit dem Hilfsprogramm")
@@ -270,7 +288,7 @@ struct QuarantinePane: View {
                         }
                     } label: {
                         HStack {
-                            if entry.status != "restored" { MarkBox(id: entry.name, set: \.quarantine, marks: marks) }
+                            if entry.status != "restored" && !terminalOnly(entry) { MarkBox(id: entry.name, set: \.quarantine, marks: marks) }
                             Text(entry.packageIdentifier ?? entry.notes.first ?? entry.kind)
                             Spacer()
                             Text("\(entry.moves.count) Pfad(e)").foregroundStyle(.secondary)

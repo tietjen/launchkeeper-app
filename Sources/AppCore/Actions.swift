@@ -256,7 +256,10 @@ public struct EnginePerformer: ActionPerforming, @unchecked Sendable {
             let result = CleanupEngine(environment: CleanupEnvironment(runner: runner)).restore(name: name, apply: apply)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .uninstall(let id):
-            let result = CleanupEngine(environment: CleanupEnvironment(runner: runner))
+            // Uninstalls always need root and run in the helper, which keeps its
+            // entries in the root-owned tree — the plan names that place (kit 0.12).
+            let result = CleanupEngine(environment: CleanupEnvironment(runner: runner,
+                                                                       quarantineRoot: LaunchKeeperPaths.systemQuarantine))
                 .uninstall(packageIdentifier: id, apply: apply)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         }

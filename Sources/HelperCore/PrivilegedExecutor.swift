@@ -117,10 +117,16 @@ public struct PrivilegedExecutor {
     func remediationEngine(for client: ClientContext) -> RemediationEngine {
         RemediationEngine(environment: RemediationEnvironment(
             runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
+            // Only the system launch dirs: removals and their snapshots as root
+            // never touch the user's own LaunchAgents (review 2026-09-27, B4).
+            launchDirs: Self.systemLaunchDirs, systemDirPrefixes: Self.systemLaunchDirs,
             backupsRoot: bookkeeping.backups, configSnapshotsRoot: bookkeeping.configSnapshots,
             quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine,
             btmCache: btmCache), audit: AuditLog(directory: auditDirectory))
     }
+
+    /// The launch directories the helper removes from and snapshots.
+    static let systemLaunchDirs = ["/Library/LaunchAgents", "/Library/LaunchDaemons"]
 
     /// Restore, purge or uninstall — restore and purge only for trusted
     /// entries of the root-owned store, checked right before the engine runs.
@@ -158,9 +164,8 @@ public struct PrivilegedExecutor {
             }
             return PrivilegedOutcome(state: "refused", detail: "no such quarantine entry")
         }
-        let paths = manifest.moves.map(\.quarantined) + manifest.receiptCopies
-        guard let problem = QuarantineTrust.verifyEntry(root: bookkeeping.quarantine, name: name,
-                                                        quarantinedPaths: paths, trustedUID: bookkeeping.trustedUID) else {
+        guard let problem = QuarantineTrust.verifyEntry(root: bookkeeping.quarantine, manifest: manifest,
+                                                        clientHome: client.home, trustedUID: bookkeeping.trustedUID) else {
             return nil
         }
         return PrivilegedOutcome(state: "refused", detail: "quarantine entry not trustworthy: \(problem)")

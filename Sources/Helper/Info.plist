@@ -4,7 +4,7 @@
 <dict>
   <key>CFBundleIdentifier</key><string>de.paranoidsecurity.LaunchKeeper.Helper</string>
   <key>CFBundleName</key><string>LaunchKeeperHelper</string>
-  <key>CFBundleShortVersionString</key><string>0.1.7</string>
+  <key>CFBundleShortVersionString</key><string>0.1.8</string>
   <key>CFBundleVersion</key><string>1</string>
   <key>SMAuthorizedClients</key>
   <array>

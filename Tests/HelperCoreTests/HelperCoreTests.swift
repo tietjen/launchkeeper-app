@@ -162,32 +162,76 @@ final class QuarantineTrustTests: XCTestCase {
         XCTAssertTrue(QuarantineTrust.verifyChain(base + "/link/b", from: base, trustedUID: getuid())?.contains("symlink") == true)
     }
 
+    private func manifest(_ name: String, root: String, original: String, receipts: [String] = [],
+                          package: String? = nil) -> QuarantineManifest {
+        QuarantineManifest(name: name, kind: "remove", createdAt: "2026-09-27T00:00:00Z", toolVersion: "t",
+                           packageIdentifier: package, version: nil,
+                           moves: [QuarantineMove(original: original, quarantined: root + "/" + name + "/files" + original, kind: "x")],
+                           receiptCopies: receipts, forgot: false, status: "applied-ok", notes: [])
+    }
+
     func testIntactEntryIsTrustedAndTamperingIsNot() throws {
         let base = try temp()
         defer { try? FileManager.default.removeItem(atPath: base) }
         let fm = FileManager.default
-        let entry = base + "/2026-09-27-1Z-remove-x"
-        let file = entry + "/files/Library/LaunchDaemons/x.plist"
+        let name = "2026-09-27-1Z-remove-x"
+        let entry = base + "/" + name
+        let good = manifest(name, root: base, original: "/Library/LaunchDaemons/x.plist")
+        let file = good.moves[0].quarantined
         try fm.createDirectory(atPath: (file as NSString).deletingLastPathComponent, withIntermediateDirectories: true,
                                attributes: [.posixPermissions: 0o755])
         fm.createFile(atPath: file, contents: Data("<plist/>".utf8))
         fm.createFile(atPath: entry + "/manifest.json", contents: Data("{}".utf8))
-        let name = "2026-09-27-1Z-remove-x"
-        XCTAssertNil(QuarantineTrust.verifyEntry(root: base, name: name, quarantinedPaths: [file], trustedUID: getuid()),
+        let me = getuid()
+        XCTAssertNil(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me),
                      "the positive path (review S5)")
-        XCTAssertEqual(QuarantineTrust.verifyEntry(root: base, name: "../etc", quarantinedPaths: [], trustedUID: getuid()),
-                       "invalid entry name")
-        XCTAssertNotNil(QuarantineTrust.verifyEntry(root: base, name: name, quarantinedPaths: ["/etc/passwd"], trustedUID: getuid()))
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: 0)?
+            .contains("foreign owner") == true)
+
+        // Meaning (review B5a / S1): the move must fit its original, and root never writes into the home or /System.
+        var swapped = good
+        swapped.moves[0].original = "/etc/sudoers.d/x"
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: swapped, clientHome: "/Users/alice", trustedUID: me)?
+            .contains("does not match") == true)
+        let intoHome = manifest(name, root: base, original: "/Users/alice/Library/LaunchAgents/x.plist")
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: intoHome, clientHome: "/Users/alice", trustedUID: me)?
+            .contains("your home") == true)
+        let system = manifest(name, root: base, original: "/System/Library/LaunchDaemons/x.plist")
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: system, clientHome: "/Users/alice", trustedUID: me)?
+            .contains("/System") == true)
+        let dotdot = manifest(name, root: base, original: "/Library/../etc/x")
+        XCTAssertNotNil(QuarantineTrust.verifyEntry(root: base, manifest: dotdot, clientHome: "/Users/alice", trustedUID: me))
+        let receipts = manifest(name, root: base, original: "/Library/LaunchDaemons/x.plist",
+                                receipts: [entry + "/manifest.json"], package: "com.vendor.pkg")
+        XCTAssertEqual(QuarantineTrust.verifyEntry(root: base, manifest: receipts, clientHome: "/Users/alice", trustedUID: me),
+                       "unexpected receipt copy path")
+
+        // Ownership and links.
         try fm.setAttributes([.posixPermissions: 0o777], ofItemAtPath: entry + "/files")
-        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, name: name, quarantinedPaths: [file], trustedUID: getuid())?
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me)?
             .contains("writable") == true)
         try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: entry + "/files")
         try fm.removeItem(atPath: file)
         try fm.createSymbolicLink(atPath: file, withDestinationPath: "/etc/sudoers")
-        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, name: name, quarantinedPaths: [file], trustedUID: getuid())?
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me)?
             .contains("symlink") == true)
-        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, name: name, quarantinedPaths: [file], trustedUID: 0)?
-            .contains("foreign owner") == true)
+    }
+
+    func testHelperRemovesAndSnapshotsOnlyInSystemLaunchDirsIntoItsOwnTree() throws {
+        // Review B4: as root the helper never reads or copies the user's own LaunchAgents.
+        let executor = testExecutor("/tmp/lk-env-check")
+        let environment = executor.remediationEngine(for: ClientContext(uid: 501, home: "/Users/alice")).environment
+        XCTAssertEqual(environment.launchDirs, ["/Library/LaunchAgents", "/Library/LaunchDaemons"])
+        XCTAssertEqual(environment.backupsRoot, "/tmp/lk-env-check/backups")
+        XCTAssertEqual(environment.configSnapshotsRoot, "/tmp/lk-env-check/config-snapshots")
+        XCTAssertEqual(environment.quarantineRoot, "/tmp/lk-env-check/quarantine")
+        XCTAssertFalse([environment.backupsRoot, environment.configSnapshotsRoot, environment.quarantineRoot]
+            .contains { $0.hasPrefix("/Users/alice") }, "nothing in the client's home")
+    }
+
+    func testTheRealSystemChainIsAcceptedByTheCheck() {
+        // /Library is root-owned and not writable by others on every Mac — the chain check accepts it.
+        XCTAssertNil(QuarantineTrust.verifyChain("/Library", from: "/", trustedUID: 0))
     }
 
     func testEntriesOfTheUsersQuarantineAreNeverRestoredByTheHelper() throws {

@@ -40,8 +40,21 @@ public enum QuarantineTrust {
             for component in directory.split(separator: "/") {
                 path += "/" + component
                 if mkdir(path, 0o755) != 0 && errno != EEXIST { return "cannot create \(path)" }
+                // Our own directories (launchkeeper and below) that belong to root
+                // but carry other modes (e.g. made under a 077 umask) are repaired:
+                // root-owned means nobody else can have put them there.
+                if path.hasPrefix(LaunchKeeperPaths.systemRoot) {
+                    var info = stat()
+                    if lstat(path, &info) == 0, (info.st_mode & S_IFMT) == S_IFDIR, info.st_uid == 0,
+                       info.st_mode & 0o777 != 0o755 {
+                        _ = chmod(path, 0o755)
+                    }
+                }
             }
-            if let problem = verifyChain(directory, from: "/", trustedUID: 0) { return problem }
+            if let problem = verifyChain(directory, from: "/", trustedUID: 0) {
+                return problem + " — fix in Terminal: sudo chown -R root:wheel '\(LaunchKeeperPaths.systemRoot)' "
+                    + "&& sudo chmod -R go-w '\(LaunchKeeperPaths.systemRoot)'"
+            }
         }
         return nil
     }
@@ -75,29 +88,52 @@ public enum QuarantineTrust {
 
     /// Whether root may restore or purge a quarantine entry of the root-owned store.
     ///
-    /// Defense in depth — the store's chain is root-owned, so nothing below
-    /// it can have been swapped by the user: the entry directory, its
-    /// manifest and every path from the entry down to each quarantined item
-    /// must belong to `trustedUID`, be no symlink, and (directories) be
-    /// writable by nobody else.
+    /// Defense in depth — only the helper writes that store. Ownership: the
+    /// entry directory, its manifest and every path from the entry down to
+    /// each quarantined item belong to `trustedUID`, are no symlink, and
+    /// (directories) are writable by nobody else. Meaning (review 2026-09-27):
+    /// every move goes from exactly `entry/files` + its original back to that
+    /// original; originals are absolute, without `.`/`..`, never under
+    /// /System and never in the client's home (root does not write there);
+    /// receipt copies are exactly `entry/receipt/<package>.bom|.plist`.
     /// - Parameters:
     ///   - root: The quarantine root (the helper: `LaunchKeeperPaths.systemQuarantine`).
-    ///   - name: The entry name (one path component).
-    ///   - quarantinedPaths: The entry's quarantined paths and receipt copies from its manifest.
+    ///   - manifest: The entry's manifest.
+    ///   - clientHome: The calling user's home (restores never go there as root).
     ///   - trustedUID: The only owner accepted (root; tests use their own uid).
     /// - Returns: `nil` when trustworthy, else the reason.
-    public static func verifyEntry(root: String, name: String, quarantinedPaths: [String],
+    public static func verifyEntry(root: String, manifest: QuarantineManifest, clientHome: String,
                                    trustedUID: uid_t = 0) -> String? {
+        let name = manifest.name
         guard QuarantineStore.isValidName(name) else { return "invalid entry name" }
         let entry = root + "/" + name
         if let problem = owned(entry, directory: true, by: trustedUID) { return problem }
         if let problem = owned(entry + "/manifest.json", directory: false, by: trustedUID) { return problem }
-        for path in quarantinedPaths {
-            guard path.hasPrefix(entry + "/") else { return "a quarantined path lies outside the entry" }
+        let home = clientHome.hasSuffix("/") ? String(clientHome.dropLast()) : clientHome
+        for move in manifest.moves {
+            let original = move.original
+            guard original.hasPrefix("/"), !original.split(separator: "/").contains(where: { $0 == "." || $0 == ".." }) else {
+                return "original is not a clean absolute path: \(original)"
+            }
+            if original == "/System" || original.hasPrefix("/System/") { return "original under /System: \(original)" }
+            if original == home || original.hasPrefix(home + "/") {
+                return "original in your home — root does not write there; restore it in Terminal: "
+                    + "launchkeeper quarantine restore \(name)"
+            }
+            guard move.quarantined == entry + "/files" + original else {
+                return "quarantined path does not match its original: \(move.quarantined)"
+            }
+        }
+        if !manifest.receiptCopies.isEmpty {
+            guard let package = manifest.packageIdentifier, QuarantineStore.isValidName(package) else {
+                return "receipt copies without a valid package id"
+            }
+            let allowed = Set([".bom", ".plist"].map { entry + "/receipt/" + package + $0 })
+            guard manifest.receiptCopies.allSatisfy(allowed.contains) else { return "unexpected receipt copy path" }
+        }
+        for path in manifest.moves.map(\.quarantined) + manifest.receiptCopies {
             var walked = entry
-            let parts = path.dropFirst(entry.count + 1).split(separator: "/").map(String.init)
-            guard !parts.contains(where: { $0 == ".." || $0 == "." }) else { return "relative components in a quarantined path" }
-            for part in parts {
+            for part in path.dropFirst(entry.count + 1).split(separator: "/").map(String.init) {
                 walked += "/" + part
                 var info = stat()
                 guard lstat(walked, &info) == 0 else { break }   // already restored or gone: the engine reports it
