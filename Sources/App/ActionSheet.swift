@@ -21,6 +21,8 @@ struct ActionSheet: View {
     @Environment(HelperStatus.self) private var helper
     /// Told when an action runs, so the watch labels its differences as LaunchKeeper's own.
     @Environment(WatchModel.self) private var watch
+    /// While the queue runs, single actions wait (review 2026-09-27, S3).
+    @Environment(QueueModel.self) private var queue
     /// Called once when the sheet closes after something was executed.
     private let onChanged: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -262,7 +264,8 @@ struct ActionSheet: View {
                     }
                 }
                     .keyboardShortcut(.defaultAction)
-                    .disabled(!model.canExecute)
+                    .disabled(!model.canExecute || queue.phase != .idle)
+                    .help(queue.phase != .idle ? String(localized: "Die Warteschlange läuft gerade — danach geht es weiter.") : "")
             case .finished:
                 Button("Fertig") {
                     onChanged()

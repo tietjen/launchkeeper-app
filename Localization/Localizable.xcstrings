@@ -1457,6 +1457,22 @@
         }
       }
     },
+    "Die Warteschlange läuft gerade — danach geht es weiter.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Warteschlange läuft gerade — danach geht es weiter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The queue is running — this can run afterwards."
+          }
+        }
+      }
+    },
     "Diese Aktion führt die App noch nicht mit Administratorrechten aus. Im Terminal geht es; dort fragt macOS nach deinem Passwort:": {
       "localizations": {
         "de": {
@@ -1953,18 +1969,18 @@
         }
       }
     },
-    "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an.": {
+    "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an. Reihenfolge: zuerst alle Schritte mit Administratorrechten, dann die übrigen; Entfernen und Deaktivieren vor Wiederherstellen und Deinstallieren.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an."
+            "value": "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an. Reihenfolge: zuerst alle Schritte mit Administratorrechten, dann die übrigen; Entfernen und Deaktivieren vor Wiederherstellen und Deinstallieren."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Actions collected from all views. “Check plan” works out all of them at once; “Run all” asks for Touch ID only once for every step that needs administrator rights. A failure does not stop the others."
+            "value": "Actions collected from all views. “Check plan” works out all of them at once; “Run all” asks for Touch ID only once for every step that needs administrator rights. A failure does not stop the others. Order: all steps that need administrator rights first, then the rest; removing and disabling before restoring and uninstalling."
           }
         }
       }
@@ -5457,6 +5473,22 @@
         }
       }
     },
+    "nicht ausgeführt — Anmeldung abgebrochen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht ausgeführt — Anmeldung abgebrochen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not run — authentication cancelled"
+          }
+        }
+      }
+    },
     "nicht eingerichtet": {
       "localizations": {
         "de": {
@@ -5677,6 +5709,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "waiting for your approval in System Settings"
+          }
+        }
+      }
+    },
+    "zu viele Einträge für einen Lauf (höchstens %lld) — bitte in Teilen ausführen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zu viele Einträge für einen Lauf (höchstens %lld) — bitte in Teilen ausführen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "too many entries for one run (at most %lld) — please run it in parts"
           }
         }
       }

@@ -25,7 +25,7 @@ public enum HelperIdentity {
     /// The helper protocol/build version. Compiled into both sides: the app
     /// compares it with what the running helper reports and asks for a
     /// restart of the helper when they differ.
-    public static let version = "0.1.5"
+    public static let version = "0.1.6"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
@@ -198,6 +198,11 @@ public struct PrivilegedBatch: Codable, Equatable, Sendable {
         if prompt.isEmpty || prompt.count > 200 { return "prompt missing or too long" }
         if prompt.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) {
             return "control characters in prompt"
+        }
+        // The dialog must not play the batch down ("1 item" for 500): the
+        // count is part of what the user authorizes (review 2026-09-27).
+        if requests.count > 1 && !prompt.contains(String(requests.count)) {
+            return "prompt does not name the batch size"
         }
         return nil
     }

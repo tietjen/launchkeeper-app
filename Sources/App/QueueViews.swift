@@ -240,7 +240,7 @@ struct QueuePane: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            PaneIntro(text: "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an.")
+            PaneIntro(text: "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an. Reihenfolge: zuerst alle Schritte mit Administratorrechten, dann die übrigen; Entfernen und Deaktivieren vor Wiederherstellen und Deinstallieren.")
                 .padding(12)
             if queue.items.isEmpty {
                 ContentUnavailableView("Warteschlange ist leer", systemImage: "tray",
@@ -348,7 +348,9 @@ struct QueueRow: View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             QueueStatusIcon(status: item.status)
             VStack(alignment: .leading, spacing: 2) {
-                Text(item.title).lineLimit(1)
+                // The live name when the entry is known — the stored title is
+                // only a fallback (the queue file is not trusted, review C3).
+                Text(liveTitle).lineLimit(1)
                 HStack(spacing: 6) {
                     Text(item.origin)
                     if let reason = statusText { Text("· \(reason)") }
@@ -375,6 +377,12 @@ struct QueueRow: View {
         }
         .labelsHidden()
         .disabled(queue.phase != .idle || choices.count < 2)
+    }
+
+    /// The entry's current name from the inventory, else the queued title.
+    private var liveTitle: String {
+        if case .entry(let key) = item.target, let row = store.row(for: key) { return row.name }
+        return item.title
     }
 
     /// Status in words, when there is something to say.

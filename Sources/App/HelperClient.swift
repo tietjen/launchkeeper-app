@@ -105,7 +105,7 @@ enum HelperClient {
     /// The right is defined first when missing (adding new rights is allowed
     /// for everyone; the helper does the same on start).
     /// - Returns: The authorization's external form, or `nil` on failure.
-    static func authorize() -> Data? {
+    static func authorize() -> ClientAuthorization? {
         var authRef: AuthorizationRef?
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess, let authRef else { return nil }
         if AuthorizationRightGet(HelperRight.name, nil) != errAuthorizationSuccess {
@@ -117,18 +117,9 @@ enum HelperClient {
             AuthorizationFree(authRef, [])
             return nil
         }
-        // The reference must outlive the helper's use of the external form.
-        pendingReferences.append(authRef)
-        return withUnsafeBytes(of: &external) { Data($0) }
-    }
-
-    /// Authorization references handed to the helper, freed after each call.
-    nonisolated(unsafe) private static var pendingReferences: [AuthorizationRef] = []
-
-    /// Frees the references created for the last call (destroying the rights with them).
-    private static func releaseReferences() {
-        for reference in pendingReferences { AuthorizationFree(reference, [.destroyRights]) }
-        pendingReferences.removeAll()
+        // The reference must outlive the helper's use of the external form;
+        // its owner frees it (and only it) when the call is over.
+        return ClientAuthorization(reference: authRef, externalForm: withUnsafeBytes(of: &external) { Data($0) })
     }
 
     /// A connection to the helper that only accepts the genuine, team-signed helper.
@@ -152,9 +143,9 @@ enum HelperClient {
     ///   - authorization: From `authorize()`.
     ///   - timeout: Upper bound; an uninstall of a large package moves many files.
     /// - Returns: The helper's outcome, or an error outcome when it is unreachable.
-    static func perform(_ request: PrivilegedRequest, authorization: Data,
+    static func perform(_ request: PrivilegedRequest, authorization: ClientAuthorization,
                         timeout: TimeInterval = 900) -> PrivilegedOutcome {
-        defer { releaseReferences() }
+        defer { authorization.release() }
         guard let payload = try? JSONEncoder().encode(request) else { return .error("cannot encode the request") }
         let connection = connect()
         defer { connection.invalidate() }
@@ -164,7 +155,7 @@ enum HelperClient {
             reply.done.signal()
         } as? LaunchKeeperHelperXPC
         guard let proxy else { return .error("helper interface unavailable") }
-        proxy.perform(payload, authorization: authorization) { data in
+        proxy.perform(payload, authorization: authorization.externalForm) { data in
             reply.value = (try? JSONDecoder().decode(PrivilegedOutcome.self, from: data)) ?? .error("malformed reply")
             reply.done.signal()
         }
@@ -195,10 +186,10 @@ enum HelperClient {
     ///   - progress: Called per finished entry (on an XPC thread).
     ///   - timeout: Upper bound for the whole batch (package uninstalls move many files).
     /// - Returns: One outcome per request, or errors when the helper is unreachable.
-    static func performBatch(_ batch: PrivilegedBatch, authorization: Data,
+    static func performBatch(_ batch: PrivilegedBatch, authorization: ClientAuthorization,
                              progress: @escaping @Sendable (Int, PrivilegedOutcome) -> Void,
                              timeout: TimeInterval = 3600) -> [PrivilegedOutcome] {
-        defer { releaseReferences() }
+        defer { authorization.release() }
         let count = batch.requests.count
         let failAll: @Sendable (String) -> [PrivilegedOutcome] = { detail in
             Array(repeating: PrivilegedOutcome.error(detail), count: count)
@@ -215,7 +206,7 @@ enum HelperClient {
             reply.done.signal()
         } as? LaunchKeeperHelperXPC
         guard let proxy else { return failAll("helper interface unavailable") }
-        proxy.performBatch(payload, authorization: authorization) { data in
+        proxy.performBatch(payload, authorization: authorization.externalForm) { data in
             reply.value = (try? JSONDecoder().decode([PrivilegedOutcome].self, from: data)) ?? failAll("malformed reply")
             reply.done.signal()
         }
@@ -247,6 +238,33 @@ enum HelperClient {
     }
 }
 
+/// One authorization handed to the helper: the reference and its external form.
+///
+/// Each call owns its own reference and frees only that one. A shared list
+/// freed after every call let a single action started during a queue run
+/// destroy the batch's authorization (review 2026-09-27, S3).
+final class ClientAuthorization: @unchecked Sendable {
+    let reference: AuthorizationRef
+    let externalForm: Data
+    private let lock = NSLock()
+    private var released = false
+
+    init(reference: AuthorizationRef, externalForm: Data) {
+        self.reference = reference
+        self.externalForm = externalForm
+    }
+
+    /// Frees the reference and destroys its rights (idempotent).
+    func release() {
+        lock.lock(); defer { lock.unlock() }
+        guard !released else { return }
+        released = true
+        AuthorizationFree(reference, [.destroyRights])
+    }
+
+    deinit { release() }
+}
+
 /// The queue's administrator batch: one Touch ID for the whole list, the
 /// dialog names how many entries it is about (Phase 10, TJ 2026-09-27).
 struct PrivilegedBatchPerformer: BatchPerforming {
@@ -258,6 +276,10 @@ struct PrivilegedBatchPerformer: BatchPerforming {
         let privileged = requests.compactMap(\.privileged)
         guard apply, privileged.count == requests.count else {
             return all(.refused("the helper only executes; plans come from the app"))
+        }
+        // The helper refuses oversized batches; say so before asking for Touch ID.
+        guard requests.count <= PrivilegedBatch.maxRequests else {
+            return all(.refused(String(localized: "zu viele Einträge für einen Lauf (höchstens \(PrivilegedBatch.maxRequests)) — bitte in Teilen ausführen")))
         }
         guard let authorization = HelperClient.authorize() else {
             return all(.failed(String(localized: "keine Autorisierung möglich")))

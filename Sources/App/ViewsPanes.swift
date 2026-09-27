@@ -244,6 +244,7 @@ struct QuarantinePane: View {
     @Environment(InventoryStore.self) private var store
     @Environment(HelperStatus.self) private var helper
     @Environment(WatchModel.self) private var watch
+    @Environment(QueueModel.self) private var queue
     /// The entry whose restore sheet is open.
     @State private var restoring: String?
 
@@ -289,6 +290,7 @@ struct QuarantinePane: View {
             }
             .environment(helper)
             .environment(watch)
+            .environment(queue)
         }
     }
 }

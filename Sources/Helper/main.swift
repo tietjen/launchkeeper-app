@@ -102,8 +102,6 @@ final class StopFlag: @unchecked Sendable {
 
     /// Marks the running batch as stopped.
     func set() { lock.lock(); stopped = true; lock.unlock() }
-    /// Clears the flag when a batch starts.
-    func reset() { lock.lock(); stopped = false; lock.unlock() }
     /// Whether the batch may go on.
     var shouldContinue: Bool { lock.lock(); defer { lock.unlock() }; return !stopped }
 }
@@ -137,8 +135,13 @@ final class IdleExit: @unchecked Sendable {
 final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXPC, @unchecked Sendable {
     private let queue = DispatchQueue(label: "de.paranoidsecurity.LaunchKeeper.Helper.requests")
     private let executor = PrivilegedExecutor()
-    /// Set by `stopBatch` (any thread), read between the batch's entries.
-    private let stop = StopFlag()
+    /// Stop tokens of the batches each connection has sent (running or
+    /// waiting for authentication). Created the moment a batch arrives — a
+    /// stop during the Touch ID dialog is not lost (review 2026-09-27, S1) —
+    /// and set when the connection goes away, so a crashed or quit app does
+    /// not leave root working through its list (S5).
+    private var tokens: [ObjectIdentifier: [StopFlag]] = [:]
+    private let tokensLock = NSLock()
     let idle: IdleExit
 
     override init() {
@@ -155,6 +158,9 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
         connection.exportedObject = self
         // Batch progress goes back to the app through its exported object.
         connection.remoteObjectInterface = NSXPCInterface(with: LaunchKeeperClientXPC.self)
+        let id = ObjectIdentifier(connection)
+        connection.invalidationHandler = { [weak self] in self?.stopBatches(of: id, forget: true) }
+        connection.interruptionHandler = { [weak self] in self?.stopBatches(of: id, forget: true) }
         connection.resume()
         return true
     }
@@ -186,7 +192,12 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
         let connection = NSXPCConnection.current()
         let uid = connection?.effectiveUserIdentifier
         let progressSink = ProgressSink(proxy: connection?.remoteObjectProxyWithErrorHandler { _ in } as? LaunchKeeperClientXPC)
+        // The token exists before the batch waits for the queue or the dialog.
+        let stop = StopFlag()
+        let connectionID = connection.map(ObjectIdentifier.init)
+        if let connectionID { register(stop, for: connectionID) }
         queue.async { [self] in
+            defer { if let connectionID { unregister(stop, for: connectionID) } }
             idle.begin()
             defer { idle.end() }
             func answer(_ outcomes: [PrivilegedOutcome]) { reply((try? JSONEncoder().encode(outcomes)) ?? Data()) }
@@ -203,7 +214,6 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
             guard let uid, let client = ClientContext.forUID(uid) else {
                 return answer(decoded.requests.map { _ in .error("unknown client user") })
             }
-            stop.reset()
             let outcomes = executor.performBatch(decoded.requests, client: client,
                                                  shouldContinue: { stop.shouldContinue },
                                                  progress: { index, outcome in
@@ -214,8 +224,32 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
     }
 
     func stopBatch() {
-        // Not on `queue`: that queue is busy running the batch.
-        stop.set()
+        // Not on `queue`: that queue is busy running the batch. Stops only
+        // the batches of the connection that asks.
+        guard let connection = NSXPCConnection.current() else { return }
+        stopBatches(of: ObjectIdentifier(connection), forget: false)
+    }
+
+    /// Remembers a batch's stop token for its connection.
+    private func register(_ token: StopFlag, for connection: ObjectIdentifier) {
+        tokensLock.lock(); tokens[connection, default: []].append(token); tokensLock.unlock()
+    }
+
+    /// Forgets a finished batch's token.
+    private func unregister(_ token: StopFlag, for connection: ObjectIdentifier) {
+        tokensLock.lock()
+        tokens[connection]?.removeAll { $0 === token }
+        if tokens[connection]?.isEmpty == true { tokens[connection] = nil }
+        tokensLock.unlock()
+    }
+
+    /// Stops every batch of a connection (after the entry in progress).
+    private func stopBatches(of connection: ObjectIdentifier, forget: Bool) {
+        tokensLock.lock()
+        let pending = tokens[connection] ?? []
+        if forget { tokens[connection] = nil }
+        tokensLock.unlock()
+        pending.forEach { $0.set() }
     }
 
     func version(reply: @escaping @Sendable (String) -> Void) {

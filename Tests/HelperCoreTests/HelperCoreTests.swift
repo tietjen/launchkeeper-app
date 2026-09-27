@@ -102,6 +102,11 @@ final class PrivilegedBatchTests: XCTestCase {
                                        prompt: "p").validationError(), "batch too large")
         XCTAssertEqual(PrivilegedBatch(requests: one, prompt: "two\nlines").validationError(), "control characters in prompt")
         XCTAssertEqual(PrivilegedBatch(requests: one, prompt: "").validationError(), "prompt missing or too long")
+        // Review C2: a batch of several must name its size in the dialog.
+        let three = Array(repeating: one[0], count: 3)
+        XCTAssertEqual(PrivilegedBatch(requests: three, prompt: "LaunchKeeper wants to change a startup item.").validationError(),
+                       "prompt does not name the batch size")
+        XCTAssertNil(PrivilegedBatch(requests: three, prompt: "LaunchKeeper wants to change 3 startup items.").validationError())
     }
 
     func testOutcomesComeBackInRequestOrderWithProgressForEveryEntry() {

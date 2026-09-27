@@ -105,7 +105,9 @@ public final class QueueModel {
         case running(done: Int, total: Int)
     }
 
-    /// The queued actions, in the order they will run.
+    /// The queued actions, in the order they were queued. They run grouped:
+    /// administrator items first (one helper call), then the app's own; the
+    /// engines run removals and switches before restores and uninstalls.
     public private(set) var items: [QueueItem] = []
     /// Plan or result per item (not persisted — a restart plans again).
     public private(set) var outcomes: [QueueItem.ID: ActionOutcome] = [:]
@@ -122,6 +124,9 @@ public final class QueueModel {
     private let stopSignal = StopSignal()
     /// The items of the run in progress (the progress counts only these).
     private var runIDs: Set<QueueItem.ID> = []
+    /// Items that ran in THIS session. Only they get a way back: a status
+    /// read from the file proves nothing (review 2026-09-27, C3).
+    private var ranThisSession: Set<QueueItem.ID> = []
 
     /// Creates the queue and loads what was saved.
     /// - Parameters:
@@ -286,11 +291,23 @@ public final class QueueModel {
         var finished = 0
         phase = .running(done: 0, total: total)
 
-        for (performer, indices) in [(privileged, adminIndices), (local, localIndices)] {
+        for (isLocal, performer, indices) in [(false, privileged, adminIndices), (true, local, localIndices)] {
             guard let performer, !indices.isEmpty else { continue }
+            // Cancelling the Touch ID dialog means "do nothing" (review S2):
+            // when every administrator item came back unauthorized, the app's
+            // own items do not run either.
+            if isLocal, !adminIndices.isEmpty,
+               adminIndices.allSatisfy({ outcomes[items[$0].id]?.authorizationDenied == true }) {
+                for index in indices {
+                    items[index].status = .refused(String(localized: "nicht ausgeführt — Anmeldung abgebrochen"))
+                }
+                finished += indices.count
+                continue
+            }
             for index in indices { items[index].status = .running }
             let requests = indices.map { items[$0].action }
             let ids = indices.map { items[$0].id }
+            ranThisSession.formUnion(ids)
             let signal = stopSignal
             let results = await Task.detached(priority: .userInitiated) { [weak self] in
                 performer.performBatch(requests, apply: true, shouldContinue: { signal.shouldContinue },
@@ -336,7 +353,7 @@ public final class QueueModel {
     /// "restore from the quarantine" for everything that went there.
     /// - Returns: The undo items (not queued yet — the caller adds them).
     public func undoItems() -> [QueueItem] {
-        items.filter { $0.status == .done }.compactMap { item -> QueueItem? in
+        items.filter { $0.status == .done && ranThisSession.contains($0.id) }.compactMap { item -> QueueItem? in
             switch item.action {
             case .remediation(let operation, let key) where operation == "disable":
                 return QueueItem(target: item.target, title: item.title, origin: item.origin,
@@ -367,6 +384,8 @@ public final class QueueModel {
         guard let storeURL, let data = try? JSONEncoder().encode(items) else { return }
         try? FileManager.default.createDirectory(at: storeURL.deletingLastPathComponent(), withIntermediateDirectories: true)
         try? data.write(to: storeURL, options: .atomic)
+        // Owner only: the queue lists what may run with administrator rights.
+        try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: storeURL.path)
     }
 }
 

@@ -17,6 +17,8 @@ final class StubBatch: BatchPerforming, @unchecked Sendable {
     var failures: [ActionRequest: String] = [:]
     /// Undo hint per request.
     var undo: [ActionRequest: String] = [:]
+    /// Answer every executed request as "not authorized" (cancelled Touch ID).
+    var denyAuthorization = false
     private(set) var calls: [(requests: [ActionRequest], apply: Bool)] = []
 
     func performBatch(_ requests: [ActionRequest], apply: Bool, shouldContinue: @escaping @Sendable () -> Bool,
@@ -32,6 +34,10 @@ final class StubBatch: BatchPerforming, @unchecked Sendable {
                                         messages: [], undo: nil)
             } else if !shouldContinue() {
                 outcome = ActionOutcome(state: .refused("stopped"), steps: [], messages: [], undo: nil)
+            } else if denyAuthorization {
+                var denied = ActionOutcome(state: .refused("Anmeldung abgebrochen"), steps: [], messages: [], undo: nil)
+                denied.authorizationDenied = true
+                outcome = denied
             } else if let failure = failures[request] {
                 outcome = ActionOutcome(state: .failed(failure), steps: [], messages: [], undo: nil)
             } else {
@@ -75,6 +81,35 @@ final class QueueModelTests: XCTestCase {
         XCTAssertEqual(helper.calls[0].requests, [b, c])
         XCTAssertEqual(queue.items.map(\.status), [.failed("exit 1"), .done, .done], "a failure does not stop the rest")
         XCTAssertEqual(queue.phase, .idle)
+    }
+
+    func testCancelledTouchIDRunsNothingElse() async {
+        // Review S2: cancelling the dialog means "do nothing" — also for the app's own items.
+        let local = StubBatch(), helper = StubBatch()
+        local.plans = [.remediation(operation: "disable", key: "admin"): (true, nil)]
+        helper.denyAuthorization = true
+        let queue = QueueModel(local: local, storeURL: nil)
+        queue.privileged = helper
+        queue.add([entry("admin"), entry("local")])
+        await queue.execute()
+        XCTAssertEqual(local.calls.map(\.apply), [false], "the app's own item did not run")
+        guard case .refused = queue.items[1].status else { return XCTFail("\(queue.items[1].status)") }
+    }
+
+    func testNoWayBackForStatusesReadFromTheFile() throws {
+        // Review C3: a "done" from queue.json proves nothing — only this session's runs get a way back.
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("queue-\(UUID()).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        var forged = entry("x")
+        forged.status = .done
+        try JSONEncoder().encode([forged]).write(to: url)
+        let queue = QueueModel(local: StubBatch(), storeURL: url)
+        XCTAssertEqual(queue.items.first?.status, .done)
+        XCTAssertTrue(queue.undoItems().isEmpty)
+        let permissions = try FileManager.default.attributesOfItem(atPath: url.path)[.posixPermissions] as? Int
+        queue.clearDone()
+        let after = try FileManager.default.attributesOfItem(atPath: url.path)[.posixPermissions] as? Int
+        XCTAssertEqual(after, 0o600, "saved owner-only (was \(String(describing: permissions)))")
     }
 
     func testAdminItemsWithoutHelperAreRefusedWithTheReason() async {

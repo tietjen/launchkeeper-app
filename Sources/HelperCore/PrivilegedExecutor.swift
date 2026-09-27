@@ -108,12 +108,15 @@ public struct PrivilegedExecutor {
                              shouldContinue: () -> Bool = { true },
                              progress: (Int, PrivilegedOutcome) -> Void = { _, _ in }) -> [PrivilegedOutcome] {
         var outcomes = [PrivilegedOutcome?](repeating: nil, count: requests.count)
+        let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
         func finish(_ index: Int, _ outcome: PrivilegedOutcome) {
             outcomes[index] = outcome
+            // After every entry, not only at the end: a helper that dies in
+            // the middle must not leave root-owned quarantine entries behind.
+            handOver(quarantineRoot: quarantineRoot, to: client)
             progress(index, outcome)
         }
         let audit = AuditLog(directory: auditDirectory)
-        let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
         btmCache.preferCached = true
 
         // Invalid entries never reach an engine.
@@ -161,7 +164,6 @@ public struct PrivilegedExecutor {
             finish(index, Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint))
         }
 
-        handOver(quarantineRoot: quarantineRoot, to: client)
         return outcomes.map { $0 ?? .error("not run") }
     }
 

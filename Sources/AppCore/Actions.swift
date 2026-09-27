@@ -119,6 +119,9 @@ public struct ActionOutcome: Equatable, Sendable {
     public var messages: [String]
     /// How to undo, when there is a way.
     public var undo: String?
+    /// `true` when the helper refused because the user cancelled or failed
+    /// the authentication — the queue then runs nothing else (review S2).
+    public var authorizationDenied = false
 
     /// `true` when any step needs administrator rights — the app does not execute those (yet).
     public var needsAdmin: Bool { steps.contains(where: \.needsAdmin) }
@@ -143,7 +146,9 @@ public struct ActionOutcome: Equatable, Sendable {
         let steps = privileged.steps.enumerated().map { index, pair in
             Step(id: index, command: pair.first ?? "", description: pair.dropFirst().first ?? "", needsAdmin: true)
         }
-        return ActionOutcome(state: state, steps: steps, messages: privileged.messages, undo: privileged.undo)
+        var outcome = ActionOutcome(state: state, steps: steps, messages: privileged.messages, undo: privileged.undo)
+        outcome.authorizationDenied = privileged.state == "refused" && privileged.detail == "not authorized"
+        return outcome
     }
 
     /// Maps an engine status and plan into an outcome.

@@ -275,6 +275,7 @@ struct NextStepRow: View {
     @Environment(QuarantineModel.self) private var quarantine
     @Environment(HelperStatus.self) private var helper
     @Environment(WatchModel.self) private var watch
+    @Environment(QueueModel.self) private var queue
     /// The action sheet for `step.action`.
     @State private var showAction = false
     /// Set after a copy, for a short confirmation.
@@ -300,6 +301,7 @@ struct NextStepRow: View {
                             }
                             .environment(helper)
                             .environment(watch)
+                            .environment(queue)
                         }
                 } else if let command = step.command {
                     Button(copied ? "Kopiert ✓" : "Befehl kopieren") { copy(command) }
