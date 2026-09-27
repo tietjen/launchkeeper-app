@@ -9,7 +9,11 @@ snapshots/quarantine instead of deletion, verification after every write.
 
 ## Installation (macOS 14+)
 
-Download `LaunchKeeper-<version>.dmg` from the
+```
+brew install --cask tietjen/tap/launchkeeper-app
+```
+
+Or by hand: download `LaunchKeeper-<version>.dmg` from the
 [releases](https://github.com/tietjen/launchkeeper-app/releases), open it and
 drag LaunchKeeper into Applications. The app is universal (Apple silicon +
 Intel), signed with a Developer ID and notarized; the DMG carries a stapled
