@@ -5,6 +5,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.1.1] — 2026-09-27
+
+The first update through Sparkle — it exists to prove the update path.
+
+### Changed
+- Privileged helper 0.1.3 (no functional change): after the update the app
+  runs the helper from the new bundle; an older helper still running is
+  detected and restarted, as since 0.1.0.
+- Releases are built by GitHub Actions from the tag (notarized, stapled,
+  Sparkle-signed); a manual probe run checks the pipeline without publishing.
+- README: installation via Homebrew (`brew install --cask tietjen/tap/launchkeeper-app`).
+
 ## [0.1.0] — 2026-09-27
 
 First public test release.
