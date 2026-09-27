@@ -137,12 +137,7 @@ public struct PrivilegedExecutor {
         if request.kind == .restore || request.kind == .purge, let refusal = entryRefusal(request.target, client: client) {
             return refusal
         }
-        var environment = CleanupEnvironment(
-            runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
-            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine)
-        // Root never moves files out of places users can write (review C-2).
-        environment.forbiddenMovePrefixes = CleanupEnvironment.userWritablePrefixes
-        let engine = CleanupEngine(environment: environment, audit: AuditLog(directory: auditDirectory))
+        let engine = CleanupEngine(environment: cleanupEnvironment(for: client), audit: AuditLog(directory: auditDirectory))
         let result: CleanupResult
         switch request.kind {
         case .restore: result = engine.restore(name: request.target, apply: true)
@@ -150,6 +145,17 @@ public struct PrivilegedExecutor {
         default: result = engine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
         }
         return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+    }
+
+    /// The cleanup environment as root: the root-owned tree, and no moves out
+    /// of places users can write — by prefix (C-2) or parent chain (S1).
+    func cleanupEnvironment(for client: ClientContext) -> CleanupEnvironment {
+        var environment = CleanupEnvironment(
+            runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
+            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine)
+        environment.forbiddenMovePrefixes = CleanupEnvironment.userWritablePrefixes
+        environment.requireRootOwnedParents = true
+        return environment
     }
 
     /// Why root must not restore or purge an entry — `nil` when it may.

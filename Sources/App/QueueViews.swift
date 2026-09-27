@@ -70,6 +70,14 @@ struct MarkBox: View {
         let queued = targets.compactMap { queue.item(for: $0) }
         if queued.isEmpty {
             checkbox
+        } else if queued.count < targets.count {
+            // Partly queued (a background row whose components are queued one by one):
+            // the rest can still be ticked; the badge says how much is queued.
+            HStack(spacing: 2) {
+                checkbox
+                Text("\(queued.count)/\(targets.count)").font(.caption2).foregroundStyle(Self.color(for: queued))
+                    .help(String(localized: "In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", "))"))
+            }
         } else {
             // Already in the queue: shown instead of the checkbox; a click takes it out again.
             Button { queue.remove(Set(queued.map(\.id))) } label: {
@@ -77,7 +85,9 @@ struct MarkBox: View {
             }
             .buttonStyle(.borderless)
             .disabled(queue.phase != .idle)
-            .help(String(localized: "In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", ")) — klicken zum Herausnehmen"))
+            .help(queue.phase == .idle
+                ? String(localized: "In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", ")) — klicken zum Herausnehmen")
+                : String(localized: "In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", "))"))
         }
     }
 
@@ -270,6 +280,9 @@ struct BatchPanel: View {
         Button {
             added = queue.add(items)
             marks.clear(for: selection)
+            // Queued entries lose their ticks everywhere (e.g. added from the
+            // background view while also ticked in the inventory) — review S3.
+            for item in items { if case .entry(let key) = item.target { marks.entries.remove(key) } }
         } label: {
             HStack {
                 Text(title)

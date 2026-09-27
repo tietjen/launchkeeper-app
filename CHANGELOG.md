@@ -5,6 +5,26 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.3.2] — 2026-09-27
+
+### Added
+- Rows already in the queue are marked in their view: a queue symbol instead
+  of the checkbox (blue open, green done, orange refused), whose help names
+  the queued action; a click takes the row out of the queue again. The
+  detail column says "In der Warteschlange: …" with "Herausnehmen". A
+  background row with only some components queued keeps its checkbox and
+  shows "x/y".
+
+### Security
+- Privileged helper 0.1.9 (launchkeeper 0.12.1): it refuses entries that
+  belong to one user (user domain, per-user extension elections, config
+  files in a home) — those the app changes itself; a system daemon whose
+  program lives in a home stays removable. Uninstalls through the helper
+  refuse packages that would move files out of places a non-root user can
+  change (/Users, temp directories, /Volumes, /opt/homebrew, or any
+  directory on the way not owned by root or writable by everyone), and it
+  restores nothing into such places.
+
 ## [0.3.1] — 2026-09-27
 
 ### Added

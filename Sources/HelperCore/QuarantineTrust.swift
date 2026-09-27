@@ -120,6 +120,12 @@ public enum QuarantineTrust {
                 return "original in your home — root does not write there; restore it in Terminal: "
                     + "launchkeeper quarantine restore \(name)"
             }
+            // The way back must not run through a place users can change (review S2).
+            if CleanupEnvironment.userWritablePrefixes.contains(where: { original.hasPrefix($0) })
+                || PathUtils.userWritableAncestor(of: original) != nil {
+                return "original lies where users can write (\(original)) — root does not move files there; "
+                    + "restore it in Terminal: launchkeeper quarantine restore \(name)"
+            }
             guard move.quarantined == entry + "/files" + original else {
                 return "quarantined path does not match its original: \(move.quarantined)"
             }

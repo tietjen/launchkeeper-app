@@ -54,7 +54,9 @@ struct BackgroundPane: View {
 
     var body: some View {
         if let view = store.background {
-            let entries = BackgroundEntry.entries(from: view, items: store.itemsByDisplayID)
+            // Built once per render, not per row (review: O(rows × entries)).
+            let byID = store.itemsByDisplayID
+            let entries = BackgroundEntry.entries(from: view, items: byID)
             List(selection: $selection) {
                 Section {
                     PaneIntro(text: "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.")
@@ -67,12 +69,12 @@ struct BackgroundPane: View {
                     }
                 }
                 Section("Im Hintergrund erlauben — Apps und Entwickler") {
-                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry)).tag(entry.id) }
+                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry, byID)).tag(entry.id) }
                 }
                 let unnamed = entries.filter(\.unnamed)
                 if !unnamed.isEmpty {
                     Section {
-                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry)).tag(entry.id) }
+                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry, byID)).tag(entry.id) }
                     } header: {
                         Text("Im Hintergrund erlauben — ohne Entwicklerangabe")
                     } footer: {
@@ -88,9 +90,8 @@ struct BackgroundPane: View {
     }
 
     /// The queue targets a background row stands for: its components' entries.
-    private func targets(_ entry: BackgroundEntry) -> [QueueTarget] {
-        let byID = store.itemsByDisplayID
-        return entry.row.components.compactMap { byID[$0.id].map { QueueTarget.entry(key: $0.key) } }
+    private func targets(_ entry: BackgroundEntry, _ byID: [String: BackgroundItem]) -> [QueueTarget] {
+        entry.row.components.compactMap { byID[$0.id].map { QueueTarget.entry(key: $0.key) } }
     }
 }
 

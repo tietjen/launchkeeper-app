@@ -196,6 +196,9 @@ final class QuarantineTrustTests: XCTestCase {
         let intoHome = manifest(name, root: base, original: "/Users/alice/Library/LaunchAgents/x.plist")
         XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: intoHome, clientHome: "/Users/alice", trustedUID: me)?
             .contains("your home") == true)
+        let intoTmp = manifest(name, root: base, original: "/tmp/x.plist")
+        XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: intoTmp, clientHome: "/Users/alice", trustedUID: me)?
+            .contains("users can write") == true, "no way back through a user-writable place (review S2)")
         let system = manifest(name, root: base, original: "/System/Library/LaunchDaemons/x.plist")
         XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: system, clientHome: "/Users/alice", trustedUID: me)?
             .contains("/System") == true)
@@ -239,6 +242,10 @@ final class QuarantineTrustTests: XCTestCase {
         XCTAssertFalse([environment.backupsRoot, environment.configSnapshotsRoot, environment.quarantineRoot]
             .contains { $0.hasPrefix("/Users/alice") }, "nothing in the client's home")
         XCTAssertTrue(environment.systemScopeOnly, "the user's own entries are refused (review C-1)")
+        let cleanup = executor.cleanupEnvironment(for: ClientContext(uid: 501, home: "/Users/alice"))
+        XCTAssertEqual(cleanup.forbiddenMovePrefixes, CleanupEnvironment.userWritablePrefixes, "review C-2")
+        XCTAssertTrue(cleanup.requireRootOwnedParents, "review S1")
+        XCTAssertEqual(cleanup.quarantineRoot, "/tmp/lk-env-check/quarantine")
     }
 
     func testTheRealSystemChainIsAcceptedByTheCheck() {
