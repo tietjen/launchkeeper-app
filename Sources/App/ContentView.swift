@@ -208,12 +208,13 @@ struct SidebarView: View {
 /// selected entry selected as long as it still exists.
 struct InventoryTable: View {
     @Environment(InventoryStore.self) private var store
+    @Environment(Marks.self) private var marks
     @Binding var selectedKey: String?
     @Binding var sortOrder: [KeyPathComparator<InventoryRow>]
 
     var body: some View {
         Table(store.visibleRows.sorted(using: sortOrder), selection: $selectedKey, sortOrder: $sortOrder) {
-            TableColumn("") { row in MarkBox(id: row.id, set: \.entries) }
+            TableColumn("") { row in MarkBox(id: row.id, set: \.entries, marks: marks) }
                 .width(22)
             TableColumn("") { row in BadgeStrip(badges: row.badges) }
                 .width(min: 40, ideal: 56, max: 90)

@@ -47,6 +47,7 @@ func revealInFinder(_ path: String) {
 /// marked separately (verified against the real pane, CLI V0.5.2).
 struct BackgroundPane: View {
     @Environment(InventoryStore.self) private var store
+    @Environment(Marks.self) private var marks
     /// Selected row, by `BackgroundEntry.id` (unique — the BTM identifier is not).
     @Binding var selection: String?
 
@@ -65,12 +66,12 @@ struct BackgroundPane: View {
                     }
                 }
                 Section("Im Hintergrund erlauben — Apps und Entwickler") {
-                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry).tag(entry.id) }
+                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry, marks: marks).tag(entry.id) }
                 }
                 let unnamed = entries.filter(\.unnamed)
                 if !unnamed.isEmpty {
                     Section {
-                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry).tag(entry.id) }
+                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry, marks: marks).tag(entry.id) }
                     } header: {
                         Text("Im Hintergrund erlauben — ohne Entwicklerangabe")
                     } footer: {
@@ -90,10 +91,12 @@ struct BackgroundPane: View {
 /// (kind, components or the real identity of an unnamed entry), and the switch.
 struct BackgroundEntryRow: View {
     let entry: BackgroundEntry
+    /// Passed in — list cells read no environment (see `MarkBox`).
+    let marks: Marks
 
     var body: some View {
         HStack {
-            if !entry.row.components.isEmpty { MarkBox(id: entry.id, set: \.background) }
+            if !entry.row.components.isEmpty { MarkBox(id: entry.id, set: \.background, marks: marks) }
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.title)
                 Text(entry.subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -129,6 +132,7 @@ struct ToggleBadge: View {
 /// date, files listed vs. missing, and the entries attributed to each.
 struct ReceiptsPane: View {
     @Environment(InventoryStore.self) private var store
+    @Environment(Marks.self) private var marks
     /// Selected package id.
     @Binding var selection: String?
     @State private var onlyMissing = false
@@ -141,7 +145,7 @@ struct ReceiptsPane: View {
             PaneIntro(text: "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen.")
                 .padding(12)
             Table(rows, selection: $selection, sortOrder: $sortOrder) {
-                TableColumn("") { row in MarkBox(id: row.id, set: \.packages) }.width(22)
+                TableColumn("") { row in MarkBox(id: row.id, set: \.packages, marks: marks) }.width(22)
                 TableColumn("Paket", value: \.id) { row in Text(row.id).textSelection(.enabled) }
                     .width(min: 200, ideal: 300)
                 TableColumn("Version") { row in Text(row.version ?? "–") }.width(min: 60, ideal: 90)
@@ -173,6 +177,7 @@ struct ReceiptsPane: View {
 /// shows only apps that are provably gone unless "show all" is on.
 struct LeftoversPane: View {
     @Environment(LeftoversModel.self) private var model
+    @Environment(Marks.self) private var marks
     /// Selected bundle id.
     @Binding var selection: String?
 
@@ -194,7 +199,7 @@ struct LeftoversPane: View {
                         PaneIntro(text: "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben.")
                     }
                     ForEach(model.visible, id: \.bundleIdentifier) { candidate in
-                        LeftoverRow(candidate: candidate).tag(candidate.bundleIdentifier)
+                        LeftoverRow(candidate: candidate, marks: marks).tag(candidate.bundleIdentifier)
                     }
                 }
             }
@@ -212,10 +217,12 @@ struct LeftoversPane: View {
 /// reasons are in `LeftoverDetail`.
 struct LeftoverRow: View {
     let candidate: AppLeftoverCandidate
+    /// Passed in — list cells read no environment (see `MarkBox`).
+    let marks: Marks
 
     var body: some View {
         HStack {
-            MarkBox(id: candidate.bundleIdentifier, set: \.leftovers)
+            MarkBox(id: candidate.bundleIdentifier, set: \.leftovers, marks: marks)
             Text(candidate.bundleIdentifier)
             Spacer()
             Text(ByteCountFormatter.string(fromByteCount: Int64(candidate.totalBytes), countStyle: .file))
@@ -233,6 +240,7 @@ struct LeftoverRow: View {
 /// is shown.
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
+    @Environment(Marks.self) private var marks
     @Environment(InventoryStore.self) private var store
     @Environment(HelperStatus.self) private var helper
     @Environment(WatchModel.self) private var watch
@@ -261,7 +269,7 @@ struct QuarantinePane: View {
                         }
                     } label: {
                         HStack {
-                            if entry.status != "restored" { MarkBox(id: entry.name, set: \.quarantine) }
+                            if entry.status != "restored" { MarkBox(id: entry.name, set: \.quarantine, marks: marks) }
                             Text(entry.packageIdentifier ?? entry.notes.first ?? entry.kind)
                             Spacer()
                             Text("\(entry.moves.count) Pfad(e)").foregroundStyle(.secondary)

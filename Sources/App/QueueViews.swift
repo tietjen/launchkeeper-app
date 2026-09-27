@@ -53,10 +53,14 @@ final class Marks {
 }
 
 /// A checkbox bound to membership in a set of marks.
+///
+/// Gets `Marks` passed in instead of reading the environment: it lives in
+/// table and list cells, which AppKit hosts one by one — a cell laid out
+/// without the environment crashed the app (live 2026-09-27, 0.2.0 build 34).
 struct MarkBox: View {
     let id: String
     let set: ReferenceWritableKeyPath<Marks, Set<String>>
-    @Environment(Marks.self) private var marks
+    let marks: Marks
 
     var body: some View {
         Toggle("", isOn: Binding(
@@ -245,7 +249,7 @@ struct QueuePane: View {
                 let conflicts = queue.conflicts { store.row(for: $0)?.item.provenance?.packageIdentifier }
                 List(selection: $selection) {
                     ForEach(queue.items) { item in
-                        QueueRow(item: item, conflict: conflicts[item.id]).tag(item.id)
+                        QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
                     }
                 }
             }
@@ -333,11 +337,12 @@ struct QueuePane: View {
 }
 
 /// One queue row: title, origin, the action (switchable), the status.
+/// Models are passed in — list cells get no environment reads (see `MarkBox`).
 struct QueueRow: View {
     let item: QueueItem
     let conflict: String?
-    @Environment(QueueModel.self) private var queue
-    @Environment(InventoryStore.self) private var store
+    let queue: QueueModel
+    let store: InventoryStore
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
