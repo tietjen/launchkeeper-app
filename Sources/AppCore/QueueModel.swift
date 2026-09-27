@@ -200,13 +200,11 @@ public final class QueueModel {
     /// Switches an item to another action (its plan is checked again).
     public func setAction(_ action: ActionRequest, for id: QueueItem.ID) {
         guard phase == .idle, let index = items.firstIndex(where: { $0.id == id }) else { return }
+        // By-hand items are created with their baseline (QueueItem.init);
+        // the picker only switches between automatic actions.
+        guard !items[index].isManual, !{ if case .manual = action { return true }; return false }() else { return }
         items[index].action = action
-        if case .manual = action {
-            items[index].status = .manual(done: false)
-            items[index].manualBaseline = items[index].manualBaseline ?? true
-        } else {
-            items[index].status = .pending
-        }
+        items[index].status = .pending
         outcomes[id] = nil
         save()
     }
@@ -375,16 +373,22 @@ public final class QueueModel {
 
     /// Ticks off by-hand items a scan shows as done: the entry is gone, or it
     /// was enabled when queued and is switched off now.
-    /// - Parameter state: Current state of an entry by key — `nil` when it is
-    ///   no longer in the inventory, else whether it is enabled.
+    /// - Parameters:
+    ///   - complete: Whether the scan was complete. An incomplete scan (e.g.
+    ///     the Background Task Management dump timed out) lacks whole layers —
+    ///     "gone" proves nothing then, only "switched off" counts (review
+    ///     2026-09-27; the watch has the same rule).
+    ///   - state: Current state of an entry by key — `nil` when it is not in
+    ///     the inventory, else whether it is enabled.
     /// - Returns: How many items were ticked off now.
     @discardableResult
-    public func updateManual(state: (String) -> Bool?) -> Int {
+    public func updateManual(complete: Bool = true, state: (String) -> Bool?) -> Int {
         var ticked = 0
         for index in items.indices where items[index].status == .manual(done: false) {
             guard case .entry(let key) = items[index].target else { continue }
             let enabledNow = state(key)
-            if enabledNow == nil || (items[index].manualBaseline == true && enabledNow == false) {
+            let gone = enabledNow == nil && complete
+            if gone || (items[index].manualBaseline == true && enabledNow == false) {
                 items[index].status = .manual(done: true)
                 ticked += 1
             }
@@ -393,9 +397,19 @@ public final class QueueModel {
         return ticked
     }
 
-    /// Ticks a by-hand item off (or on again) by the user's word.
-    public func setManual(done: Bool, for id: QueueItem.ID) {
+    /// Ticks a by-hand item off (or opens it again) by the user's word.
+    /// - Parameters:
+    ///   - done: The new state.
+    ///   - id: The item.
+    ///   - enabledNow: When opening again: the entry's current state, the new
+    ///     baseline — so the next scan does not tick it straight off again
+    ///     (`nil` = not in the inventory; then it stays done).
+    public func setManual(done: Bool, for id: QueueItem.ID, enabledNow: Bool? = nil) {
         guard let index = items.firstIndex(where: { $0.id == id }), items[index].isManual else { return }
+        if !done {
+            guard let enabledNow else { return }   // gone entries cannot be "open" again
+            items[index].manualBaseline = enabledNow
+        }
         items[index].status = .manual(done: done)
         save()
     }

@@ -1249,18 +1249,18 @@
         }
       }
     },
-    "Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist.": {
+    "Das erledigst du selbst an der genannten Stelle. „Jetzt prüfen“ liest alles frisch ein — auch die Schalter der Systemeinstellungen, die ⌘R aus dem Zwischenspeicher nimmt — und hakt ab, was verschwunden oder ausgeschaltet ist.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist."
+            "value": "Das erledigst du selbst an der genannten Stelle. „Jetzt prüfen“ liest alles frisch ein — auch die Schalter der Systemeinstellungen, die ⌘R aus dem Zwischenspeicher nimmt — und hakt ab, was verschwunden oder ausgeschaltet ist."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You take care of these yourself at the place named. After the next scan (⌘R) LaunchKeeper ticks off what is gone or switched off."
+            "value": "You take care of these yourself at the place named. “Check now” reads everything afresh — including the System Settings switches that ⌘R takes from the cache — and ticks off what is gone or switched off."
           }
         }
       }
@@ -1457,18 +1457,18 @@
         }
       }
     },
-    "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab.": {
+    "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; „Jetzt prüfen“ dort hakt ab, was erledigt ist.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab."
+            "value": "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; „Jetzt prüfen“ dort hakt ab, was erledigt ist."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS manages their switches itself. The queue shows under “By hand” where to do it; LaunchKeeper ticks them off after the next scan."
+            "value": "macOS manages their switches itself. The queue shows under “By hand” where to do it; “Check now” there ticks off what is done."
           }
         }
       }
@@ -2701,6 +2701,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Check for updates now"
+          }
+        }
+      }
+    },
+    "Jetzt prüfen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check now"
           }
         }
       }
@@ -4497,18 +4513,18 @@
         }
       }
     },
-    "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen.": {
+    "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen (macOS 14: Datenschutz & Sicherheit › Erweiterungen).": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen."
+            "value": "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen (macOS 14: Datenschutz & Sicherheit › Erweiterungen)."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "System extensions go away when you delete their app or switch the extension off in it; turn them on or off under System Settings › General › Login Items & Extensions › Extensions."
+            "value": "System extensions go away when you delete their app or switch the extension off in it; turn them on or off under System Settings › General › Login Items & Extensions › Extensions (macOS 14: Privacy & Security › Extensions)."
           }
         }
       }

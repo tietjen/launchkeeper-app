@@ -101,7 +101,9 @@ enum QueueOptions {
         for key in keys.sorted() {
             guard let row = store.row(for: key) else { continue }
             let actions = actions(for: .entry(key: key), store: store)
-            if actions.isEmpty && !row.isAppleInternal {
+            // Controllable entries (e.g. disabled ones, whose only action is
+            // "disable") are not "by hand" — the switch is ours (review C6).
+            if actions.isEmpty && !row.isAppleInternal && (row.item.control?.actions.isEmpty ?? true) {
                 none.append(QueueItem(target: .entry(key: key), title: row.name, origin: origin,
                                       action: .manual(key: key), manualBaseline: row.item.enabled))
             }
@@ -207,7 +209,7 @@ struct BatchPanel: View {
         if !none.isEmpty {
             DisclosureGroup("\(none.count) ohne automatische Aktion") {
                 ForEach(none) { Text($0.title).font(.callout) }
-                Text("Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab.")
+                Text("Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; „Jetzt prüfen“ dort hakt ab, was erledigt ist.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             addButton(title: String(localized: "Als „Von Hand“ in die Warteschlange"), items: none, of: keys.count)
@@ -269,8 +271,13 @@ struct QueuePane: View {
                         } header: {
                             Text("Von Hand")
                         } footer: {
-                            Text("Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist.")
-                                .font(.caption).foregroundStyle(.secondary)
+                            HStack(alignment: .firstTextBaseline) {
+                                Text("Das erledigst du selbst an der genannten Stelle. „Jetzt prüfen“ liest alles frisch ein — auch die Schalter der Systemeinstellungen, die ⌘R aus dem Zwischenspeicher nimmt — und hakt ab, was verschwunden oder ausgeschaltet ist.")
+                                    .font(.caption).foregroundStyle(.secondary)
+                                Spacer()
+                                Button("Jetzt prüfen") { Task { await store.refresh(reuseBTM: false, reason: .user) } }
+                                    .disabled(store.isScanning)
+                            }
                         }
                     }
                 }
@@ -332,7 +339,7 @@ struct QueuePane: View {
     /// Counts by status, one line.
     private var summary: some View {
         let open = queue.items.filter { !$0.isFinished }.count
-        let done = queue.items.filter { $0.status == .done }.count
+        let done = queue.items.filter { $0.status == .done || $0.status == .manual(done: true) }.count
         let problems = queue.items.filter { if case .failed = $0.status { return true }; if case .refused = $0.status { return true }; return false }.count
         return Text("\(queue.items.count) Einträge · \(open) offen · \(done) erledigt · \(problems) abgelehnt oder fehlgeschlagen")
             .font(.callout).foregroundStyle(.secondary)
@@ -346,7 +353,7 @@ struct QueuePane: View {
     /// Ticks off by-hand items the current inventory shows as done.
     private func tickOffManual() {
         guard !store.rows.isEmpty, !store.isScanning else { return }
-        queue.updateManual { key in store.row(for: key).map { $0.item.enabled } }
+        queue.updateManual(complete: store.incompleteLayers.isEmpty) { key in store.row(for: key).map { $0.item.enabled } }
     }
 
     /// The helper takes administrator batches only when set up and current.
@@ -442,7 +449,7 @@ struct QueueManualRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Toggle("", isOn: Binding(get: { item.status == .manual(done: true) },
-                                     set: { queue.setManual(done: $0, for: item.id) }))
+                                     set: { queue.setManual(done: $0, for: item.id, enabledNow: entry?.enabled) }))
                 .toggleStyle(.checkbox).labelsHidden()
                 .help("Als erledigt abhaken")
             VStack(alignment: .leading, spacing: 2) {
@@ -514,7 +521,11 @@ struct QueueItemDetail: View {
                 Text("Der Eintrag ist nicht mehr im Inventar — damit ist er erledigt.").foregroundStyle(.secondary)
             }
             Toggle("Erledigt", isOn: Binding(get: { item.status == .manual(done: true) },
-                                             set: { queue.setManual(done: $0, for: item.id) }))
+                                             set: { done in
+                if case .entry(let key) = item.target {
+                    queue.setManual(done: done, for: item.id, enabledNow: store.row(for: key)?.item.enabled)
+                }
+            }))
         }
     }
 

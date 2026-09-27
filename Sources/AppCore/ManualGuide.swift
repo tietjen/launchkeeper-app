@@ -38,7 +38,7 @@ public struct ManualGuide: Equatable, Sendable {
             return ManualGuide(text: String(localized: "Kernel-Erweiterungen entfernt nur das Deinstallationsprogramm des Herstellers (oder dessen App). Danach neu starten."),
                                linkTitle: nil, url: nil)
         case (.systemExtensions, _), (_, .systemExtension):
-            return ManualGuide(text: String(localized: "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen."),
+            return ManualGuide(text: String(localized: "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen (macOS 14: Datenschutz & Sicherheit › Erweiterungen)."),
                                linkTitle: settings, url: loginItems)
         case (.profiles, _):
             return ManualGuide(text: String(localized: "Konfigurationsprofile entfernen: Systemeinstellungen › Allgemein › Geräteverwaltung. Von einer Verwaltung (MDM) installierte Profile lassen sich dort nicht entfernen."),

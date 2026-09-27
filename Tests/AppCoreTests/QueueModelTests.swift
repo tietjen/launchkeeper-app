@@ -205,6 +205,25 @@ final class QueueModelTests: XCTestCase {
         XCTAssertEqual(QueueModel(local: StubBatch(), storeURL: url).items.first?.status, .manual(done: true))
     }
 
+    func testIncompleteScansNeverTickOffMissingEntriesAndReopeningHolds() {
+        // Review 2026-09-27 (B1): a timed-out BTM dump lacks all login items.
+        let queue = QueueModel(local: StubBatch(), storeURL: nil)
+        queue.add([QueueItem(target: .entry(key: "login"), title: "App", origin: "Hintergrund", action: .manual(key: "login"),
+                             manualBaseline: true)])
+        XCTAssertEqual(queue.updateManual(complete: false) { _ in nil }, 0, "missing in an incomplete scan proves nothing")
+        XCTAssertEqual(queue.updateManual(complete: false) { _ in false }, 1, "switched off counts even then")
+
+        // Review C3: opened again by the user, with the current state as baseline — the next scan leaves it open.
+        let id = queue.items[0].id
+        queue.setManual(done: false, for: id, enabledNow: false)
+        XCTAssertEqual(queue.updateManual { _ in false }, 0)
+        XCTAssertEqual(queue.items[0].status, .manual(done: false))
+        // A gone entry cannot be opened again.
+        queue.setManual(done: true, for: id)
+        queue.setManual(done: false, for: id, enabledNow: nil)
+        XCTAssertEqual(queue.items[0].status, .manual(done: true))
+    }
+
     func testGuidesPointToTheRightPlace() {
         func item(_ type: ItemType, _ category: ItemCategory) -> BackgroundItem {
             BackgroundItem(key: "k", displayName: "k", type: type, path: nil, label: nil, domain: .user, category: category)

@@ -9,12 +9,14 @@ underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 
 ### Added
 - **By hand** in the queue: entries neither the app nor the helper may change
-  (login items and background items macOS manages, system extensions,
-  configuration profiles, privacy grants, kernel extensions, listening
-  programs) can be queued too. The queue shows what to do and opens the
-  right place in System Settings; after the next scan LaunchKeeper ticks off
-  what is gone or switched off, or you tick it yourself. Apple's own entries
-  are never offered.
+  (login items and background items macOS manages, system extensions, kernel
+  extensions, listening programs) can be queued too. The queue shows what to
+  do and opens the right place in System Settings; "Check now" reads
+  everything afresh (⌘R reuses the cached background-items state) and ticks
+  off what is gone or switched off, or you tick it yourself. An incomplete
+  scan never counts a missing entry as done. Apple's own entries are never
+  offered. (A queue with by-hand items cannot be read by 0.3.0 after a
+  downgrade.)
 
 ## [0.3.0] — 2026-09-27
 
