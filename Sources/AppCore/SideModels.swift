@@ -82,25 +82,37 @@ public final class LeftoversModel {
 @MainActor
 @Observable
 public final class QuarantineModel {
-    /// The quarantine entries, newest first.
+    /// The quarantine entries of both stores, newest first.
     public private(set) var entries: [QuarantineManifest] = []
-    private let store: QuarantineStore
+    /// The user's quarantine and the root-owned one (kit 0.12): entries whose
+    /// moves need root live under /Library/Application Support/launchkeeper.
+    private let stores: [QuarantineStore]
 
     /// Creates the model.
-    /// - Parameter root: The quarantine directory; defaults to the CLI's
-    ///   (`~/Library/Application Support/launchkeeper/quarantine`), so the
-    ///   app and the CLI see the same entries.
-    public init(root: String = LaunchKeeperPaths.quarantine(home: NSHomeDirectory())) {
-        store = QuarantineStore(root: root)
+    /// - Parameter roots: The quarantine directories; default: the user's
+    ///   (`~/Library/Application Support/launchkeeper/quarantine`, shared with
+    ///   the CLI) and the root-owned system quarantine.
+    public init(roots: [String] = [LaunchKeeperPaths.quarantine(home: NSHomeDirectory()), LaunchKeeperPaths.systemQuarantine]) {
+        stores = roots.map { QuarantineStore(root: $0) }
     }
 
     /// Reads the manifests again. Cheap (one JSON file per entry), so it runs on the main actor.
-    public func reload() { entries = store.list() }
+    public func reload() {
+        entries = stores.flatMap { $0.list() }.sorted { $0.name > $1.name }
+    }
 
     /// The folder of one entry, for "Reveal in Finder".
     /// - Parameter entry: A listed entry.
-    /// - Returns: The entry's directory inside the quarantine root.
-    public func directory(of entry: QuarantineManifest) -> String { store.directory(entry.name) }
+    /// - Returns: The entry's directory in whichever store holds it.
+    public func directory(of entry: QuarantineManifest) -> String {
+        let holder = stores.first { $0.load(entry.name) != nil } ?? stores[0]
+        return holder.directory(entry.name)
+    }
+
+    /// `true` when the entry sits in the root-owned store (restores go through the helper).
+    public func isSystemEntry(_ entry: QuarantineManifest) -> Bool {
+        stores.count > 1 && stores[1].load(entry.name) != nil
+    }
 }
 
 // MARK: - Signature in depth

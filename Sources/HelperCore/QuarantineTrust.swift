@@ -1,123 +1,125 @@
 //
 //  QuarantineTrust.swift
-//  HelperCore — what the helper (root) may trust in the user's quarantine.
+//  HelperCore — where root keeps its bookkeeping, and what it may trust.
 //
-//  The quarantine lives in the user's home, which every process of that user
-//  can change. Review 2026-09-27 (Fable) found two ways to root:
-//   1. `handOver` chowned paths below the quarantine as root; a symlink put
-//      there by any user process redirected the chown onto e.g. /Library.
-//   2. A restore moved back, as root, whatever the entry held, to whatever
-//      its (user-owned) manifest named — a swapped file or target path
-//      would land anywhere as root, after one legitimate Touch ID.
-//  Now: the helper never chowns into the home; entries it creates stay
-//  root-owned (readable, not changeable by the user); a restore or purge as
-//  root requires the entry, its manifest and every path below it to be
-//  root-owned real files/directories. Directory chains are walked with file
-//  descriptors and O_NOFOLLOW, never by path strings.
+//  Three independent reviews (Fable, 2026-09-27) led here:
+//   1. `handOver` chowned paths below the user's quarantine as root; a
+//      symlink placed there redirected the chown onto a system directory.
+//   2. A restore moved back, as root, what a user-owned entry held to where
+//      its user-owned manifest pointed.
+//   3. Checking first and writing later by path is not enough while ANY
+//      directory on the way belongs to the user: `rename` needs only write
+//      access to the parent, so a checked entry (or a backup directory in
+//      the making) can be swapped between root's check and root's write.
+//  So root keeps nothing in the home. Quarantine, backups and config
+//  snapshots of the helper live under /Library/Application Support/
+//  launchkeeper — a chain that belongs to root and is writable by nobody
+//  else, created and checked here before every request. Entries in the
+//  user's quarantine (the CLI's, or handed over by helpers before 0.1.7)
+//  are never restored or purged by the helper.
 //
 
 import Foundation
 import Darwin
+import LaunchKeeperKit
 
-/// Checks and prepares quarantine paths for root.
+/// Checks and prepares the root-owned bookkeeping tree.
 public enum QuarantineTrust {
 
-    /// Makes sure the quarantine root exists as a chain of real directories
-    /// below the client's home, owned by the client.
-    ///
-    /// Missing directories are created (and given to the client) through
-    /// directory descriptors; an existing component that is a symlink, not a
-    /// directory, or owned by someone else stops the helper.
-    /// - Parameters:
-    ///   - root: The quarantine root (must lie inside `client.home`).
-    ///   - client: The calling user.
-    /// - Returns: `nil` when the chain is safe, else the reason.
-    public static func prepareRoot(_ root: String, for client: ClientContext) -> String? {
-        let home = client.home.hasSuffix("/") ? String(client.home.dropLast()) : client.home
-        guard root.hasPrefix(home + "/") else { return "quarantine root outside the home" }
-        let components = root.dropFirst(home.count + 1).split(separator: "/").map(String.init)
-        guard !components.contains(where: { $0 == ".." || $0 == "." || $0.isEmpty }) else {
-            return "quarantine root with relative components"
-        }
+    /// The helper's bookkeeping directories (quarantine, backups, config snapshots).
+    public static let systemDirectories = [LaunchKeeperPaths.systemQuarantine, LaunchKeeperPaths.systemBackups,
+                                           LaunchKeeperPaths.systemConfigSnapshots]
 
-        var current = open(home, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
-        guard current >= 0 else { return "cannot open the home safely" }
-        var homeInfo = stat()
-        guard fstat(current, &homeInfo) == 0, Int(homeInfo.st_uid) == client.uid else {
-            close(current); return "the home does not belong to the client"
-        }
-        let group = homeInfo.st_gid
-        for component in components {
-            var next = openat(current, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
-            if next < 0 && errno == ENOENT {
-                guard mkdirat(current, component, 0o755) == 0 || errno == EEXIST else {
-                    close(current); return "cannot create \(component)"
-                }
-                next = openat(current, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
-                if next >= 0 {
-                    var created = stat()
-                    // Only a directory root just made (owner root) is handed to the client.
-                    if fstat(next, &created) == 0, created.st_uid == 0 {
-                        _ = fchown(next, uid_t(client.uid), group)
-                    }
-                }
+    /// Creates the helper's bookkeeping directories when missing and checks
+    /// the whole chain from `/`: real directories, owned by root, writable
+    /// by nobody else. Only root calls this (the helper).
+    /// - Returns: `nil` when safe, else the reason.
+    public static func prepareSystemDirectories() -> String? {
+        for directory in systemDirectories {
+            var path = ""
+            for component in directory.split(separator: "/") {
+                path += "/" + component
+                if mkdir(path, 0o755) != 0 && errno != EEXIST { return "cannot create \(path)" }
             }
-            close(current)
-            guard next >= 0 else { return "\(component) is not a real directory (symlink?)" }
-            var info = stat()
-            guard fstat(next, &info) == 0, Int(info.st_uid) == client.uid else {
-                close(next); return "\(component) does not belong to the client"
-            }
-            current = next
+            if let problem = verifyChain(directory, from: "/", trustedUID: 0) { return problem }
         }
-        close(current)
         return nil
     }
 
-    /// Whether root may restore or purge a quarantine entry.
-    ///
-    /// The entry directory, its manifest and every path from the entry down
-    /// to each quarantined item must be root-owned and no symlink — then no
-    /// process of the user can have changed what root is about to move or
-    /// delete. Entries a pre-0.1.7 helper handed over to the user fail this
-    /// check on purpose: their content can no longer be proven.
+    /// Checks every component of `path` below `base`: exists, is a directory,
+    /// no symlink, owned by `trustedUID` (the system chain: root), not
+    /// writable by group or others.
     /// - Parameters:
-    ///   - root: The quarantine root.
+    ///   - path: The directory to check.
+    ///   - base: Where the check starts (the system chain: `/`).
+    ///   - trustedUID: The only owner accepted.
+    /// - Returns: `nil` when the chain is safe, else the reason.
+    public static func verifyChain(_ path: String, from base: String, trustedUID: uid_t) -> String? {
+        let trimmedBase = base == "/" ? "" : base
+        guard path.hasPrefix(trimmedBase + "/") else { return "\(path) is not below \(base)" }
+        var walked = trimmedBase
+        for component in path.dropFirst(trimmedBase.count + 1).split(separator: "/") {
+            guard component != ".." && component != "." else { return "relative component in \(path)" }
+            walked += "/" + component
+            var info = stat()
+            guard lstat(walked, &info) == 0 else { return "missing: \(walked)" }
+            let type = info.st_mode & S_IFMT
+            if type == S_IFLNK { return "symlink: \(walked)" }
+            if type != S_IFDIR { return "not a directory: \(walked)" }
+            // /Library/Application Support is root:admin — the group may own, not write.
+            if info.st_uid != trustedUID { return "not owned by \(trustedUID == 0 ? "root" : "the trusted user"): \(walked)" }
+            if info.st_mode & (S_IWGRP | S_IWOTH) != 0 { return "writable by group or others: \(walked)" }
+        }
+        return nil
+    }
+
+    /// Whether root may restore or purge a quarantine entry of the root-owned store.
+    ///
+    /// Defense in depth — the store's chain is root-owned, so nothing below
+    /// it can have been swapped by the user: the entry directory, its
+    /// manifest and every path from the entry down to each quarantined item
+    /// must belong to `trustedUID`, be no symlink, and (directories) be
+    /// writable by nobody else.
+    /// - Parameters:
+    ///   - root: The quarantine root (the helper: `LaunchKeeperPaths.systemQuarantine`).
     ///   - name: The entry name (one path component).
-    ///   - quarantinedPaths: The entry's quarantined paths from its manifest.
+    ///   - quarantinedPaths: The entry's quarantined paths and receipt copies from its manifest.
+    ///   - trustedUID: The only owner accepted (root; tests use their own uid).
     /// - Returns: `nil` when trustworthy, else the reason.
-    public static func verifyEntry(root: String, name: String, quarantinedPaths: [String]) -> String? {
-        guard !name.isEmpty, !name.contains("/"), name != ".", name != ".." else { return "invalid entry name" }
+    public static func verifyEntry(root: String, name: String, quarantinedPaths: [String],
+                                   trustedUID: uid_t = 0) -> String? {
+        guard QuarantineStore.isValidName(name) else { return "invalid entry name" }
         let entry = root + "/" + name
-        if let problem = rootOwned(entry, directory: true) { return problem }
-        if let problem = rootOwned(entry + "/manifest.json", directory: false) { return problem }
+        if let problem = owned(entry, directory: true, by: trustedUID) { return problem }
+        if let problem = owned(entry + "/manifest.json", directory: false, by: trustedUID) { return problem }
         for path in quarantinedPaths {
-            guard path.hasPrefix(entry + "/files/") else { return "a quarantined path lies outside the entry" }
+            guard path.hasPrefix(entry + "/") else { return "a quarantined path lies outside the entry" }
             var walked = entry
             let parts = path.dropFirst(entry.count + 1).split(separator: "/").map(String.init)
             guard !parts.contains(where: { $0 == ".." || $0 == "." }) else { return "relative components in a quarantined path" }
             for part in parts {
                 walked += "/" + part
                 var info = stat()
-                guard lstat(walked, &info) == 0 else { continue }   // already restored / gone: the engine decides
+                guard lstat(walked, &info) == 0 else { break }   // already restored or gone: the engine reports it
                 if (info.st_mode & S_IFMT) == S_IFLNK { return "symlink inside the entry: \(walked)" }
-                if info.st_uid != 0 { return "not root-owned: \(walked)" }
+                if info.st_uid != trustedUID { return "foreign owner inside the entry: \(walked)" }
+                if (info.st_mode & S_IFMT) == S_IFDIR && info.st_mode & (S_IWGRP | S_IWOTH) != 0 {
+                    return "writable by group or others: \(walked)"
+                }
             }
         }
         return nil
     }
 
-    /// A path that must be a root-owned directory or regular file, no symlink.
-    private static func rootOwned(_ path: String, directory: Bool) -> String? {
+    /// A path that must be a directory or regular file of `uid`, no symlink.
+    private static func owned(_ path: String, directory: Bool, by uid: uid_t) -> String? {
         var info = stat()
         guard lstat(path, &info) == 0 else { return "missing: \(path)" }
         let type = info.st_mode & S_IFMT
         if type == S_IFLNK { return "symlink: \(path)" }
         if type != (directory ? S_IFDIR : S_IFREG) { return "unexpected file type: \(path)" }
-        if info.st_uid != 0 {
-            return "owned by the user, not root: \(path) — handed over by an older helper; its content cannot be "
-                + "proven any more, so it is not restored with administrator rights (check it and move it back by hand)"
-        }
+        if info.st_uid != uid { return "foreign owner: \(path)" }
+        if directory && info.st_mode & (S_IWGRP | S_IWOTH) != 0 { return "writable by group or others: \(path)" }
         return nil
     }
 }

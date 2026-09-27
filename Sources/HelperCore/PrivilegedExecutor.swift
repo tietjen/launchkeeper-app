@@ -34,6 +34,36 @@ public struct ClientContext: Equatable, Sendable {
     }
 }
 
+/// Where the helper keeps quarantine, backups and config snapshots.
+///
+/// In production the root-owned tree under /Library/Application Support/
+/// launchkeeper (`system`); tests point it at a temp directory and their own uid.
+public struct Bookkeeping: Sendable {
+    /// Quarantine entries the helper creates, restores and purges.
+    public var quarantine: String
+    /// Launch-dir snapshots before removals.
+    public var backups: String
+    /// Config-source snapshots (crontab, loginwindow).
+    public var configSnapshots: String
+    /// The only owner trusted inside the tree.
+    public var trustedUID: uid_t
+    /// Creates the directories when missing and checks the chain; `nil` = safe.
+    public var prepare: @Sendable () -> String?
+
+    /// Creates a bookkeeping description.
+    public init(quarantine: String, backups: String, configSnapshots: String, trustedUID: uid_t,
+                prepare: @escaping @Sendable () -> String?) {
+        self.quarantine = quarantine; self.backups = backups; self.configSnapshots = configSnapshots
+        self.trustedUID = trustedUID; self.prepare = prepare
+    }
+
+    /// The root-owned tree (review 2026-09-27: root keeps nothing in a user's home).
+    public static let system = Bookkeeping(
+        quarantine: LaunchKeeperPaths.systemQuarantine, backups: LaunchKeeperPaths.systemBackups,
+        configSnapshots: LaunchKeeperPaths.systemConfigSnapshots, trustedUID: 0,
+        prepare: { QuarantineTrust.prepareSystemDirectories() })
+}
+
 /// Executes privileged requests (always with `--apply` semantics — the plan
 /// was shown to the user by the app before they authenticated).
 public struct PrivilegedExecutor {
@@ -45,10 +75,14 @@ public struct PrivilegedExecutor {
     public var auditDirectory: String
     /// File-system access (tests use a temp tree).
     public var fileManager: FileManager
+    /// Where quarantine, backups and config snapshots go — never the user's home.
+    public var bookkeeping: Bookkeeping
 
     /// Creates the executor.
     public init(runner: CommandRunner = RootRunner(), btmCache: BTMDumpCache = BTMDumpCache(),
-                auditDirectory: String = "/Library/Logs/launchkeeper", fileManager: FileManager = .default) {
+                auditDirectory: String = "/Library/Logs/launchkeeper", fileManager: FileManager = .default,
+                bookkeeping: Bookkeeping = .system) {
+        self.bookkeeping = bookkeeping
         self.runner = runner
         self.btmCache = btmCache
         self.auditDirectory = auditDirectory
@@ -62,54 +96,74 @@ public struct PrivilegedExecutor {
     /// - Returns: The engines' result.
     public func perform(_ request: PrivilegedRequest, client: ClientContext) -> PrivilegedOutcome {
         if let problem = request.validationError() { return .error(problem) }
-        let audit = AuditLog(directory: auditDirectory)
-        let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
+        if let problem = bookkeeping.prepare() {
+            return PrivilegedOutcome(state: "refused", detail: "unsafe bookkeeping directory: \(problem)")
+        }
         btmCache.preferCached = true
-        if let refusal = trustRefusal(request, quarantineRoot: quarantineRoot, client: client) { return refusal }
-
         switch request.kind {
         case .disable, .enable, .remove, .removeWorking:
             let operation: RemediationOperation = request.kind == .disable ? .disable
                 : request.kind == .enable ? .enable : .remove
-            let engine = RemediationEngine(environment: RemediationEnvironment(
-                runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
-                quarantineRoot: quarantineRoot, btmCache: btmCache), audit: audit)
-            let result = engine.run(operation: operation, target: request.target, apply: true,
-                                    allowWorking: request.kind == .removeWorking)
+            let result = remediationEngine(for: client).run(operation: operation, target: request.target, apply: true,
+                                                            allowWorking: request.kind == .removeWorking)
             return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .restore, .purge, .uninstall:
-            let engine = CleanupEngine(environment: CleanupEnvironment(
-                runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
-                quarantineRoot: quarantineRoot), audit: audit)
-            let result: CleanupResult
-            switch request.kind {
-            case .restore: result = engine.restore(name: request.target, apply: true)
-            case .purge: result = engine.purge(name: request.target, apply: true)
-            default: result = engine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
-            }
-            return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+            return performCleanup(request, client: client)
         }
     }
 
-    /// The quarantine checks before root touches the user's quarantine
-    /// (review 2026-09-27): a request that creates entries needs a safe,
-    /// client-owned quarantine root; a restore or purge needs a root-owned,
-    /// untouched entry. `nil` = go ahead.
-    func trustRefusal(_ request: PrivilegedRequest, quarantineRoot: String,
-                      client: ClientContext) -> PrivilegedOutcome? {
-        switch request.kind {
-        case .disable, .enable:
-            return nil
-        case .remove, .removeWorking, .uninstall:
-            guard let problem = QuarantineTrust.prepareRoot(quarantineRoot, for: client) else { return nil }
-            return PrivilegedOutcome(state: "refused", detail: "unsafe quarantine directory: \(problem)")
-        case .restore, .purge:
-            let paths = QuarantineStore(root: quarantineRoot, fileManager: fileManager)
-                .load(request.target)?.moves.map(\.quarantined) ?? []
-            guard let problem = QuarantineTrust.verifyEntry(root: quarantineRoot, name: request.target,
-                                                            quarantinedPaths: paths) else { return nil }
-            return PrivilegedOutcome(state: "refused", detail: "quarantine entry not trustworthy: \(problem)")
+    /// The remediation engine as root: the client's uid and home for resolving
+    /// entries, the root-owned tree for everything the engine writes.
+    func remediationEngine(for client: ClientContext) -> RemediationEngine {
+        RemediationEngine(environment: RemediationEnvironment(
+            runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
+            backupsRoot: bookkeeping.backups, configSnapshotsRoot: bookkeeping.configSnapshots,
+            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine,
+            btmCache: btmCache), audit: AuditLog(directory: auditDirectory))
+    }
+
+    /// Restore, purge or uninstall — restore and purge only for trusted
+    /// entries of the root-owned store, checked right before the engine runs.
+    func performCleanup(_ request: PrivilegedRequest, client: ClientContext) -> PrivilegedOutcome {
+        if request.kind == .restore || request.kind == .purge, let refusal = entryRefusal(request.target, client: client) {
+            return refusal
         }
+        let engine = CleanupEngine(environment: CleanupEnvironment(
+            runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
+            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine),
+            audit: AuditLog(directory: auditDirectory))
+        let result: CleanupResult
+        switch request.kind {
+        case .restore: result = engine.restore(name: request.target, apply: true)
+        case .purge: result = engine.purge(name: request.target, apply: true)
+        default: result = engine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
+        }
+        return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+    }
+
+    /// Why root must not restore or purge an entry — `nil` when it may.
+    ///
+    /// Only entries of the root-owned store qualify (defense in depth:
+    /// `QuarantineTrust.verifyEntry`). An entry in the user's quarantine —
+    /// made by the CLI, or handed over by a helper before 0.1.7 — is refused
+    /// with the way that still works: the terminal.
+    func entryRefusal(_ name: String, client: ClientContext) -> PrivilegedOutcome? {
+        let store = QuarantineStore(root: bookkeeping.quarantine, fileManager: fileManager)
+        guard QuarantineStore.isValidName(name), let manifest = store.load(name) else {
+            let userManifest = LaunchKeeperPaths.quarantine(home: client.home) + "/" + name + "/manifest.json"
+            if QuarantineStore.isValidName(name), fileManager.fileExists(atPath: userManifest) {
+                return PrivilegedOutcome(state: "refused", detail: "entry in your own quarantine (made by the CLI or an "
+                    + "older helper) — the helper only restores entries it keeps itself; in Terminal: "
+                    + "launchkeeper quarantine restore \(name)")
+            }
+            return PrivilegedOutcome(state: "refused", detail: "no such quarantine entry")
+        }
+        let paths = manifest.moves.map(\.quarantined) + manifest.receiptCopies
+        guard let problem = QuarantineTrust.verifyEntry(root: bookkeeping.quarantine, name: name,
+                                                        quarantinedPaths: paths, trustedUID: bookkeeping.trustedUID) else {
+            return nil
+        }
+        return PrivilegedOutcome(state: "refused", detail: "quarantine entry not trustworthy: \(problem)")
     }
 
     /// Executes a batch for one client (Phase 10) — after ONE authorization.
@@ -128,22 +182,22 @@ public struct PrivilegedExecutor {
                              shouldContinue: () -> Bool = { true },
                              progress: (Int, PrivilegedOutcome) -> Void = { _, _ in }) -> [PrivilegedOutcome] {
         var outcomes = [PrivilegedOutcome?](repeating: nil, count: requests.count)
-        let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
         func finish(_ index: Int, _ outcome: PrivilegedOutcome) {
             outcomes[index] = outcome
             progress(index, outcome)
         }
-        let audit = AuditLog(directory: auditDirectory)
         btmCache.preferCached = true
+        if let problem = bookkeeping.prepare() {
+            let refusal = PrivilegedOutcome(state: "refused", detail: "unsafe bookkeeping directory: \(problem)")
+            for index in requests.indices { finish(index, refusal) }
+            return outcomes.map { $0 ?? refusal }
+        }
 
         // Invalid entries never reach an engine.
         var remediation: [(index: Int, request: RemediationRequest)] = []
         var cleanup: [Int] = []
         for (index, request) in requests.enumerated() {
             if let problem = request.validationError() { finish(index, .error(problem)); continue }
-            if let refusal = trustRefusal(request, quarantineRoot: quarantineRoot, client: client) {
-                finish(index, refusal); continue
-            }
             switch request.kind {
             case .disable: remediation.append((index, RemediationRequest(operation: .disable, target: request.target)))
             case .enable: remediation.append((index, RemediationRequest(operation: .enable, target: request.target)))
@@ -155,33 +209,21 @@ public struct PrivilegedExecutor {
         }
 
         if !remediation.isEmpty {
-            let engine = RemediationEngine(environment: RemediationEnvironment(
-                runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
-                quarantineRoot: quarantineRoot, btmCache: btmCache), audit: audit)
-            _ = engine.runBatch(remediation.map(\.request), apply: true, shouldContinue: shouldContinue,
-                                progress: { position, result in
+            _ = remediationEngine(for: client).runBatch(remediation.map(\.request), apply: true,
+                                                        shouldContinue: shouldContinue, progress: { position, result in
                 finish(remediation[position].index,
                        Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint))
             })
         }
 
-        let cleanupEngine = CleanupEngine(environment: CleanupEnvironment(
-            runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
-            quarantineRoot: quarantineRoot), audit: audit)
         for index in cleanup {
             guard shouldContinue() else {
                 finish(index, PrivilegedOutcome(state: "refused", detail: "stopped before this entry",
                                                 messages: ["the batch was stopped — nothing ran for this entry"]))
                 continue
             }
-            let request = requests[index]
-            let result: CleanupResult
-            switch request.kind {
-            case .restore: result = cleanupEngine.restore(name: request.target, apply: true)
-            case .purge: result = cleanupEngine.purge(name: request.target, apply: true)
-            default: result = cleanupEngine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
-            }
-            finish(index, Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint))
+            // Trust is checked here, right before the engine (review S4).
+            finish(index, performCleanup(requests[index], client: client))
         }
 
         return outcomes.map { $0 ?? .error("not run") }

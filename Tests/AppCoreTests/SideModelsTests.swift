@@ -53,7 +53,7 @@ final class SideModelsTests: XCTestCase {
                                                                  kind: "file")],
                                           receiptCopies: [], forgot: false, status: "applied-ok", notes: [])
         XCTAssertNil(store.write(manifest))
-        let model = QuarantineModel(root: root)
+        let model = QuarantineModel(roots: [root])
         model.reload()
         XCTAssertEqual(model.entries.map(\.packageIdentifier), ["com.vendor.x"])
     }
