@@ -34,6 +34,7 @@ struct DetailView: View {
 
     var body: some View {
         Form {
+            QueuedBanner(targets: [.entry(key: item.key)])
             if expertMode {
                 expertSections
             } else {

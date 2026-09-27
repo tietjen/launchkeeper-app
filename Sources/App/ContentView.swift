@@ -209,12 +209,13 @@ struct SidebarView: View {
 struct InventoryTable: View {
     @Environment(InventoryStore.self) private var store
     @Environment(Marks.self) private var marks
+    @Environment(QueueModel.self) private var queue
     @Binding var selectedKey: String?
     @Binding var sortOrder: [KeyPathComparator<InventoryRow>]
 
     var body: some View {
         Table(store.visibleRows.sorted(using: sortOrder), selection: $selectedKey, sortOrder: $sortOrder) {
-            TableColumn("") { row in MarkBox(id: row.id, set: \.entries, marks: marks) }
+            TableColumn("") { row in MarkBox(id: row.id, set: \.entries, marks: marks, queue: queue, targets: [.entry(key: row.id)]) }
                 .width(22)
             TableColumn("") { row in BadgeStrip(badges: row.badges) }
                 .width(min: 40, ideal: 56, max: 90)

@@ -2225,6 +2225,22 @@
         }
       }
     },
+    "Herausnehmen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herausnehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take out"
+          }
+        }
+      }
+    },
     "Herkunft": {
       "localizations": {
         "de": {
@@ -2541,6 +2557,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toggle in System Settings"
+          }
+        }
+      }
+    },
+    "In der Warteschlange: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Warteschlange: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the queue: %@"
+          }
+        }
+      }
+    },
+    "In der Warteschlange: %@ — klicken zum Herausnehmen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Warteschlange: %@ — klicken zum Herausnehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the queue: %@ — click to take it out"
           }
         }
       }

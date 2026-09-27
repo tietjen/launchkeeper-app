@@ -48,6 +48,7 @@ func revealInFinder(_ path: String) {
 struct BackgroundPane: View {
     @Environment(InventoryStore.self) private var store
     @Environment(Marks.self) private var marks
+    @Environment(QueueModel.self) private var queue
     /// Selected row, by `BackgroundEntry.id` (unique — the BTM identifier is not).
     @Binding var selection: String?
 
@@ -66,12 +67,12 @@ struct BackgroundPane: View {
                     }
                 }
                 Section("Im Hintergrund erlauben — Apps und Entwickler") {
-                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry, marks: marks).tag(entry.id) }
+                    ForEach(entries.filter { !$0.unnamed }) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry)).tag(entry.id) }
                 }
                 let unnamed = entries.filter(\.unnamed)
                 if !unnamed.isEmpty {
                     Section {
-                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry, marks: marks).tag(entry.id) }
+                        ForEach(unnamed) { entry in BackgroundEntryRow(entry: entry, marks: marks, queue: queue, targets: targets(entry)).tag(entry.id) }
                     } header: {
                         Text("Im Hintergrund erlauben — ohne Entwicklerangabe")
                     } footer: {
@@ -85,6 +86,12 @@ struct BackgroundPane: View {
                                    description: Text("Die Ansicht entsteht aus dem Inventar — ⌘R."))
         }
     }
+
+    /// The queue targets a background row stands for: its components' entries.
+    private func targets(_ entry: BackgroundEntry) -> [QueueTarget] {
+        let byID = store.itemsByDisplayID
+        return entry.row.components.compactMap { byID[$0.id].map { QueueTarget.entry(key: $0.key) } }
+    }
 }
 
 /// One background row: the name System Settings shows, what tells it apart
@@ -93,10 +100,13 @@ struct BackgroundEntryRow: View {
     let entry: BackgroundEntry
     /// Passed in — list cells read no environment (see `MarkBox`).
     let marks: Marks
+    let queue: QueueModel
+    /// The queue targets of the row's components.
+    let targets: [QueueTarget]
 
     var body: some View {
         HStack {
-            if !entry.row.components.isEmpty { MarkBox(id: entry.id, set: \.background, marks: marks) }
+            if !entry.row.components.isEmpty { MarkBox(id: entry.id, set: \.background, marks: marks, queue: queue, targets: targets) }
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.title)
                 Text(entry.subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -133,6 +143,7 @@ struct ToggleBadge: View {
 struct ReceiptsPane: View {
     @Environment(InventoryStore.self) private var store
     @Environment(Marks.self) private var marks
+    @Environment(QueueModel.self) private var queue
     /// Selected package id.
     @Binding var selection: String?
     @State private var onlyMissing = false
@@ -145,7 +156,7 @@ struct ReceiptsPane: View {
             PaneIntro(text: "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen.")
                 .padding(12)
             Table(rows, selection: $selection, sortOrder: $sortOrder) {
-                TableColumn("") { row in MarkBox(id: row.id, set: \.packages, marks: marks) }.width(22)
+                TableColumn("") { row in MarkBox(id: row.id, set: \.packages, marks: marks, queue: queue, targets: [.package(id: row.id)]) }.width(22)
                 TableColumn("Paket", value: \.id) { row in Text(row.id).textSelection(.enabled) }
                     .width(min: 200, ideal: 300)
                 TableColumn("Version") { row in Text(row.version ?? "–") }.width(min: 60, ideal: 90)
@@ -178,6 +189,7 @@ struct ReceiptsPane: View {
 struct LeftoversPane: View {
     @Environment(LeftoversModel.self) private var model
     @Environment(Marks.self) private var marks
+    @Environment(QueueModel.self) private var queue
     /// Selected bundle id.
     @Binding var selection: String?
 
@@ -199,7 +211,7 @@ struct LeftoversPane: View {
                         PaneIntro(text: "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben.")
                     }
                     ForEach(model.visible, id: \.bundleIdentifier) { candidate in
-                        LeftoverRow(candidate: candidate, marks: marks).tag(candidate.bundleIdentifier)
+                        LeftoverRow(candidate: candidate, marks: marks, queue: queue).tag(candidate.bundleIdentifier)
                     }
                 }
             }
@@ -219,10 +231,12 @@ struct LeftoverRow: View {
     let candidate: AppLeftoverCandidate
     /// Passed in — list cells read no environment (see `MarkBox`).
     let marks: Marks
+    let queue: QueueModel
 
     var body: some View {
         HStack {
-            MarkBox(id: candidate.bundleIdentifier, set: \.leftovers, marks: marks)
+            MarkBox(id: candidate.bundleIdentifier, set: \.leftovers, marks: marks, queue: queue,
+                    targets: [.leftovers(bundleID: candidate.bundleIdentifier)])
             Text(candidate.bundleIdentifier)
             Spacer()
             Text(ByteCountFormatter.string(fromByteCount: Int64(candidate.totalBytes), countStyle: .file))
@@ -288,7 +302,9 @@ struct QuarantinePane: View {
                         }
                     } label: {
                         HStack {
-                            if entry.status != "restored" && !terminalOnly(entry) { MarkBox(id: entry.name, set: \.quarantine, marks: marks) }
+                            if entry.status != "restored" && !terminalOnly(entry) {
+                                MarkBox(id: entry.name, set: \.quarantine, marks: marks, queue: queue, targets: [.quarantine(name: entry.name)])
+                            }
                             Text(entry.packageIdentifier ?? entry.notes.first ?? entry.kind)
                             Spacer()
                             Text("\(entry.moves.count) Pfad(e)").foregroundStyle(.secondary)
@@ -338,6 +354,7 @@ struct PackageDetail: View {
 
     var body: some View {
         Form {
+            QueuedBanner(targets: [.package(id: row.id)])
             SummarySections(title: row.id, summary: PackageSummary.build(for: row))
             if !row.items.isEmpty {
                 Section("Startet automatisch") {
@@ -355,6 +372,7 @@ struct LeftoverDetail: View {
 
     var body: some View {
         Form {
+            QueuedBanner(targets: [.leftovers(bundleID: candidate.bundleIdentifier)])
             SummarySections(title: candidate.bundleIdentifier, summary: LeftoverSummary.build(for: candidate))
         }
         .formStyle(.grouped)

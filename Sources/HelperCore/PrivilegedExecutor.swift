@@ -115,14 +115,17 @@ public struct PrivilegedExecutor {
     /// The remediation engine as root: the client's uid and home for resolving
     /// entries, the root-owned tree for everything the engine writes.
     func remediationEngine(for client: ClientContext) -> RemediationEngine {
-        RemediationEngine(environment: RemediationEnvironment(
+        var environment = RemediationEnvironment(
             runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
             // Only the system launch dirs: removals and their snapshots as root
             // never touch the user's own LaunchAgents (review 2026-09-27, B4).
             launchDirs: Self.systemLaunchDirs, systemDirPrefixes: Self.systemLaunchDirs,
             backupsRoot: bookkeeping.backups, configSnapshotsRoot: bookkeeping.configSnapshots,
             quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine,
-            btmCache: btmCache), audit: AuditLog(directory: auditDirectory))
+            btmCache: btmCache)
+        // The user's own entries are the app's job, never root's (review C-1).
+        environment.systemScopeOnly = true
+        return RemediationEngine(environment: environment, audit: AuditLog(directory: auditDirectory))
     }
 
     /// The launch directories the helper removes from and snapshots.
@@ -134,10 +137,12 @@ public struct PrivilegedExecutor {
         if request.kind == .restore || request.kind == .purge, let refusal = entryRefusal(request.target, client: client) {
             return refusal
         }
-        let engine = CleanupEngine(environment: CleanupEnvironment(
+        var environment = CleanupEnvironment(
             runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
-            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine),
-            audit: AuditLog(directory: auditDirectory))
+            quarantineRoot: bookkeeping.quarantine, systemQuarantineRoot: bookkeeping.quarantine)
+        // Root never moves files out of places users can write (review C-2).
+        environment.forbiddenMovePrefixes = CleanupEnvironment.userWritablePrefixes
+        let engine = CleanupEngine(environment: environment, audit: AuditLog(directory: auditDirectory))
         let result: CleanupResult
         switch request.kind {
         case .restore: result = engine.restore(name: request.target, apply: true)

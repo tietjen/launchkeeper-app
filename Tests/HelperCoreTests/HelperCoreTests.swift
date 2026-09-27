@@ -238,6 +238,7 @@ final class QuarantineTrustTests: XCTestCase {
         XCTAssertEqual(environment.quarantineRoot, "/tmp/lk-env-check/quarantine")
         XCTAssertFalse([environment.backupsRoot, environment.configSnapshotsRoot, environment.quarantineRoot]
             .contains { $0.hasPrefix("/Users/alice") }, "nothing in the client's home")
+        XCTAssertTrue(environment.systemScopeOnly, "the user's own entries are refused (review C-1)")
     }
 
     func testTheRealSystemChainIsAcceptedByTheCheck() {

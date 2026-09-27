@@ -224,6 +224,17 @@ final class QueueModelTests: XCTestCase {
         XCTAssertEqual(queue.items[0].status, .manual(done: true))
     }
 
+    func testViewsFindWhatIsQueuedAndCanTakeItOut() {
+        // TJ 2026-09-27: queued rows are marked in their view and can be taken out there.
+        let queue = QueueModel(local: StubBatch(), storeURL: nil)
+        queue.add([entry("a"), QueueItem(target: .package(id: "com.vendor.pkg"), title: "pkg", origin: "Pakete",
+                                         action: .uninstall(package: "com.vendor.pkg"))])
+        XCTAssertEqual(queue.item(for: .entry(key: "a"))?.action, .remediation(operation: "disable", key: "a"))
+        XCTAssertNil(queue.item(for: .entry(key: "b")))
+        queue.remove([queue.item(for: .package(id: "com.vendor.pkg"))!.id])
+        XCTAssertNil(queue.item(for: .package(id: "com.vendor.pkg")))
+    }
+
     func testGuidesPointToTheRightPlace() {
         func item(_ type: ItemType, _ category: ItemCategory) -> BackgroundItem {
             BackgroundItem(key: "k", displayName: "k", type: type, path: nil, label: nil, domain: .user, category: category)

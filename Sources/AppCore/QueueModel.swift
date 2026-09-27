@@ -230,6 +230,11 @@ public final class QueueModel {
         remove(Set(items.filter { $0.status == .done || $0.status == .manual(done: true) }.map(\.id)))
     }
 
+    /// The queue item for a target, if it is queued (views mark queued rows).
+    public func item(for target: QueueTarget) -> QueueItem? {
+        items.first { $0.target == target }
+    }
+
     // MARK: Checks
 
     /// Hints about items that get in each other's way — today: a package

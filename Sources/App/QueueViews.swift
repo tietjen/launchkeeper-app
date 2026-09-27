@@ -61,14 +61,63 @@ struct MarkBox: View {
     let id: String
     let set: ReferenceWritableKeyPath<Marks, Set<String>>
     let marks: Marks
+    /// The queue, to show what this row already has there (TJ, 2026-09-27).
+    let queue: QueueModel
+    /// The queue targets this row stands for (a background row: its components).
+    let targets: [QueueTarget]
 
     var body: some View {
+        let queued = targets.compactMap { queue.item(for: $0) }
+        if queued.isEmpty {
+            checkbox
+        } else {
+            // Already in the queue: shown instead of the checkbox; a click takes it out again.
+            Button { queue.remove(Set(queued.map(\.id))) } label: {
+                Image(systemName: "tray.full.fill").foregroundStyle(Self.color(for: queued))
+            }
+            .buttonStyle(.borderless)
+            .disabled(queue.phase != .idle)
+            .help(String(localized: "In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", ")) — klicken zum Herausnehmen"))
+        }
+    }
+
+    /// Blue while open, green when done, orange when refused or failed.
+    static func color(for items: [QueueItem]) -> Color {
+        if items.contains(where: { if case .failed = $0.status { return true }; if case .refused = $0.status { return true }; return false }) {
+            return .orange
+        }
+        return items.allSatisfy(\.isFinished) ? .green : .blue
+    }
+
+    private var checkbox: some View {
         Toggle("", isOn: Binding(
             get: { marks[keyPath: set].contains(id) },
             set: { on in if on { marks[keyPath: set].insert(id) } else { marks[keyPath: set].remove(id) } }))
             .toggleStyle(.checkbox)
             .labelsHidden()
             .help("Für die Stapelverarbeitung markieren")
+    }
+}
+
+/// In a detail column: "in the queue: …" with a way to take it out again.
+struct QueuedBanner: View {
+    let targets: [QueueTarget]
+    @Environment(QueueModel.self) private var queue
+
+    var body: some View {
+        let queued = targets.compactMap { queue.item(for: $0) }
+        if !queued.isEmpty {
+            Section {
+                HStack {
+                    Label { Text("In der Warteschlange: \(queued.map(\.action.title).joined(separator: ", "))") } icon: {
+                        Image(systemName: "tray.full.fill").foregroundStyle(MarkBox.color(for: queued))
+                    }
+                    Spacer()
+                    Button("Herausnehmen") { queue.remove(Set(queued.map(\.id))) }
+                        .disabled(queue.phase != .idle)
+                }
+            }
+        }
     }
 }
 
