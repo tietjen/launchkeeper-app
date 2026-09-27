@@ -51,9 +51,12 @@ func ensureRight() {
 /// session. The right has no grace period: this is the only check, and it
 /// happens right before the action. (Live 2026-09-26: checking a grant the
 /// app had obtained itself failed — with timeout 0 a grant is used up.)
-/// - Parameter data: `AuthorizationExternalForm` bytes from the client.
+/// - Parameters:
+///   - data: `AuthorizationExternalForm` bytes from the client.
+///   - prompt: A line for the dialog (batches: "… 17 startup items"); `nil`
+///     shows the rule's own prompt.
 /// - Returns: `true` when the user authenticated as an administrator.
-func authorizeClient(_ data: Data) -> Bool {
+func authorizeClient(_ data: Data, prompt: String? = nil) -> Bool {
     guard data.count == MemoryLayout<AuthorizationExternalForm>.size else { return false }
     var external = AuthorizationExternalForm()
     withUnsafeMutableBytes(of: &external) { _ = data.copyBytes(to: $0) }
@@ -62,14 +65,47 @@ func authorizeClient(_ data: Data) -> Bool {
         return false
     }
     defer { AuthorizationFree(authRef, [.destroyRights]) }
+    let flags: AuthorizationFlags = [.extendRights, .interactionAllowed]
     return HelperRight.name.withCString { name in
-        var item = AuthorizationItem(name: name, valueLength: 0, value: nil, flags: 0)
-        return withUnsafeMutablePointer(to: &item) { itemPointer in
-            var rights = AuthorizationRights(count: 1, items: itemPointer)
-            return AuthorizationCopyRights(authRef, &rights, nil, [.extendRights, .interactionAllowed],
-                                           nil) == errAuthorizationSuccess
+        var right = AuthorizationItem(name: name, valueLength: 0, value: nil, flags: 0)
+        return withUnsafeMutablePointer(to: &right) { rightPointer in
+            var rights = AuthorizationRights(count: 1, items: rightPointer)
+            guard let prompt else {
+                return AuthorizationCopyRights(authRef, &rights, nil, flags, nil) == errAuthorizationSuccess
+            }
+            // kAuthorizationEnvironmentPrompt: the dialog's text for this one request.
+            return kAuthorizationEnvironmentPrompt.withCString { key in
+                prompt.withCString { text in
+                    var item = AuthorizationItem(name: key, valueLength: strlen(text),
+                                                 value: UnsafeMutableRawPointer(mutating: text), flags: 0)
+                    return withUnsafeMutablePointer(to: &item) { itemPointer in
+                        var environment = AuthorizationEnvironment(count: 1, items: itemPointer)
+                        return AuthorizationCopyRights(authRef, &rights, &environment, flags, nil) == errAuthorizationSuccess
+                    }
+                }
+            }
         }
     }
+}
+
+/// The app's progress receiver. `@unchecked Sendable`: an XPC proxy may be
+/// messaged from any thread (NSXPCConnection serializes the sends).
+struct ProgressSink: @unchecked Sendable {
+    let proxy: LaunchKeeperClientXPC?
+}
+
+/// A stop request for the running batch, set from the XPC thread while the
+/// batch runs on the service queue.
+final class StopFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stopped = false
+
+    /// Marks the running batch as stopped.
+    func set() { lock.lock(); stopped = true; lock.unlock() }
+    /// Clears the flag when a batch starts.
+    func reset() { lock.lock(); stopped = false; lock.unlock() }
+    /// Whether the batch may go on.
+    var shouldContinue: Bool { lock.lock(); defer { lock.unlock() }; return !stopped }
 }
 
 /// Exits the helper after a quiet minute. launchd starts it again on the
@@ -101,6 +137,8 @@ final class IdleExit: @unchecked Sendable {
 final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXPC, @unchecked Sendable {
     private let queue = DispatchQueue(label: "de.paranoidsecurity.LaunchKeeper.Helper.requests")
     private let executor = PrivilegedExecutor()
+    /// Set by `stopBatch` (any thread), read between the batch's entries.
+    private let stop = StopFlag()
     let idle: IdleExit
 
     override init() {
@@ -115,6 +153,8 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
         connection.setCodeSigningRequirement(HelperIdentity.clientRequirement)
         connection.exportedInterface = NSXPCInterface(with: LaunchKeeperHelperXPC.self)
         connection.exportedObject = self
+        // Batch progress goes back to the app through its exported object.
+        connection.remoteObjectInterface = NSXPCInterface(with: LaunchKeeperClientXPC.self)
         connection.resume()
         return true
     }
@@ -139,6 +179,43 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
             }
             reply((try? JSONEncoder().encode(outcome)) ?? Data())
         }
+    }
+
+    func performBatch(_ batch: Data, authorization: Data, reply: @escaping @Sendable (Data) -> Void) {
+        // Who asks, and where progress goes, come from the connection — never the payload.
+        let connection = NSXPCConnection.current()
+        let uid = connection?.effectiveUserIdentifier
+        let progressSink = ProgressSink(proxy: connection?.remoteObjectProxyWithErrorHandler { _ in } as? LaunchKeeperClientXPC)
+        queue.async { [self] in
+            idle.begin()
+            defer { idle.end() }
+            func answer(_ outcomes: [PrivilegedOutcome]) { reply((try? JSONEncoder().encode(outcomes)) ?? Data()) }
+            guard let decoded = try? JSONDecoder().decode(PrivilegedBatch.self, from: batch) else {
+                return answer([.error("malformed batch")])
+            }
+            if let problem = decoded.validationError() {
+                return answer(decoded.requests.map { _ in .error(problem) })
+            }
+            // One authentication for exactly this list (TJ, 2026-09-27).
+            guard authorizeClient(authorization, prompt: decoded.prompt) else {
+                return answer(decoded.requests.map { _ in PrivilegedOutcome(state: "refused", detail: "not authorized") })
+            }
+            guard let uid, let client = ClientContext.forUID(uid) else {
+                return answer(decoded.requests.map { _ in .error("unknown client user") })
+            }
+            stop.reset()
+            let outcomes = executor.performBatch(decoded.requests, client: client,
+                                                 shouldContinue: { stop.shouldContinue },
+                                                 progress: { index, outcome in
+                if let data = try? JSONEncoder().encode(outcome) { progressSink.proxy?.batchProgress(index, outcome: data) }
+            })
+            answer(outcomes)
+        }
+    }
+
+    func stopBatch() {
+        // Not on `queue`: that queue is busy running the batch.
+        stop.set()
     }
 
     func version(reply: @escaping @Sendable (String) -> Void) {

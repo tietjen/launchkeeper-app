@@ -87,3 +87,46 @@ final class PrivilegedExecutorTests: XCTestCase {
         XCTAssertEqual(owner?.intValue, Int(getuid()))
     }
 }
+
+// MARK: - Phase 10: batches
+
+final class PrivilegedBatchTests: XCTestCase {
+    private let client = ClientContext(uid: 501, home: FileManager.default.temporaryDirectory
+        .appendingPathComponent("lk-batch-\(UUID().uuidString)").path)
+
+    func testBatchValidation() {
+        let one = [PrivilegedRequest(kind: .disable, target: "x")]
+        XCTAssertNil(PrivilegedBatch(requests: one, prompt: "LaunchKeeper wants to change 1 startup item.").validationError())
+        XCTAssertEqual(PrivilegedBatch(requests: [], prompt: "p").validationError(), "empty batch")
+        XCTAssertEqual(PrivilegedBatch(requests: Array(repeating: one[0], count: PrivilegedBatch.maxRequests + 1),
+                                       prompt: "p").validationError(), "batch too large")
+        XCTAssertEqual(PrivilegedBatch(requests: one, prompt: "two\nlines").validationError(), "control characters in prompt")
+        XCTAssertEqual(PrivilegedBatch(requests: one, prompt: "").validationError(), "prompt missing or too long")
+    }
+
+    func testOutcomesComeBackInRequestOrderWithProgressForEveryEntry() {
+        let executor = PrivilegedExecutor(runner: ScriptedCommandRunner(), auditDirectory: NSTemporaryDirectory())
+        let requests = [
+            PrivilegedRequest(kind: .restore, target: "no-such-quarantine-entry"),   // cleanup, runs second
+            PrivilegedRequest(kind: .disable, target: "-bad"),                         // invalid, never runs
+            PrivilegedRequest(kind: .disable, target: "de.example.not.installed"),     // remediation, runs first
+        ]
+        var progressed: [Int] = []
+        let outcomes = executor.performBatch(requests, client: client, progress: { index, _ in progressed.append(index) })
+        XCTAssertEqual(outcomes.count, 3)
+        XCTAssertEqual(outcomes[1].state, "error")
+        XCTAssertEqual(outcomes[1].detail, "target looks like an option")
+        XCTAssertEqual(outcomes[0].state, "refused", "\(outcomes[0])")
+        XCTAssertEqual(outcomes[2].state, "refused", "\(outcomes[2])")
+        XCTAssertEqual(Set(progressed), [0, 1, 2], "every entry reports progress exactly once")
+        XCTAssertEqual(progressed.count, 3)
+    }
+
+    func testStopLeavesTheRestUnrun() {
+        let executor = PrivilegedExecutor(runner: ScriptedCommandRunner(), auditDirectory: NSTemporaryDirectory())
+        let outcomes = executor.performBatch([PrivilegedRequest(kind: .restore, target: "a"),
+                                              PrivilegedRequest(kind: .restore, target: "b")],
+                                             client: client, shouldContinue: { false })
+        XCTAssertEqual(outcomes.map(\.detail), ["stopped before this entry", "stopped before this entry"])
+    }
+}

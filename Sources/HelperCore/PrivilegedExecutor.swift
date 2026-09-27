@@ -1,6 +1,6 @@
 //
 //  PrivilegedExecutor.swift
-//  HelperCore — executes one privileged request with the CLI's engines.
+//  HelperCore — executes privileged requests (one, or a batch) with the CLI's engines.
 //
 //  Runs inside the helper (root). The request carries only an operation and
 //  a target name; the executor resolves everything itself: the calling
@@ -90,6 +90,79 @@ public struct PrivilegedExecutor {
             handOver(quarantineRoot: quarantineRoot, to: client)
             return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         }
+    }
+
+    /// Executes a batch for one client (Phase 10) — after ONE authorization.
+    ///
+    /// Remediation entries (disable / enable / remove / remove --working) run
+    /// first, as one kit batch against a single scan; quarantine and package
+    /// entries follow in order. Every entry keeps its own gate, audit line and
+    /// verification; a failure does not stop the rest (TJ, 2026-09-27).
+    /// - Parameters:
+    ///   - requests: The batch's actions, in the order the user queued them.
+    ///   - client: Who asked (from the connection).
+    ///   - shouldContinue: Asked between entries; `false` stops the batch.
+    ///   - progress: Called after each entry with its position in `requests`.
+    /// - Returns: One outcome per request, in the order of `requests`.
+    public func performBatch(_ requests: [PrivilegedRequest], client: ClientContext,
+                             shouldContinue: () -> Bool = { true },
+                             progress: (Int, PrivilegedOutcome) -> Void = { _, _ in }) -> [PrivilegedOutcome] {
+        var outcomes = [PrivilegedOutcome?](repeating: nil, count: requests.count)
+        func finish(_ index: Int, _ outcome: PrivilegedOutcome) {
+            outcomes[index] = outcome
+            progress(index, outcome)
+        }
+        let audit = AuditLog(directory: auditDirectory)
+        let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
+        btmCache.preferCached = true
+
+        // Invalid entries never reach an engine.
+        var remediation: [(index: Int, request: RemediationRequest)] = []
+        var cleanup: [Int] = []
+        for (index, request) in requests.enumerated() {
+            if let problem = request.validationError() { finish(index, .error(problem)); continue }
+            switch request.kind {
+            case .disable: remediation.append((index, RemediationRequest(operation: .disable, target: request.target)))
+            case .enable: remediation.append((index, RemediationRequest(operation: .enable, target: request.target)))
+            case .remove: remediation.append((index, RemediationRequest(operation: .remove, target: request.target)))
+            case .removeWorking:
+                remediation.append((index, RemediationRequest(operation: .remove, target: request.target, allowWorking: true)))
+            case .restore, .purge, .uninstall: cleanup.append(index)
+            }
+        }
+
+        if !remediation.isEmpty {
+            let engine = RemediationEngine(environment: RemediationEnvironment(
+                runner: runner, fileManager: fileManager, home: client.home, uid: client.uid,
+                quarantineRoot: quarantineRoot, btmCache: btmCache), audit: audit)
+            _ = engine.runBatch(remediation.map(\.request), apply: true, shouldContinue: shouldContinue,
+                                progress: { position, result in
+                finish(remediation[position].index,
+                       Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint))
+            })
+        }
+
+        let cleanupEngine = CleanupEngine(environment: CleanupEnvironment(
+            runner: runner, disk: DiskView(fileManager: fileManager), home: client.home,
+            quarantineRoot: quarantineRoot), audit: audit)
+        for index in cleanup {
+            guard shouldContinue() else {
+                finish(index, PrivilegedOutcome(state: "refused", detail: "stopped before this entry",
+                                                messages: ["the batch was stopped — nothing ran for this entry"]))
+                continue
+            }
+            let request = requests[index]
+            let result: CleanupResult
+            switch request.kind {
+            case .restore: result = cleanupEngine.restore(name: request.target, apply: true)
+            case .purge: result = cleanupEngine.purge(name: request.target, apply: true)
+            default: result = cleanupEngine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
+            }
+            finish(index, Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint))
+        }
+
+        handOver(quarantineRoot: quarantineRoot, to: client)
+        return outcomes.map { $0 ?? .error("not run") }
     }
 
     /// Maps an engine result into the wire type.
