@@ -10,9 +10,7 @@ jobs:
     name: Build and test (macOS)
     runs-on: macos-26
     steps:
-      # The newest Xcode on the image: Swift 6.1 (Xcode 16.4, the default)
-      # compiled the app module without writing object files (live 2026-09-26);
-      # the app is developed with Swift 6.4.
+      # The newest Xcode on the image — the app is developed with a current Swift.
       - name: Select the newest Xcode
         run: |
           ls -d /Applications/Xcode*.app

@@ -23,13 +23,35 @@ permissions:
   contents: write
 
 jobs:
+  # A release published locally (Scripts/release.sh --publish) pushes the tag
+  # too; without signing secrets, or with the release already there, there is
+  # nothing to build — the run says so instead of failing.
+  gate:
+    name: Anything to build?
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HAS_CERT: ${{ secrets.MACOS_CERTIFICATE_P12 != '' }}
+        run: |
+          if [ "$HAS_CERT" != "true" ]; then
+            echo "no signing secrets configured — skipped"; echo "run=false" >> "$GITHUB_OUTPUT"
+          elif gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already published — skipped"; echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   release:
     name: Build, sign, notarize, publish
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: macos-26
     steps:
-      # The newest Xcode on the image: Swift 6.1 (Xcode 16.4, the default)
-      # compiled the app module without writing object files (live 2026-09-26);
-      # the app is developed with Swift 6.4.
+      # The newest Xcode on the image — the app is developed with a current Swift.
       - name: Select the newest Xcode
         run: |
           ls -d /Applications/Xcode*.app
