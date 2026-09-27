@@ -481,6 +481,38 @@
         }
       }
     },
+    "Als erledigt abhaken": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als erledigt abhaken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick off as done"
+          }
+        }
+      }
+    },
+    "Als „Von Hand“ in die Warteschlange": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als „Von Hand“ in die Warteschlange"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to the queue as “By hand”"
+          }
+        }
+      }
+    },
     "Anhalten": {
       "localizations": {
         "de": {
@@ -817,6 +849,22 @@
         }
       }
     },
+    "Aus der Warteschlange nehmen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Warteschlange nehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take out of the queue"
+          }
+        }
+      }
+    },
     "Aus der Warteschlange nehmen — nichts wird ausgeführt": {
       "localizations": {
         "de": {
@@ -877,6 +925,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Run…"
+          }
+        }
+      }
+    },
+    "Automatisch": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatic"
           }
         }
       }
@@ -1185,6 +1249,22 @@
         }
       }
     },
+    "Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You take care of these yourself at the place named. After the next scan (⌘R) LaunchKeeper ticks off what is gone or switched off."
+          }
+        }
+      }
+    },
     "Das würde passieren — noch ist nichts geändert:": {
       "localizations": {
         "de": {
@@ -1361,18 +1441,34 @@
         }
       }
     },
-    "Deren Schalter verwaltet macOS selbst — die Detailansicht zeigt, wo.": {
+    "Der Eintrag ist nicht mehr im Inventar — damit ist er erledigt.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deren Schalter verwaltet macOS selbst — die Detailansicht zeigt, wo."
+            "value": "Der Eintrag ist nicht mehr im Inventar — damit ist er erledigt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "macOS manages their switches itself — the detail view shows where."
+            "value": "The entry is no longer in the inventory — so it is done."
+          }
+        }
+      }
+    },
+    "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS manages their switches itself. The queue shows under “By hand” where to do it; LaunchKeeper ticks them off after the next scan."
           }
         }
       }
@@ -1489,6 +1585,22 @@
         }
       }
     },
+    "Diesen Schalter verwaltet macOS selbst: Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen, bei der App oder dem Entwickler ausschalten — oder die App löschen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diesen Schalter verwaltet macOS selbst: Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen, bei der App oder dem Entwickler ausschalten — oder die App löschen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS manages this switch itself: System Settings › General › Login Items & Extensions, switch it off at the app or developer — or delete the app."
+          }
+        }
+      }
+    },
     "Dort lässt sich die Komponente einzeln steuern.": {
       "localizations": {
         "de": {
@@ -1517,6 +1629,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "It shows what the entry is and what you can do."
+          }
+        }
+      }
+    },
+    "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A program accepting connections can only be quit or switched off in its own settings; the firewall blocks incoming connections (System Settings › Network › Firewall)."
           }
         }
       }
@@ -1745,6 +1873,22 @@
         }
       }
     },
+    "Erledigt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
     "Erledigt und überprüft": {
       "localizations": {
         "de": {
@@ -1869,6 +2013,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Done"
+          }
+        }
+      }
+    },
+    "Freigaben widerrufen: Systemeinstellungen › Datenschutz & Sicherheit, dort in der passenden Rubrik (z. B. Bedienungshilfen, Festplattenvollzugriff) den Schalter ausschalten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freigaben widerrufen: Systemeinstellungen › Datenschutz & Sicherheit, dort in der passenden Rubrik (z. B. Bedienungshilfen, Festplattenvollzugriff) den Schalter ausschalten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revoke access: System Settings › Privacy & Security, switch it off in the matching section (e.g. Accessibility, Full Disk Access)."
           }
         }
       }
@@ -2657,6 +2817,22 @@
         }
       }
     },
+    "Kernel-Erweiterungen entfernt nur das Deinstallationsprogramm des Herstellers (oder dessen App). Danach neu starten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kernel-Erweiterungen entfernt nur das Deinstallationsprogramm des Herstellers (oder dessen App). Danach neu starten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the vendor’s uninstaller (or its app) removes kernel extensions. Restart afterwards."
+          }
+        }
+      }
+    },
     "Kette": {
       "localizations": {
         "de": {
@@ -2685,6 +2861,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Components"
+          }
+        }
+      }
+    },
+    "Konfigurationsprofile entfernen: Systemeinstellungen › Allgemein › Geräteverwaltung. Von einer Verwaltung (MDM) installierte Profile lassen sich dort nicht entfernen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konfigurationsprofile entfernen: Systemeinstellungen › Allgemein › Geräteverwaltung. Von einer Verwaltung (MDM) installierte Profile lassen sich dort nicht entfernen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove configuration profiles: System Settings › General › Device Management. Profiles installed by a management (MDM) cannot be removed there."
           }
         }
       }
@@ -2781,6 +2973,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "LaunchKeeper changed this itself (an action you ran)."
+          }
+        }
+      }
+    },
+    "LaunchKeeper kann diesen Eintrag nicht ändern.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper kann diesen Eintrag nicht ändern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper cannot change this entry."
           }
         }
       }
@@ -4257,6 +4465,22 @@
         }
       }
     },
+    "Systemeinstellungen öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemeinstellungen öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open System Settings"
+          }
+        }
+      }
+    },
     "Systemerweiterung (Netzwerk, Sicherheit, Treiber)": {
       "localizations": {
         "de": {
@@ -4269,6 +4493,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "System extension (network, security, driver)"
+          }
+        }
+      }
+    },
+    "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemerweiterungen entfernt man, indem man die zugehörige App löscht oder in ihr die Erweiterung abschaltet; ein-/ausschalten unter Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen › Erweiterungen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System extensions go away when you delete their app or switch the extension off in it; turn them on or off under System Settings › General › Login Items & Extensions › Extensions."
           }
         }
       }
@@ -4621,6 +4861,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Full rescan"
+          }
+        }
+      }
+    },
+    "Von Hand": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Hand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By hand"
+          }
+        }
+      }
+    },
+    "Von Hand erledigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Hand erledigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do by hand"
+          }
+        }
+      }
+    },
+    "Von Hand: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Hand: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By hand: %@"
           }
         }
       }
@@ -5169,6 +5457,22 @@
         }
       }
     },
+    "erledigt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "erledigt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "done"
+          }
+        }
+      }
+    },
     "erledigt und überprüft": {
       "localizations": {
         "de": {
@@ -5537,6 +5841,22 @@
         }
       }
     },
+    "nicht mehr im Inventar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht mehr im Inventar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no longer in the inventory"
+          }
+        }
+      }
+    },
     "nicht signiert": {
       "localizations": {
         "de": {
@@ -5693,6 +6013,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "unknown"
+          }
+        }
+      }
+    },
+    "von Hand": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "von Hand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by hand"
+          }
+        }
+      }
+    },
+    "von Hand — LaunchKeeper führt das nicht aus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "von Hand — LaunchKeeper führt das nicht aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by hand — LaunchKeeper does not run this"
           }
         }
       }

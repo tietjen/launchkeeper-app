@@ -55,6 +55,8 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
         case failed(String)
         /// The gate (or a precondition) refused — nothing ran.
         case refused(String)
+        /// By hand (step 4): open until a scan shows the change, or the user ticks it.
+        case manual(done: Bool)
     }
 
     /// Stable id of the queue row.
@@ -69,22 +71,38 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
     public var action: ActionRequest
     /// Where it stands.
     public var status: Status
+    /// By hand: whether the entry was enabled when queued — "done" once a
+    /// scan shows it gone or switched off. `nil` for automatic items.
+    public var manualBaseline: Bool?
 
-    /// Creates a pending item.
-    public init(target: QueueTarget, title: String, origin: String, action: ActionRequest) {
+    /// Creates a pending item (or an open manual one for `.manual` actions).
+    public init(target: QueueTarget, title: String, origin: String, action: ActionRequest,
+                manualBaseline: Bool? = nil) {
         self.id = UUID()
         self.target = target
         self.title = title
         self.origin = origin
         self.action = action
-        self.status = .pending
+        if case .manual = action {
+            self.status = .manual(done: false)
+            self.manualBaseline = manualBaseline ?? true
+        } else {
+            self.status = .pending
+            self.manualBaseline = nil
+        }
+    }
+
+    /// `true` for by-hand items — never planned or executed by the app.
+    public var isManual: Bool {
+        if case .manual = action { return true }
+        return false
     }
 
     /// `true` once the run is over for this item (done, failed or refused).
     public var isFinished: Bool {
         switch status {
-        case .done, .failed, .refused: return true
-        case .pending, .planned, .running: return false
+        case .done, .failed, .refused, .manual(done: true): return true
+        case .pending, .planned, .running, .manual(done: false): return false
         }
     }
 }
@@ -167,7 +185,8 @@ public final class QueueModel {
         for item in new {
             if let index = items.firstIndex(where: { $0.target == item.target }) {
                 items[index].action = item.action
-                items[index].status = .pending
+                items[index].status = item.status
+                items[index].manualBaseline = item.manualBaseline
                 outcomes[items[index].id] = nil
             } else {
                 items.append(item)
@@ -182,7 +201,12 @@ public final class QueueModel {
     public func setAction(_ action: ActionRequest, for id: QueueItem.ID) {
         guard phase == .idle, let index = items.firstIndex(where: { $0.id == id }) else { return }
         items[index].action = action
-        items[index].status = .pending
+        if case .manual = action {
+            items[index].status = .manual(done: false)
+            items[index].manualBaseline = items[index].manualBaseline ?? true
+        } else {
+            items[index].status = .pending
+        }
         outcomes[id] = nil
         save()
     }
@@ -205,7 +229,7 @@ public final class QueueModel {
 
     /// Removes the items that are done (successful ones only).
     public func clearDone() {
-        remove(Set(items.filter { $0.status == .done }.map(\.id)))
+        remove(Set(items.filter { $0.status == .done || $0.status == .manual(done: true) }.map(\.id)))
     }
 
     // MARK: Checks
@@ -235,7 +259,7 @@ public final class QueueModel {
     /// helper may have been set up meanwhile, a file may be back).
     public func plan() async {
         guard phase == .idle else { return }
-        let open = items.indices.filter { items[$0].status != .done }
+        let open = items.indices.filter { items[$0].status != .done && !items[$0].isManual }
         guard !open.isEmpty else { return }
         phase = .planning
         let requests = open.map { items[$0].action }
@@ -345,6 +369,35 @@ public final class QueueModel {
             let done = items.filter { runIDs.contains($0.id) && $0.isFinished }.count
             phase = .running(done: min(done, total), total: total)
         }
+    }
+
+    // MARK: By hand (step 4)
+
+    /// Ticks off by-hand items a scan shows as done: the entry is gone, or it
+    /// was enabled when queued and is switched off now.
+    /// - Parameter state: Current state of an entry by key — `nil` when it is
+    ///   no longer in the inventory, else whether it is enabled.
+    /// - Returns: How many items were ticked off now.
+    @discardableResult
+    public func updateManual(state: (String) -> Bool?) -> Int {
+        var ticked = 0
+        for index in items.indices where items[index].status == .manual(done: false) {
+            guard case .entry(let key) = items[index].target else { continue }
+            let enabledNow = state(key)
+            if enabledNow == nil || (items[index].manualBaseline == true && enabledNow == false) {
+                items[index].status = .manual(done: true)
+                ticked += 1
+            }
+        }
+        if ticked > 0 { save() }
+        return ticked
+    }
+
+    /// Ticks a by-hand item off (or on again) by the user's word.
+    public func setManual(done: Bool, for id: QueueItem.ID) {
+        guard let index = items.firstIndex(where: { $0.id == id }), items[index].isManual else { return }
+        items[index].status = .manual(done: done)
+        save()
     }
 
     // MARK: Way back

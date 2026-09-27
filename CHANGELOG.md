@@ -5,6 +5,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.3.1] — 2026-09-27
+
+### Added
+- **By hand** in the queue: entries neither the app nor the helper may change
+  (login items and background items macOS manages, system extensions,
+  configuration profiles, privacy grants, kernel extensions, listening
+  programs) can be queued too. The queue shows what to do and opens the
+  right place in System Settings; after the next scan LaunchKeeper ticks off
+  what is gone or switched off, or you tick it yourself. Apple's own entries
+  are never offered.
+
 ## [0.3.0] — 2026-09-27
 
 ### Security

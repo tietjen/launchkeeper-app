@@ -166,4 +166,53 @@ final class QueueModelTests: XCTestCase {
         XCTAssertEqual(hints.count, 1)
         XCTAssertNotNil(hints[queue.items[0].id])
     }
+
+    // MARK: By hand (step 4)
+
+    func testByHandItemsAreNeverPlannedOrRunAndTickOffAfterAScan() async {
+        let local = StubBatch()
+        let queue = QueueModel(local: local, storeURL: nil)
+        queue.add([QueueItem(target: .entry(key: "login"), title: "App", origin: "Hintergrund", action: .manual(key: "login"),
+                             manualBaseline: true),
+                   QueueItem(target: .entry(key: "gone"), title: "Old", origin: "Hintergrund", action: .manual(key: "gone")),
+                   entry("auto")])
+        XCTAssertEqual(queue.items[0].status, .manual(done: false))
+        await queue.execute()
+        XCTAssertEqual(local.calls.flatMap(\.requests), [.remediation(operation: "disable", key: "auto"),
+                                                         .remediation(operation: "disable", key: "auto")],
+                       "only the automatic item is planned and run")
+        XCTAssertEqual(queue.items[0].status, .manual(done: false))
+
+        // After a scan: "login" still enabled, "gone" no longer in the inventory.
+        XCTAssertEqual(queue.updateManual { $0 == "login" ? true : nil }, 1)
+        XCTAssertEqual(queue.items.map(\.status), [.manual(done: false), .manual(done: true), .done])
+        // Switched off in System Settings → ticked off by the next scan.
+        XCTAssertEqual(queue.updateManual { $0 == "login" ? false : nil }, 1)
+        queue.clearDone()
+        XCTAssertTrue(queue.items.isEmpty, "finished by-hand items are cleared with the done ones")
+    }
+
+    func testByHandItemsSurviveARestartAndCanBeTickedByHand() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("queue-\(UUID()).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let first = QueueModel(local: StubBatch(), storeURL: url)
+        first.add([QueueItem(target: .entry(key: "ext"), title: "Ext", origin: "Inventar", action: .manual(key: "ext"),
+                             manualBaseline: false)])
+        let second = QueueModel(local: StubBatch(), storeURL: url)
+        XCTAssertEqual(second.items.first?.manualBaseline, false)
+        XCTAssertEqual(second.updateManual { _ in false }, 0, "was off already: only its disappearance counts")
+        second.setManual(done: true, for: second.items[0].id)
+        XCTAssertEqual(QueueModel(local: StubBatch(), storeURL: url).items.first?.status, .manual(done: true))
+    }
+
+    func testGuidesPointToTheRightPlace() {
+        func item(_ type: ItemType, _ category: ItemCategory) -> BackgroundItem {
+            BackgroundItem(key: "k", displayName: "k", type: type, path: nil, label: nil, domain: .user, category: category)
+        }
+        XCTAssertEqual(ManualGuide.for(item(.loginItem, .loginItems)).url, ManualGuide.loginItems)
+        XCTAssertEqual(ManualGuide.for(item(.systemExtension, .systemExtensions)).url, ManualGuide.loginItems)
+        XCTAssertEqual(ManualGuide.for(item(.unknown, .profiles)).url, ManualGuide.profiles)
+        XCTAssertEqual(ManualGuide.for(item(.unknown, .privacy)).url, ManualGuide.privacy)
+        XCTAssertNil(ManualGuide.for(item(.kernelExtension, .systemExtensions)).url, "only the vendor's uninstaller")
+    }
 }

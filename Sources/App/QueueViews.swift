@@ -91,15 +91,20 @@ enum QueueOptions {
 
     /// Queue items for ticked inventory entries, grouped by action: every
     /// entry that offers the action is in its group.
+    /// Entries without an automatic action come back as by-hand items
+    /// (step 4) — except Apple's own, which nobody should change.
     static func entryGroups(keys: Set<String>, store: InventoryStore, origin: String)
-        -> (groups: [(title: String, items: [QueueItem])], none: [String]) {
+        -> (groups: [(title: String, items: [QueueItem])], none: [QueueItem]) {
         var groups: [String: (title: String, items: [QueueItem])] = [:]
         var order: [String] = []
-        var none: [String] = []
+        var none: [QueueItem] = []
         for key in keys.sorted() {
             guard let row = store.row(for: key) else { continue }
             let actions = actions(for: .entry(key: key), store: store)
-            if actions.isEmpty { none.append(row.name) }
+            if actions.isEmpty && !row.isAppleInternal {
+                none.append(QueueItem(target: .entry(key: key), title: row.name, origin: origin,
+                                      action: .manual(key: key), manualBaseline: row.item.enabled))
+            }
             for action in actions {
                 guard case .remediation(let operation, _) = action else { continue }
                 if groups[operation] == nil { groups[operation] = (action.title, []); order.append(operation) }
@@ -201,10 +206,11 @@ struct BatchPanel: View {
         }
         if !none.isEmpty {
             DisclosureGroup("\(none.count) ohne automatische Aktion") {
-                ForEach(none, id: \.self) { Text($0).font(.callout) }
-                Text("Deren Schalter verwaltet macOS selbst — die Detailansicht zeigt, wo.")
+                ForEach(none) { Text($0.title).font(.callout) }
+                Text("Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; LaunchKeeper hakt sie nach dem nächsten Einlesen selbst ab.")
                     .font(.caption).foregroundStyle(.secondary)
             }
+            addButton(title: String(localized: "Als „Von Hand“ in die Warteschlange"), items: none, of: keys.count)
         }
     }
 
@@ -247,16 +253,37 @@ struct QueuePane: View {
                                        description: Text("Markiere in einer Ansicht Einträge und füge sie rechts hinzu."))
             } else {
                 let conflicts = queue.conflicts { store.row(for: $0)?.item.provenance?.packageIdentifier }
+                let automatic = queue.items.filter { !$0.isManual }
+                let manual = queue.items.filter(\.isManual)
                 List(selection: $selection) {
-                    ForEach(queue.items) { item in
-                        QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
+                    if !automatic.isEmpty {
+                        Section("Automatisch") {
+                            ForEach(automatic) { item in
+                                QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
+                            }
+                        }
+                    }
+                    if !manual.isEmpty {
+                        Section {
+                            ForEach(manual) { item in QueueManualRow(item: item, queue: queue, store: store).tag(item.id) }
+                        } header: {
+                            Text("Von Hand")
+                        } footer: {
+                            Text("Das erledigst du selbst an der genannten Stelle. Nach dem nächsten Einlesen (⌘R) hakt LaunchKeeper ab, was verschwunden oder ausgeschaltet ist.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
             Divider()
             footer.padding(12)
         }
-        .onAppear { updatePrivileged() }
+        .onAppear {
+            updatePrivileged()
+            tickOffManual()
+        }
+        // Every finished scan may show by-hand items done.
+        .onChange(of: store.lastScan) { _, _ in tickOffManual() }
         .onChange(of: helper.isReady) { _, _ in updatePrivileged() }
         .onChange(of: helper.version) { _, _ in updatePrivileged() }
         .confirmationDialog("Warteschlange leeren?", isPresented: $confirmClear) {
@@ -281,7 +308,7 @@ struct QueuePane: View {
                 Button("Leeren") { confirmClear = true }
                     .disabled(queue.items.isEmpty || queue.phase != .idle)
                 Button("Erledigte entfernen") { queue.clearDone() }
-                    .disabled(!queue.items.contains { $0.status == .done } || queue.phase != .idle)
+                    .disabled(!queue.items.contains { $0.status == .done || $0.status == .manual(done: true) } || queue.phase != .idle)
                 let back = queue.undoItems()
                 if !back.isEmpty && queue.phase == .idle {
                     Button("Rückwege hinzufügen (\(back.count))") { queue.add(back) }
@@ -293,10 +320,10 @@ struct QueuePane: View {
                         .help("Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht.")
                 } else {
                     Button("Plan prüfen") { Task { await queue.plan() } }
-                        .disabled(!queue.items.contains { $0.status != .done } || queue.phase != .idle)
+                        .disabled(!queue.items.contains { $0.status != .done && !$0.isManual } || queue.phase != .idle)
                     Button(needsTouchID ? "Alle ausführen (Touch ID)" : "Alle ausführen") { Task { await run() } }
                         .keyboardShortcut(.defaultAction)
-                        .disabled(!queue.items.contains { !$0.isFinished } || queue.phase != .idle)
+                        .disabled(!queue.items.contains { !$0.isFinished && !$0.isManual } || queue.phase != .idle)
                 }
             }
         }
@@ -314,6 +341,12 @@ struct QueuePane: View {
     /// Whether the run will ask for Touch ID (a checked plan with admin steps).
     private var needsTouchID: Bool {
         queue.items.contains { $0.status == .planned(needsAdmin: true) }
+    }
+
+    /// Ticks off by-hand items the current inventory shows as done.
+    private func tickOffManual() {
+        guard !store.rows.isEmpty, !store.isScanning else { return }
+        queue.updateManual { key in store.row(for: key).map { $0.item.enabled } }
     }
 
     /// The helper takes administrator batches only when set up and current.
@@ -394,8 +427,50 @@ struct QueueRow: View {
         case .done: return String(localized: "erledigt und überprüft")
         case .failed(let detail): return String(localized: "fehlgeschlagen: \(detail)")
         case .refused(let reason): return String(localized: "abgelehnt: \(reason)")
+        case .manual(let done): return done ? String(localized: "erledigt") : String(localized: "von Hand")
         }
     }
+}
+
+/// A by-hand row: the entry, what to do, where — and a tick.
+/// Models are passed in — list cells read no environment (see `MarkBox`).
+struct QueueManualRow: View {
+    let item: QueueItem
+    let queue: QueueModel
+    let store: InventoryStore
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Toggle("", isOn: Binding(get: { item.status == .manual(done: true) },
+                                     set: { queue.setManual(done: $0, for: item.id) }))
+                .toggleStyle(.checkbox).labelsHidden()
+                .help("Als erledigt abhaken")
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).lineLimit(1).strikethrough(item.status == .manual(done: true))
+                if let guide {
+                    Text(guide.text).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                } else {
+                    Text("nicht mehr im Inventar").font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            if let guide, let url = guide.url, let link = URL(string: url) {
+                Button(guide.linkTitle ?? String(localized: "Öffnen")) { NSWorkspace.shared.open(link) }
+            }
+            Button { queue.remove([item.id]) } label: { Image(systemName: "xmark.circle.fill") }
+                .buttonStyle(.borderless).foregroundStyle(.secondary)
+                .help("Aus der Warteschlange nehmen")
+                .disabled(queue.phase != .idle)
+        }
+        .padding(.vertical, 2)
+    }
+
+    private var entry: BackgroundItem? {
+        if case .entry(let key) = item.target { return store.row(for: key)?.item }
+        return nil
+    }
+    private var title: String { entry.map { store.row(for: $0.key)?.name ?? item.title } ?? item.title }
+    private var guide: ManualGuide? { entry.map(ManualGuide.for) }
 }
 
 /// The status as a coloured symbol.
@@ -410,18 +485,42 @@ struct QueueStatusIcon: View {
         case .done: Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
         case .failed: Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
         case .refused: Image(systemName: "hand.raised.fill").foregroundStyle(.orange)
+        case .manual(let done):
+            Image(systemName: done ? "checkmark.circle.fill" : "hand.point.up.left").foregroundStyle(done ? .green : .purple)
         }
     }
 }
 
-/// Detail of one queue item: the plan or the result, with the way back.
+/// Detail of one queue item: the plan or the result, with the way back —
+/// or, by hand, what to do and where.
 struct QueueItemDetail: View {
     let item: QueueItem
     @Environment(QueueModel.self) private var queue
     @Environment(InventoryStore.self) private var store
 
+    /// What to do by hand, where, and the tick.
+    @ViewBuilder private var manualSection: some View {
+        Section("Von Hand") {
+            if case .entry(let key) = item.target, let row = store.row(for: key) {
+                let guide = ManualGuide.for(row.item)
+                Text(guide.text)
+                if let url = guide.url, let link = URL(string: url) {
+                    Button(guide.linkTitle ?? String(localized: "Öffnen")) { NSWorkspace.shared.open(link) }
+                }
+                if let path = row.item.path ?? row.item.executable, path.hasPrefix("/") {
+                    Button("Im Finder zeigen") { revealInFinder(path) }
+                }
+            } else {
+                Text("Der Eintrag ist nicht mehr im Inventar — damit ist er erledigt.").foregroundStyle(.secondary)
+            }
+            Toggle("Erledigt", isOn: Binding(get: { item.status == .manual(done: true) },
+                                             set: { queue.setManual(done: $0, for: item.id) }))
+        }
+    }
+
     var body: some View {
         Form {
+            if item.isManual { manualSection }
             Section {
                 Text(item.title).font(.title3).bold()
                 LabeledContent("Aktion", value: item.action.title)
@@ -446,7 +545,7 @@ struct QueueItemDetail: View {
                         LabeledContent("Rückweg") { Text(undo).textSelection(.enabled) }
                     }
                 }
-            } else {
+            } else if !item.isManual {
                 Text("„Plan prüfen“ zeigt, was geschehen würde.").foregroundStyle(.secondary)
             }
             if case .entry(let key) = item.target, store.row(for: key) != nil {

@@ -32,6 +32,9 @@ public enum ActionRequest: Hashable, Sendable, Codable {
     case restore(quarantine: String)
     /// Uninstall an installer package by its receipt, by exact package id.
     case uninstall(package: String)
+    /// Nothing the app runs — the user does it by hand (`ManualGuide`);
+    /// the queue ticks it off when a scan shows the change (Phase 10, step 4).
+    case manual(key: String)
 
     /// Title of the confirmation sheet.
     public var title: String {
@@ -47,6 +50,7 @@ public enum ActionRequest: Hashable, Sendable, Codable {
         case .leftovers: return String(localized: "Reste in die Quarantäne verschieben")
         case .restore: return String(localized: "Aus der Quarantäne wiederherstellen")
         case .uninstall: return String(localized: "Paket deinstallieren")
+        case .manual: return String(localized: "Von Hand erledigen")
         }
     }
 
@@ -61,7 +65,7 @@ public enum ActionRequest: Hashable, Sendable, Codable {
             return PrivilegedRequest(kind: kind, target: key)
         case .restore(let name): return PrivilegedRequest(kind: .restore, target: name)
         case .uninstall(let id): return PrivilegedRequest(kind: .uninstall, target: id)
-        case .leftovers: return nil
+        case .leftovers, .manual: return nil
         }
     }
 
@@ -78,6 +82,7 @@ public enum ActionRequest: Hashable, Sendable, Codable {
         case .leftovers(let id): base = "launchkeeper leftovers \(EntrySummary.quote(id))"
         case .restore(let name): base = "launchkeeper quarantine restore \(EntrySummary.quote(name))"
         case .uninstall(let id): base = "launchkeeper uninstall \(EntrySummary.quote(id))"
+        case .manual(let key): return "launchkeeper inspect \(EntrySummary.quote(key))"
         }
         return apply ? base + " --apply" : base
     }
@@ -255,6 +260,9 @@ public struct EnginePerformer: ActionPerforming, @unchecked Sendable {
         case .restore(let name):
             let result = CleanupEngine(environment: CleanupEnvironment(runner: runner)).restore(name: name, apply: apply)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+        case .manual:
+            return ActionOutcome(state: .refused(String(localized: "von Hand — LaunchKeeper führt das nicht aus")),
+                                 steps: [], messages: [], undo: nil)
         case .uninstall(let id):
             // Uninstalls always need root and run in the helper, which keeps its
             // entries in the root-owned tree — the plan names that place (kit 0.12).
