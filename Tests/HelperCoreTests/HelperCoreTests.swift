@@ -75,17 +75,6 @@ final class PrivilegedExecutorTests: XCTestCase {
         XCTAssertEqual(me?.home, NSHomeDirectory())
     }
 
-    func testHandOverRefusesAHomeTheClientDoesNotOwn() throws {
-        let home = FileManager.default.temporaryDirectory.appendingPathComponent("lk-handover-\(UUID().uuidString)").path
-        let quarantine = home + "/q/entry"
-        try FileManager.default.createDirectory(atPath: quarantine, withIntermediateDirectories: true)
-        defer { try? FileManager.default.removeItem(atPath: home) }
-        // Claimed uid 4242 does not own the temp home: nothing may be chowned (and nothing crashes).
-        PrivilegedExecutor(runner: ScriptedCommandRunner()).handOver(quarantineRoot: home + "/q",
-                                                                     to: ClientContext(uid: 4242, home: home))
-        let owner = try FileManager.default.attributesOfItem(atPath: quarantine)[.ownerAccountID] as? NSNumber
-        XCTAssertEqual(owner?.intValue, Int(getuid()))
-    }
 }
 
 // MARK: - Phase 10: batches
@@ -129,9 +118,66 @@ final class PrivilegedBatchTests: XCTestCase {
 
     func testStopLeavesTheRestUnrun() {
         let executor = PrivilegedExecutor(runner: ScriptedCommandRunner(), auditDirectory: NSTemporaryDirectory())
-        let outcomes = executor.performBatch([PrivilegedRequest(kind: .restore, target: "a"),
-                                              PrivilegedRequest(kind: .restore, target: "b")],
+        // Switches only: quarantine requests are checked for trust before the stop.
+        let outcomes = executor.performBatch([PrivilegedRequest(kind: .disable, target: "a"),
+                                              PrivilegedRequest(kind: .enable, target: "b")],
                                              client: client, shouldContinue: { false })
         XCTAssertEqual(outcomes.map(\.detail), ["stopped before this entry", "stopped before this entry"])
+    }
+}
+
+// MARK: - Quarantine trust (review 2026-09-27: no chown into the home, no restore of user-owned entries)
+
+final class QuarantineTrustTests: XCTestCase {
+    private func tempHome() throws -> (home: String, client: ClientContext) {
+        let home = FileManager.default.temporaryDirectory.appendingPathComponent("lk-trust-\(UUID().uuidString)").path
+        try FileManager.default.createDirectory(atPath: home, withIntermediateDirectories: true)
+        return (home, ClientContext(uid: Int(getuid()), home: home))
+    }
+
+    func testRootChainIsCreatedAndAcceptedWhenReal() throws {
+        let (home, client) = try tempHome()
+        defer { try? FileManager.default.removeItem(atPath: home) }
+        let root = home + "/Library/Application Support/launchkeeper/quarantine"
+        XCTAssertNil(QuarantineTrust.prepareRoot(root, for: client))
+        var isDirectory: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: root, isDirectory: &isDirectory) && isDirectory.boolValue)
+        XCTAssertNil(QuarantineTrust.prepareRoot(root, for: client), "idempotent")
+    }
+
+    func testSymlinkInTheChainIsRefused() throws {
+        let (home, client) = try tempHome()
+        defer { try? FileManager.default.removeItem(atPath: home) }
+        try FileManager.default.createDirectory(atPath: home + "/Library", withIntermediateDirectories: true)
+        // The attack from the review: a component redirected elsewhere.
+        try FileManager.default.createSymbolicLink(atPath: home + "/Library/Application Support", withDestinationPath: "/tmp")
+        let problem = QuarantineTrust.prepareRoot(home + "/Library/Application Support/launchkeeper/quarantine", for: client)
+        XCTAssertNotNil(problem)
+        XCTAssertTrue(problem?.contains("symlink") == true, problem ?? "")
+        XCTAssertNotNil(QuarantineTrust.prepareRoot("/tmp/elsewhere/quarantine", for: client), "outside the home")
+    }
+
+    func testUserOwnedEntryIsNeverRestoredAsRoot() throws {
+        // Tests run as the user, so every entry here is user-owned — exactly the
+        // state a pre-0.1.7 helper left behind by handing entries over.
+        let (home, _) = try tempHome()
+        defer { try? FileManager.default.removeItem(atPath: home) }
+        let root = home + "/q"
+        let entry = root + "/2026-09-27-1Z-remove-x"
+        try FileManager.default.createDirectory(atPath: entry + "/files/Library/LaunchDaemons", withIntermediateDirectories: true)
+        try Data("{}".utf8).write(to: URL(fileURLWithPath: entry + "/manifest.json"))
+        let problem = QuarantineTrust.verifyEntry(root: root, name: "2026-09-27-1Z-remove-x",
+                                                  quarantinedPaths: [entry + "/files/Library/LaunchDaemons/x.plist"])
+        XCTAssertTrue(problem?.contains("owned by the user") == true, problem ?? "nil")
+        XCTAssertEqual(QuarantineTrust.verifyEntry(root: root, name: "../etc", quarantinedPaths: []), "invalid entry name")
+    }
+
+    func testRestoreOfAnUntrustedEntryIsRefusedBeforeAnyEngine() throws {
+        let (home, client) = try tempHome()
+        defer { try? FileManager.default.removeItem(atPath: home) }
+        let executor = PrivilegedExecutor(runner: ScriptedCommandRunner(), auditDirectory: NSTemporaryDirectory())
+        let outcome = executor.perform(PrivilegedRequest(kind: .restore, target: "nothing-here"), client: client)
+        XCTAssertEqual(outcome.state, "refused")
+        XCTAssertTrue(outcome.detail?.hasPrefix("quarantine entry not trustworthy") == true, outcome.detail ?? "")
     }
 }

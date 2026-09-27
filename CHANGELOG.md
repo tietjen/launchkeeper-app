@@ -7,6 +7,24 @@ underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 
 ## [Unreleased]
 
+### Security
+- **Privileged helper 0.1.7 closes two ways to root through the quarantine**
+  (found by an independent review; present since the helper arrived in
+  0.1.0). The quarantine lives in the user's home, which any process of the
+  user can change. (1) The helper chowned the quarantine's bookkeeping back
+  to the user as root — a symlink placed there redirected that chown onto a
+  system directory. (2) A restore moved back, as root, whatever the entry
+  held to whatever its manifest named — after the entry had been handed to
+  the user, both could be swapped, and one legitimate Touch ID for
+  "Restore" would have placed a foreign file anywhere as root.
+  Now the helper never chowns into the home; entries it creates stay
+  root-owned (readable, not changeable by the user); missing quarantine
+  directories are created through directory descriptors without following
+  symlinks; restoring or purging as root requires the entry, its manifest
+  and every path below it to be root-owned and free of symlinks. Entries an
+  older helper handed over are therefore refused for restores with
+  administrator rights — check them and move them back by hand.
+
 ### Added
 - Batch processing: tick entries in any view (inventory, background, packages,
   app leftovers, quarantine); the detail column then offers the possible

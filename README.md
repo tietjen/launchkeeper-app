@@ -57,7 +57,7 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
 ## Architecture
 
 - `AppCore` — UI-free logic on top of `LaunchKeeperKit` (loading, filtering, counting); tested.
-- `LaunchKeeper` — the SwiftUI app: sidebar by category, table, detail.
+- `LaunchKeeperGUI` — the SwiftUI app (installed as `LaunchKeeper.app`): sidebar, table, detail, queue.
 - `HelperShared` / `HelperCore` / `LaunchKeeperHelper` — the privileged helper
   (Phase 5): an SMAppService daemon inside the app bundle, reached over XPC with
   code-signing requirements on both sides (team-signed app ↔ team-signed
@@ -70,7 +70,12 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
   allowed, so macOS asks in the user's session right before the action. The
   app never sends requests to a helper of another version and offers a restart. `sudo` steps of a plan run
   directly, but only for an allowlist of tools at fixed paths. Audit lines go
-  to `/Library/Logs/launchkeeper/operations.log`.
+  to `/Library/Logs/launchkeeper/operations.log`. The quarantine lives in the
+  user's home, so root trusts nothing there it did not make itself: entries
+  the helper creates stay root-owned, it never chowns into the home, missing
+  quarantine directories are created through descriptors without following
+  symlinks, and it restores or purges only entries that are root-owned from
+  the entry down (helper 0.1.7).
 - Set up once: LaunchKeeper › Settings (⌘,) › Einrichten, then allow it in
   System Settings › General › Login Items & Extensions. Keep the app in
   /Applications — launchd starts the helper from inside the bundle.

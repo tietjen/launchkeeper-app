@@ -160,6 +160,8 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
         connection.remoteObjectInterface = NSXPCInterface(with: LaunchKeeperClientXPC.self)
         let id = ObjectIdentifier(connection)
         connection.invalidationHandler = { [weak self] in self?.stopBatches(of: id, forget: true) }
+        // Interruption rarely fires on the listener side (a dead peer invalidates);
+        // handled the same way for completeness.
         connection.interruptionHandler = { [weak self] in self?.stopBatches(of: id, forget: true) }
         connection.resume()
         return true
@@ -206,6 +208,13 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
             }
             if let problem = decoded.validationError() {
                 return answer(decoded.requests.map { _ in .error(problem) })
+            }
+            // Stopped while waiting (or the app is gone): no dialog for a batch
+            // that would not run anyway (review 2026-09-27).
+            guard stop.shouldContinue else {
+                return answer(decoded.requests.map { _ in
+                    PrivilegedOutcome(state: "refused", detail: "stopped before this entry")
+                })
             }
             // One authentication for exactly this list (TJ, 2026-09-27).
             guard authorizeClient(authorization, prompt: decoded.prompt) else {

@@ -65,6 +65,7 @@ public struct PrivilegedExecutor {
         let audit = AuditLog(directory: auditDirectory)
         let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
         btmCache.preferCached = true
+        if let refusal = trustRefusal(request, quarantineRoot: quarantineRoot, client: client) { return refusal }
 
         switch request.kind {
         case .disable, .enable, .remove, .removeWorking:
@@ -75,7 +76,6 @@ public struct PrivilegedExecutor {
                 quarantineRoot: quarantineRoot, btmCache: btmCache), audit: audit)
             let result = engine.run(operation: operation, target: request.target, apply: true,
                                     allowWorking: request.kind == .removeWorking)
-            handOver(quarantineRoot: quarantineRoot, to: client)
             return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .restore, .purge, .uninstall:
             let engine = CleanupEngine(environment: CleanupEnvironment(
@@ -87,8 +87,28 @@ public struct PrivilegedExecutor {
             case .purge: result = engine.purge(name: request.target, apply: true)
             default: result = engine.uninstall(packageIdentifier: request.target, apply: true, verifyAsRoot: true)
             }
-            handOver(quarantineRoot: quarantineRoot, to: client)
             return Self.outcome(result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+        }
+    }
+
+    /// The quarantine checks before root touches the user's quarantine
+    /// (review 2026-09-27): a request that creates entries needs a safe,
+    /// client-owned quarantine root; a restore or purge needs a root-owned,
+    /// untouched entry. `nil` = go ahead.
+    func trustRefusal(_ request: PrivilegedRequest, quarantineRoot: String,
+                      client: ClientContext) -> PrivilegedOutcome? {
+        switch request.kind {
+        case .disable, .enable:
+            return nil
+        case .remove, .removeWorking, .uninstall:
+            guard let problem = QuarantineTrust.prepareRoot(quarantineRoot, for: client) else { return nil }
+            return PrivilegedOutcome(state: "refused", detail: "unsafe quarantine directory: \(problem)")
+        case .restore, .purge:
+            let paths = QuarantineStore(root: quarantineRoot, fileManager: fileManager)
+                .load(request.target)?.moves.map(\.quarantined) ?? []
+            guard let problem = QuarantineTrust.verifyEntry(root: quarantineRoot, name: request.target,
+                                                            quarantinedPaths: paths) else { return nil }
+            return PrivilegedOutcome(state: "refused", detail: "quarantine entry not trustworthy: \(problem)")
         }
     }
 
@@ -111,9 +131,6 @@ public struct PrivilegedExecutor {
         let quarantineRoot = LaunchKeeperPaths.quarantine(home: client.home)
         func finish(_ index: Int, _ outcome: PrivilegedOutcome) {
             outcomes[index] = outcome
-            // After every entry, not only at the end: a helper that dies in
-            // the middle must not leave root-owned quarantine entries behind.
-            handOver(quarantineRoot: quarantineRoot, to: client)
             progress(index, outcome)
         }
         let audit = AuditLog(directory: auditDirectory)
@@ -124,6 +141,9 @@ public struct PrivilegedExecutor {
         var cleanup: [Int] = []
         for (index, request) in requests.enumerated() {
             if let problem = request.validationError() { finish(index, .error(problem)); continue }
+            if let refusal = trustRefusal(request, quarantineRoot: quarantineRoot, client: client) {
+                finish(index, refusal); continue
+            }
             switch request.kind {
             case .disable: remediation.append((index, RemediationRequest(operation: .disable, target: request.target)))
             case .enable: remediation.append((index, RemediationRequest(operation: .enable, target: request.target)))
@@ -180,30 +200,6 @@ public struct PrivilegedExecutor {
         case .planned:
             return PrivilegedOutcome(state: "error", detail: "the engine only planned — nothing executed",
                                      steps: steps, messages: messages, undo: undo)
-        }
-    }
-
-    /// Gives the user's quarantine bookkeeping back to the user.
-    ///
-    /// The helper writes quarantine entries (directory, manifest, receipt
-    /// copies) into the user's home as root. The user must be able to read
-    /// and update them (the app lists entries, restores of home paths run as
-    /// the user) — so ownership goes back to the client. The moved files
-    /// themselves (`files/…`) keep their owner: they are system files.
-    func handOver(quarantineRoot: String, to client: ClientContext) {
-        guard let owner = (try? fileManager.attributesOfItem(atPath: client.home))?[.ownerAccountID] as? NSNumber,
-              owner.intValue == client.uid else { return }   // never chown into a home the client does not own
-        let group = (try? fileManager.attributesOfItem(atPath: client.home))?[.groupOwnerAccountID] as? NSNumber
-        var paths = [quarantineRoot]
-        for name in (try? fileManager.contentsOfDirectory(atPath: quarantineRoot)) ?? [] {
-            let entry = quarantineRoot + "/" + name
-            paths += [entry, entry + "/manifest.json", entry + "/receipt", entry + "/files"]
-            paths += ((try? fileManager.contentsOfDirectory(atPath: entry + "/receipt")) ?? []).map { entry + "/receipt/" + $0 }
-        }
-        for path in paths where fileManager.fileExists(atPath: path) {
-            var attributes: [FileAttributeKey: Any] = [.ownerAccountID: NSNumber(value: client.uid)]
-            if let group { attributes[.groupOwnerAccountID] = group }
-            try? fileManager.setAttributes(attributes, ofItemAtPath: path)
         }
     }
 }

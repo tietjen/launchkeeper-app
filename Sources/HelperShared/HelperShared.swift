@@ -25,7 +25,7 @@ public enum HelperIdentity {
     /// The helper protocol/build version. Compiled into both sides: the app
     /// compares it with what the running helper reports and asks for a
     /// restart of the helper when they differ.
-    public static let version = "0.1.6"
+    public static let version = "0.1.7"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
