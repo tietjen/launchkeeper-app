@@ -206,15 +206,26 @@ final class QuarantineTrustTests: XCTestCase {
         XCTAssertEqual(QuarantineTrust.verifyEntry(root: base, manifest: receipts, clientHome: "/Users/alice", trustedUID: me),
                        "unexpected receipt copy path")
 
-        // Ownership and links.
+        // The chain the helper made: owned, not writable by others, no links.
         try fm.setAttributes([.posixPermissions: 0o777], ofItemAtPath: entry + "/files")
         XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me)?
             .contains("writable") == true)
         try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: entry + "/files")
-        try fm.removeItem(atPath: file)
-        try fm.createSymbolicLink(atPath: file, withDestinationPath: "/etc/sudoers")
+        try fm.removeItem(atPath: entry + "/files/Library/LaunchDaemons")
+        try fm.createSymbolicLink(atPath: entry + "/files/Library/LaunchDaemons", withDestinationPath: "/Library/LaunchDaemons")
         XCTAssertTrue(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me)?
-            .contains("symlink") == true)
+            .contains("symlink") == true, "a link in the chain is refused")
+        try fm.removeItem(atPath: entry + "/files/Library/LaunchDaemons")
+        try fm.createDirectory(atPath: entry + "/files/Library/LaunchDaemons", withIntermediateDirectories: true,
+                               attributes: [.posixPermissions: 0o755])
+        // Review S-A: the moved object itself keeps its owner and type — a symlink
+        // that came from a package is restored like any other object.
+        try fm.createSymbolicLink(atPath: file, withDestinationPath: "/Library/Vendor/x.plist")
+        XCTAssertNil(QuarantineTrust.verifyEntry(root: base, manifest: good, clientHome: "/Users/alice", trustedUID: me))
+        let plusPackage = manifest(name, root: base, original: "/Library/LaunchDaemons/x.plist",
+                                   receipts: [entry + "/receipt/com.vendor.app+extra.bom"], package: "com.vendor.app+extra")
+        XCTAssertNil(QuarantineTrust.verifyEntry(root: base, manifest: plusPackage, clientHome: "/Users/alice", trustedUID: me),
+                     "package ids like the uninstall gate allows (review C-3)")
     }
 
     func testHelperRemovesAndSnapshotsOnlyInSystemLaunchDirsIntoItsOwnTree() throws {

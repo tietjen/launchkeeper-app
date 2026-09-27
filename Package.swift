@@ -7,7 +7,7 @@ import Foundation
 // instead — for changes that land in the kit first.
 let kit: Package.Dependency = ProcessInfo.processInfo.environment["LAUNCHKEEPER_KIT_PATH"]
     .map { .package(path: $0) }
-    ?? .package(url: "https://github.com/tietjen/launchkeeper", from: "0.11.1")
+    ?? .package(url: "https://github.com/tietjen/launchkeeper", from: "0.12.0")
 
 let package = Package(
     name: "launchkeeper-app",

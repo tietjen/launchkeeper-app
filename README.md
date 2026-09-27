@@ -70,12 +70,13 @@ Requirements: macOS 14+, Swift 6 (Xcode 16+).
   allowed, so macOS asks in the user's session right before the action. The
   app never sends requests to a helper of another version and offers a restart. `sudo` steps of a plan run
   directly, but only for an allowlist of tools at fixed paths. Audit lines go
-  to `/Library/Logs/launchkeeper/operations.log`. The quarantine lives in the
-  user's home, so root trusts nothing there it did not make itself: entries
-  the helper creates stay root-owned, it never chowns into the home, missing
-  quarantine directories are created through descriptors without following
-  symlinks, and it restores or purges only entries that are root-owned from
-  the entry down (helper 0.1.7).
+  to `/Library/Logs/launchkeeper/operations.log`. Root keeps
+  nothing in the user's home: the helper's quarantine, backups and config
+  snapshots live in `/Library/Application Support/launchkeeper` (only root
+  can write it; created and chain-checked before every request). It removes
+  and snapshots only in the system launch directories, and restores only its
+  own entries after checking ownership and meaning; entries of the user's
+  quarantine (CLI) are restored in Terminal (helper 0.1.8).
 - Set up once: LaunchKeeper › Settings (⌘,) › Einrichten, then allow it in
   System Settings › General › Login Items & Extensions. Keep the app in
   /Applications — launchd starts the helper from inside the bundle.

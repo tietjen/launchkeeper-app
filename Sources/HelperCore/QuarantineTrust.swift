@@ -125,15 +125,23 @@ public enum QuarantineTrust {
             }
         }
         if !manifest.receiptCopies.isEmpty {
-            guard let package = manifest.packageIdentifier, QuarantineStore.isValidName(package) else {
+            // The same rule the uninstall gate applies to package ids (no path
+            // tricks), not the stricter quarantine-name rule (review C-3).
+            guard let package = manifest.packageIdentifier, !package.isEmpty, !package.contains("/"),
+                  !package.contains(".."), !package.hasPrefix("-"), !package.hasPrefix(".") else {
                 return "receipt copies without a valid package id"
             }
             let allowed = Set([".bom", ".plist"].map { entry + "/receipt/" + package + $0 })
             guard manifest.receiptCopies.allSatisfy(allowed.contains) else { return "unexpected receipt copy path" }
         }
+        // The chain the helper made (files/…, receipt/) must be root's; the moved
+        // object itself is what it was at its place — its owner and type are
+        // kept by the rename (a vendor file owned by a user, a symlink from a
+        // package). It sits in a root-owned directory nobody else can write,
+        // so it cannot be swapped (review 2026-09-27, S-A).
         for path in manifest.moves.map(\.quarantined) + manifest.receiptCopies {
             var walked = entry
-            for part in path.dropFirst(entry.count + 1).split(separator: "/").map(String.init) {
+            for part in path.dropFirst(entry.count + 1).split(separator: "/").dropLast().map(String.init) {
                 walked += "/" + part
                 var info = stat()
                 guard lstat(walked, &info) == 0 else { break }   // already restored or gone: the engine reports it
