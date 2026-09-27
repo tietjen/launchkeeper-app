@@ -21,6 +21,9 @@ struct LaunchKeeperApp: App {
     @State private var watch: WatchModel
     /// Launch at login.
     @State private var loginItem = LoginItem()
+    /// The work queue (Phase 10) and the ticks that feed it.
+    @State private var queue: QueueModel
+    @State private var marks = Marks()
     /// Opens entries from notifications and the menu bar.
     private let router: EntryRouter
     /// Keeps the notification delegate and the watch switch alive for the app's lifetime.
@@ -49,6 +52,9 @@ struct LaunchKeeperApp: App {
         watch.notifier = notifier
         _store = State(initialValue: store)
         _watch = State(initialValue: watch)
+        // The queue's app-side engine shares the inventory's BTM dump.
+        _queue = State(initialValue: QueueModel(local: EnginePerformer(btmCache: store.btmDumpCache,
+                                                                       presence: { LivePresence.sources() })))
         self.router = router
         self.notifier = notifier
         watchController = WatchController(watch: watch)
@@ -59,6 +65,8 @@ struct LaunchKeeperApp: App {
             ContentView()
                 .environment(store)
                 .environment(watch)
+                .environment(queue)
+                .environment(marks)
                 .modifier(RegisterWindowOpener(router: router))
                 .environment(leftovers)
                 .environment(quarantine)

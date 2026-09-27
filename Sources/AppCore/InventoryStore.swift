@@ -104,12 +104,14 @@ public enum SidebarSelection: Hashable, Sendable {
     case quarantine
     /// What the watch noticed since it was switched on (Phase 7).
     case watch
+    /// The work queue (Phase 10).
+    case queue
 
     /// `true` when the selection filters the inventory table; `false` for a dedicated view.
     public var isInventory: Bool {
         switch self {
         case .all, .orphans, .category: return true
-        case .background, .receipts, .leftovers, .quarantine, .watch: return false
+        case .background, .receipts, .leftovers, .quarantine, .watch, .queue: return false
         }
     }
 }
@@ -287,7 +289,7 @@ public final class InventoryStore {
             case .orphans: guard row.item.orphaned else { return false }
             case .category(let category): guard matches(row, category) else { return false }
             // Dedicated views do not filter the table (it is not shown for them).
-            case .background, .receipts, .leftovers, .quarantine, .watch: break
+            case .background, .receipts, .leftovers, .quarantine, .watch, .queue: break
             }
             return Self.matches(row, search: search)
         }
@@ -306,7 +308,7 @@ public final class InventoryStore {
             case .all: return true
             case .orphans: return row.item.orphaned
             case .category(let category): return matches(row, category)
-            case .background, .receipts, .leftovers, .quarantine, .watch: return false
+            case .background, .receipts, .leftovers, .quarantine, .watch, .queue: return false
             }
         }.count
     }

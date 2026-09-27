@@ -30,6 +30,11 @@ struct ContentView: View {
     @AppStorage("expertMode") private var expertMode = false
     /// The table's sort order; name ascending until the user clicks a header.
     @State private var sortOrder = [KeyPathComparator(\InventoryRow.name)]
+    /// Selected row in the queue.
+    @State private var selectedQueueItem: QueueItem.ID?
+    /// Ticks for batch processing, per view.
+    @Environment(Marks.self) private var marks
+    @Environment(QueueModel.self) private var queue
 
     var body: some View {
         @Bindable var store = store
@@ -44,6 +49,7 @@ struct ContentView: View {
                 case .leftovers: LeftoversPane(selection: $selectedLeftover)
                 case .quarantine: QuarantinePane()
                 case .watch: WatchPane(selection: $selectedRecord)
+                case .queue: QueuePane(selection: $selectedQueueItem)
                 case .all, .orphans, .category:
                     InventoryTable(selectedKey: $store.selectedKey, sortOrder: $sortOrder)
                         .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
@@ -79,6 +85,16 @@ struct ContentView: View {
 
     /// The right column: the detail for whatever is selected in the current view.
     @ViewBuilder private var detailColumn: some View {
+        // Ticked items turn the detail column into the batch panel.
+        if marks.count(for: store.selection) > 0 {
+            BatchPanel(selection: store.selection)
+        } else {
+            singleDetail
+        }
+    }
+
+    /// The detail of the one selected row.
+    @ViewBuilder private var singleDetail: some View {
         switch store.selection {
         case .all, .orphans, .category:
             if let row = store.row(for: store.selectedKey) { DetailView(row: row) } else { nothingSelected }
@@ -101,6 +117,10 @@ struct ContentView: View {
             if let record = watch.records.first(where: { $0.id == selectedRecord }) {
                 WatchRecordDetail(record: record)
             } else { nothingSelected }
+        case .queue:
+            if let item = queue.items.first(where: { $0.id == selectedQueueItem }) {
+                QueueItemDetail(item: item)
+            } else { nothingSelected }
         }
     }
 
@@ -116,6 +136,7 @@ struct ContentView: View {
 struct SidebarView: View {
     @Environment(InventoryStore.self) private var store
     @Environment(WatchModel.self) private var watch
+    @Environment(QueueModel.self) private var queue
 
     var body: some View {
         @Bindable var store = store
@@ -137,6 +158,12 @@ struct SidebarView: View {
                 Label("Beobachtung", systemImage: watch.isRunning ? "eye" : "eye.slash")
                     .badge(watch.records.filter { !$0.isOwn && $0.event.kind != .removed }.count)
                     .tag(SidebarSelection.watch)
+            }
+            // At the bottom (TJ): the queue collects actions from every view above.
+            Section("Stapelverarbeitung") {
+                Label("Warteschlange", systemImage: "tray.full")
+                    .badge(queue.items.filter { !$0.isFinished }.count)
+                    .tag(SidebarSelection.queue)
             }
         }
         .listStyle(.sidebar)
@@ -186,6 +213,8 @@ struct InventoryTable: View {
 
     var body: some View {
         Table(store.visibleRows.sorted(using: sortOrder), selection: $selectedKey, sortOrder: $sortOrder) {
+            TableColumn("") { row in MarkBox(id: row.id, set: \.entries) }
+                .width(22)
             TableColumn("") { row in BadgeStrip(badges: row.badges) }
                 .width(min: 40, ideal: 56, max: 90)
             TableColumn("Name", value: \.name) { row in

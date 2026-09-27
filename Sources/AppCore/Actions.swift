@@ -22,7 +22,7 @@ import LaunchKeeperKit
 // MARK: - Request
 
 /// Something the user asked the app to do.
-public enum ActionRequest: Hashable, Sendable {
+public enum ActionRequest: Hashable, Sendable, Codable {
     /// `disable`, `enable`, `remove` or `remove-working` (kit 0.10: disable,
     /// then quarantine a working plist) for one inventory entry, by stable key.
     case remediation(operation: String, key: String)
@@ -255,6 +255,68 @@ public struct EnginePerformer: ActionPerforming, @unchecked Sendable {
                 .uninstall(packageIdentifier: id, apply: apply)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         }
+    }
+}
+
+// MARK: - Batches (Phase 10)
+
+/// Performs many requests in one go — the queue's engine.
+public protocol BatchPerforming: Sendable {
+    /// Plans or executes a list of requests.
+    ///
+    /// Called off the main thread; blocks until done.
+    /// - Parameters:
+    ///   - requests: What to do, in order.
+    ///   - apply: `false` plans (dry-run), `true` executes.
+    ///   - shouldContinue: Asked between entries; `false` stops the batch.
+    ///   - progress: Called after each entry with its position and outcome (any thread).
+    /// - Returns: One outcome per request, in order.
+    func performBatch(_ requests: [ActionRequest], apply: Bool,
+                      shouldContinue: @escaping @Sendable () -> Bool,
+                      progress: @escaping @Sendable (Int, ActionOutcome) -> Void) -> [ActionOutcome]
+}
+
+extension EnginePerformer: BatchPerforming {
+    /// The app-side batch: all remediation entries against ONE scan (kit
+    /// 0.11 `runBatch`), then leftovers, restores and uninstalls one by one.
+    /// `sudo` stays refused (`NoSudoRunner`) — admin plans go to the helper.
+    public func performBatch(_ requests: [ActionRequest], apply: Bool,
+                             shouldContinue: @escaping @Sendable () -> Bool,
+                             progress: @escaping @Sendable (Int, ActionOutcome) -> Void) -> [ActionOutcome] {
+        var outcomes = [ActionOutcome?](repeating: nil, count: requests.count)
+        var remediation: [(index: Int, request: RemediationRequest)] = []
+        var others: [Int] = []
+        for (index, request) in requests.enumerated() {
+            if case .remediation(let name, let key) = request {
+                let working = name == Controllability.removeWorking
+                guard let operation = working ? .remove : RemediationOperation(rawValue: name) else {
+                    let outcome = ActionOutcome(state: .refused("unknown operation \(name)"), steps: [], messages: [], undo: nil)
+                    outcomes[index] = outcome; progress(index, outcome); continue
+                }
+                remediation.append((index, RemediationRequest(operation: operation, target: key, allowWorking: working)))
+            } else {
+                others.append(index)
+            }
+        }
+        if !remediation.isEmpty {
+            btmCache?.preferCached = true
+            let engine = RemediationEngine(environment: RemediationEnvironment(runner: runner, btmCache: btmCache))
+            _ = engine.runBatch(remediation.map(\.request), apply: apply, shouldContinue: shouldContinue,
+                                progress: { position, result in
+                let outcome = ActionOutcome.from(status: result.status, plan: result.plan,
+                                                 messages: result.messages, undo: result.undoHint)
+                outcomes[remediation[position].index] = outcome
+                progress(remediation[position].index, outcome)
+            })
+        }
+        for index in others {
+            let outcome = shouldContinue()
+                ? perform(requests[index], apply: apply)
+                : ActionOutcome(state: .refused(String(localized: "angehalten — nicht ausgeführt")), steps: [], messages: [], undo: nil)
+            outcomes[index] = outcome
+            progress(index, outcome)
+        }
+        return outcomes.map { $0 ?? ActionOutcome(state: .failed("not run"), steps: [], messages: [], undo: nil) }
     }
 }
 

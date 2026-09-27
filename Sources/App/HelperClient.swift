@@ -174,6 +174,64 @@ enum HelperClient {
         return reply.value ?? .error("no reply")
     }
 
+    // MARK: Batches (Phase 10)
+
+    /// Receives the helper's per-entry progress on the batch connection.
+    private final class ProgressReceiver: NSObject, LaunchKeeperClientXPC, @unchecked Sendable {
+        let onProgress: @Sendable (Int, PrivilegedOutcome) -> Void
+        init(onProgress: @escaping @Sendable (Int, PrivilegedOutcome) -> Void) { self.onProgress = onProgress }
+        func batchProgress(_ index: Int, outcome: Data) {
+            if let decoded = try? JSONDecoder().decode(PrivilegedOutcome.self, from: outcome) { onProgress(index, decoded) }
+        }
+    }
+
+    /// The connection of the batch in progress — `stopBatch()` talks through it.
+    nonisolated(unsafe) private static var batchConnection: NSXPCConnection?
+
+    /// Sends a batch and waits for all its outcomes; progress arrives per entry before.
+    /// - Parameters:
+    ///   - batch: The actions and the dialog line.
+    ///   - authorization: From `authorize()` — asked once for the whole batch.
+    ///   - progress: Called per finished entry (on an XPC thread).
+    ///   - timeout: Upper bound for the whole batch (package uninstalls move many files).
+    /// - Returns: One outcome per request, or errors when the helper is unreachable.
+    static func performBatch(_ batch: PrivilegedBatch, authorization: Data,
+                             progress: @escaping @Sendable (Int, PrivilegedOutcome) -> Void,
+                             timeout: TimeInterval = 3600) -> [PrivilegedOutcome] {
+        defer { releaseReferences() }
+        let count = batch.requests.count
+        let failAll: @Sendable (String) -> [PrivilegedOutcome] = { detail in
+            Array(repeating: PrivilegedOutcome.error(detail), count: count)
+        }
+        guard let payload = try? JSONEncoder().encode(batch) else { return failAll("cannot encode the batch") }
+        let connection = connect()
+        connection.exportedInterface = NSXPCInterface(with: LaunchKeeperClientXPC.self)
+        connection.exportedObject = ProgressReceiver(onProgress: progress)
+        batchConnection = connection
+        defer { batchConnection = nil; connection.invalidate() }
+        let reply = Reply<[PrivilegedOutcome]>()
+        let proxy = connection.remoteObjectProxyWithErrorHandler { error in
+            reply.value = failAll("helper not reachable: \(error.localizedDescription)")
+            reply.done.signal()
+        } as? LaunchKeeperHelperXPC
+        guard let proxy else { return failAll("helper interface unavailable") }
+        proxy.performBatch(payload, authorization: authorization) { data in
+            reply.value = (try? JSONDecoder().decode([PrivilegedOutcome].self, from: data)) ?? failAll("malformed reply")
+            reply.done.signal()
+        }
+        guard reply.done.wait(timeout: .now() + timeout) == .success else {
+            return failAll("the helper did not answer within \(Int(timeout)) s")
+        }
+        let outcomes = reply.value ?? failAll("no reply")
+        // A batch the helper refused as a whole answers with one outcome per request too.
+        return outcomes.count == batch.requests.count ? outcomes : failAll("unexpected reply")
+    }
+
+    /// Asks the helper to stop the running batch after the entry in progress.
+    static func stopBatch() {
+        (batchConnection?.remoteObjectProxy as? LaunchKeeperHelperXPC)?.stopBatch()
+    }
+
     /// The helper's version, or `nil` when it does not answer within a few seconds.
     static func version() -> String? {
         let connection = connect()
@@ -186,6 +244,31 @@ enum HelperClient {
         }
         _ = reply.done.wait(timeout: .now() + 5)
         return reply.value
+    }
+}
+
+/// The queue's administrator batch: one Touch ID for the whole list, the
+/// dialog names how many entries it is about (Phase 10, TJ 2026-09-27).
+struct PrivilegedBatchPerformer: BatchPerforming {
+    func performBatch(_ requests: [ActionRequest], apply: Bool, shouldContinue: @escaping @Sendable () -> Bool,
+                      progress: @escaping @Sendable (Int, ActionOutcome) -> Void) -> [ActionOutcome] {
+        func all(_ state: ActionOutcome.State) -> [ActionOutcome] {
+            requests.map { _ in ActionOutcome(state: state, steps: [], messages: [], undo: nil) }
+        }
+        let privileged = requests.compactMap(\.privileged)
+        guard apply, privileged.count == requests.count else {
+            return all(.refused("the helper only executes; plans come from the app"))
+        }
+        guard let authorization = HelperClient.authorize() else {
+            return all(.failed(String(localized: "keine Autorisierung möglich")))
+        }
+        let prompt = requests.count == 1
+            ? String(localized: "LaunchKeeper möchte einen Autostart-Eintrag ändern.")
+            : String(localized: "LaunchKeeper möchte \(requests.count) Autostart-Einträge ändern.")
+        let outcomes = HelperClient.performBatch(PrivilegedBatch(requests: privileged, prompt: prompt),
+                                                 authorization: authorization,
+                                                 progress: { index, outcome in progress(index, .from(privileged: outcome)) })
+        return outcomes.map(ActionOutcome.from(privileged:))
     }
 }
 

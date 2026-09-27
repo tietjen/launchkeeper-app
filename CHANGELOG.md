@@ -5,6 +5,21 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Added
+- Batch processing: tick entries in any view (inventory, background, packages,
+  app leftovers, quarantine); the detail column then offers the possible
+  actions with "n of m" and adds them to the **queue** (bottom of the sidebar).
+  In the queue every entry's action can be switched or the entry removed;
+  "Check plan" works out all of them against ONE scan, "Run all" asks for
+  Touch ID once for every administrator step, shows progress per entry and
+  overall, can be stopped after the entry in progress, and a failure does not
+  stop the rest. Finished actions can queue their way back (enable ↔ disable,
+  restore from the quarantine). The queue survives a restart.
+- Uses launchkeeper 0.11 batches (one scan instead of one per entry) and a
+  batch call in the privileged helper (0.1.5).
+
 ## [0.2.0] — 2026-09-27
 
 ### Added

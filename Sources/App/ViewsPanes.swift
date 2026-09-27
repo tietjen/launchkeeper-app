@@ -93,6 +93,7 @@ struct BackgroundEntryRow: View {
 
     var body: some View {
         HStack {
+            if !entry.row.components.isEmpty { MarkBox(id: entry.id, set: \.background) }
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.title)
                 Text(entry.subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -140,6 +141,7 @@ struct ReceiptsPane: View {
             PaneIntro(text: "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen.")
                 .padding(12)
             Table(rows, selection: $selection, sortOrder: $sortOrder) {
+                TableColumn("") { row in MarkBox(id: row.id, set: \.packages) }.width(22)
                 TableColumn("Paket", value: \.id) { row in Text(row.id).textSelection(.enabled) }
                     .width(min: 200, ideal: 300)
                 TableColumn("Version") { row in Text(row.version ?? "–") }.width(min: 60, ideal: 90)
@@ -213,6 +215,7 @@ struct LeftoverRow: View {
 
     var body: some View {
         HStack {
+            MarkBox(id: candidate.bundleIdentifier, set: \.leftovers)
             Text(candidate.bundleIdentifier)
             Spacer()
             Text(ByteCountFormatter.string(fromByteCount: Int64(candidate.totalBytes), countStyle: .file))
@@ -258,6 +261,7 @@ struct QuarantinePane: View {
                         }
                     } label: {
                         HStack {
+                            if entry.status != "restored" { MarkBox(id: entry.name, set: \.quarantine) }
                             Text(entry.packageIdentifier ?? entry.notes.first ?? entry.kind)
                             Spacer()
                             Text("\(entry.moves.count) Pfad(e)").foregroundStyle(.secondary)

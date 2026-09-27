@@ -129,6 +129,22 @@
         }
       }
     },
+    "%lld Einträge · %lld offen · %lld erledigt · %lld abgelehnt oder fehlgeschlagen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Einträge · %lld offen · %lld erledigt · %lld abgelehnt oder fehlgeschlagen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld entries · %lld open · %lld done · %lld refused or failed"
+          }
+        }
+      }
+    },
     "%lld Komponente(n)": {
       "localizations": {
         "de": {
@@ -193,6 +209,54 @@
         }
       }
     },
+    "%lld markiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld markiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld selected"
+          }
+        }
+      }
+    },
+    "%lld ohne automatische Aktion": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ohne automatische Aktion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld without an automatic action"
+          }
+        }
+      }
+    },
+    "%lld von %lld": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld"
+          }
+        }
+      }
+    },
     "%lld von %lld eigenen Dateien fehlen": {
       "localizations": {
         "de": {
@@ -221,6 +285,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld of %lld own files present"
+          }
+        }
+      }
+    },
+    "%lld von %lld erledigt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld erledigt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld done"
+          }
+        }
+      }
+    },
+    "%lld zur Warteschlange hinzugefügt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld zur Warteschlange hinzugefügt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld added to the queue"
           }
         }
       }
@@ -269,6 +365,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Aktion": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Action"
           }
         }
       }
@@ -333,6 +445,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "All entries"
+          }
+        }
+      }
+    },
+    "Alle ausführen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle ausführen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run all"
+          }
+        }
+      }
+    },
+    "Alle ausführen (Touch ID)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle ausführen (Touch ID)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run all (Touch ID)"
+          }
+        }
+      }
+    },
+    "Anhalten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anhalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
           }
         }
       }
@@ -625,6 +785,22 @@
         }
       }
     },
+    "Aus der Ansicht": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Ansicht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the view"
+          }
+        }
+      }
+    },
     "Aus der Quarantäne wiederherstellen": {
       "localizations": {
         "de": {
@@ -637,6 +813,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restore from quarantine"
+          }
+        }
+      }
+    },
+    "Aus der Warteschlange nehmen — nichts wird ausgeführt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Warteschlange nehmen — nichts wird ausgeführt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take out of the queue — nothing runs"
           }
         }
       }
@@ -717,6 +909,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Basic mode — click for all details (⌥⌘E)"
+          }
+        }
+      }
+    },
+    "Befehl": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Befehl"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command"
           }
         }
       }
@@ -961,6 +1169,22 @@
         }
       }
     },
+    "Das Paket %@ wird in derselben Warteschlange deinstalliert — diese Aktion ist dann überflüssig.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Paket %@ wird in derselben Warteschlange deinstalliert — diese Aktion ist dann überflüssig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The package %@ is uninstalled in the same queue — this action is then unnecessary."
+          }
+        }
+      }
+    },
     "Das würde passieren — noch ist nichts geändert:": {
       "localizations": {
         "de": {
@@ -1133,6 +1357,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The entry is not (or no longer) in the current inventory."
+          }
+        }
+      }
+    },
+    "Deren Schalter verwaltet macOS selbst — die Detailansicht zeigt, wo.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deren Schalter verwaltet macOS selbst — die Detailansicht zeigt, wo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS manages their switches itself — the detail view shows where."
           }
         }
       }
@@ -1441,6 +1681,22 @@
         }
       }
     },
+    "Ergebnis": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ergebnis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result"
+          }
+        }
+      }
+    },
     "Ergänzt den Suchpfad für Programme": {
       "localizations": {
         "de": {
@@ -1485,6 +1741,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Done and verified"
+          }
+        }
+      }
+    },
+    "Erledigte entfernen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigte entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove finished"
           }
         }
       }
@@ -1585,6 +1857,22 @@
         }
       }
     },
+    "Für die Stapelverarbeitung markieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für die Stapelverarbeitung markieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select for batch processing"
+          }
+        }
+      }
+    },
     "Für diese Einträge kennt macOS keinen Entwickler — meist nicht signierte Werkzeuge oder Skripte. Die Systemeinstellung zeigt sie deshalb unter dem Namen des Programms, das sie startet; so können Namen wie „bash“ oder „arch“ mehrfach erscheinen. Die zweite Zeile nennt, was tatsächlich dahintersteckt.": {
       "localizations": {
         "de": {
@@ -1597,6 +1885,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "macOS knows no developer for these entries — mostly unsigned tools or scripts. System Settings therefore shows them under the name of the program that starts them, so names like “bash” or “arch” can appear more than once. The second line names what is really behind them."
+          }
+        }
+      }
+    },
+    "Für keinen der markierten Einträge gibt es eine automatische Aktion.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für keinen der markierten Einträge gibt es eine automatische Aktion."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None of the selected entries has an automatic action."
           }
         }
       }
@@ -1645,6 +1949,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scheduled wake or power-on"
+          }
+        }
+      }
+    },
+    "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions collected from all views. “Check plan” works out all of them at once; “Run all” asks for Touch ID only once for every step that needs administrator rights. A failure does not stop the others."
           }
         }
       }
@@ -1917,6 +2237,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Background item without a developer"
+          }
+        }
+      }
+    },
+    "Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stops after the entry in progress — nothing is left half done."
           }
         }
       }
@@ -2433,6 +2769,38 @@
         }
       }
     },
+    "LaunchKeeper möchte %lld Autostart-Einträge ändern.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper möchte %lld Autostart-Einträge ändern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper wants to change %lld startup items."
+          }
+        }
+      }
+    },
+    "LaunchKeeper möchte einen Autostart-Eintrag ändern.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper möchte einen Autostart-Eintrag ändern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper wants to change one startup item."
+          }
+        }
+      }
+    },
     "LaunchKeeper öffnen": {
       "localizations": {
         "de": {
@@ -2449,6 +2817,38 @@
         }
       }
     },
+    "Leeren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leeren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "Leeren — nichts wird ausgeführt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leeren — nichts wird ausgeführt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear — nothing runs"
+          }
+        }
+      }
+    },
     "Legt den SHA-256 von %@ in die Zwischenablage — auf virustotal.com in die Suche einfügen. Die Datei selbst verlässt den Mac nicht.": {
       "localizations": {
         "de": {
@@ -2461,6 +2861,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copies the SHA-256 of %@ to the clipboard — paste it into the search on virustotal.com. The file itself never leaves the Mac."
+          }
+        }
+      }
+    },
+    "Legt für jede erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt für jede erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queues the way back for every finished action: enable ↔ disable, restore from the quarantine."
           }
         }
       }
@@ -2525,6 +2941,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deletes the orphaned launch file; a backup is made first."
+          }
+        }
+      }
+    },
+    "Markiere in einer Ansicht Einträge und füge sie rechts hinzu.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Markiere in einer Ansicht Einträge und füge sie rechts hinzu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select entries in a view and add them on the right."
+          }
+        }
+      }
+    },
+    "Markierung aufheben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Markierung aufheben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear selection"
           }
         }
       }
@@ -3089,6 +3537,54 @@
         }
       }
     },
+    "Plan": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan"
+          }
+        }
+      }
+    },
+    "Plan noch nicht geprüft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan noch nicht geprüft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "plan not checked yet"
+          }
+        }
+      }
+    },
+    "Plan prüfen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check plan"
+          }
+        }
+      }
+    },
     "Plan wird berechnet — das Inventar wird dafür neu gelesen …": {
       "localizations": {
         "de": {
@@ -3101,6 +3597,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Computing the plan — the inventory is read again for it …"
+          }
+        }
+      }
+    },
+    "Plan wird für alle Einträge berechnet …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan wird für alle Einträge berechnet …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Computing the plan for all entries …"
           }
         }
       }
@@ -3393,6 +3905,22 @@
         }
       }
     },
+    "Rückweg": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückweg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Way back"
+          }
+        }
+      }
+    },
     "Rückweg: %@": {
       "localizations": {
         "de": {
@@ -3405,6 +3933,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Way back: %@"
+          }
+        }
+      }
+    },
+    "Rückwege hinzufügen (%lld)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückwege hinzufügen (%lld)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add ways back (%lld)"
           }
         }
       }
@@ -3533,6 +4077,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "This is how macOS sees background items — the same list as in System Settings › General › Login Items & Extensions. Select a row to see what is behind it and jump to the individual components."
+          }
+        }
+      }
+    },
+    "Stapelverarbeitung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stapelverarbeitung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batch processing"
           }
         }
       }
@@ -4049,6 +4609,70 @@
         }
       }
     },
+    "Warteschlange": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queue"
+          }
+        }
+      }
+    },
+    "Warteschlange ist leer": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange ist leer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queue is empty"
+          }
+        }
+      }
+    },
+    "Warteschlange leeren?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange leeren?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the queue?"
+          }
+        }
+      }
+    },
+    "Warteschlange öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open queue"
+          }
+        }
+      }
+    },
     "Wartungsskript (periodic)": {
       "localizations": {
         "de": {
@@ -4161,6 +4785,22 @@
         }
       }
     },
+    "Wähle, was mit ihnen geschehen soll. Die Aktionen landen zuerst in der Warteschlange — ausgeführt wird erst dort, nach einem gemeinsamen Plan.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle, was mit ihnen geschehen soll. Die Aktionen landen zuerst in der Warteschlange — ausgeführt wird erst dort, nach einem gemeinsamen Plan."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose what should happen to them. The actions go to the queue first — they run only there, after a shared plan."
+          }
+        }
+      }
+    },
     "Zeigt erst den Plan — geändert wird erst nach einem zweiten Klick.": {
       "localizations": {
         "de": {
@@ -4177,6 +4817,22 @@
         }
       }
     },
+    "Zur Warteschlange hinzufügen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zur Warteschlange hinzufügen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to queue"
+          }
+        }
+      }
+    },
     "Zustand": {
       "localizations": {
         "de": {
@@ -4189,6 +4845,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "State"
+          }
+        }
+      }
+    },
+    "abgelehnt: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "abgelehnt: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refused: %@"
           }
         }
       }
@@ -4221,6 +4893,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "on"
+          }
+        }
+      }
+    },
+    "angehalten — nicht ausgeführt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "angehalten — nicht ausgeführt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stopped — not run"
           }
         }
       }
@@ -4285,6 +4973,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "switched off"
+          }
+        }
+      }
+    },
+    "bereit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bereit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ready"
+          }
+        }
+      }
+    },
+    "bereit · Touch ID": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bereit · Touch ID"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ready · Touch ID"
+          }
+        }
+      }
+    },
+    "braucht Administratorrechte — Hilfsprogramm in den Einstellungen einrichten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "braucht Administratorrechte — Hilfsprogramm in den Einstellungen einrichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "needs administrator rights — set up the helper in Settings"
+          }
+        }
+      }
+    },
+    "braucht Administratorrechte — nur im Terminal möglich": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "braucht Administratorrechte — nur im Terminal möglich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "needs administrator rights — possible in Terminal only"
           }
         }
       }
@@ -4381,6 +5133,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "set up and allowed"
+          }
+        }
+      }
+    },
+    "erledigt und überprüft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "erledigt und überprüft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "done and verified"
+          }
+        }
+      }
+    },
+    "fehlgeschlagen: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fehlgeschlagen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "failed: %@"
           }
         }
       }
@@ -4641,6 +5425,22 @@
         }
       }
     },
+    "läuft …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "läuft …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "running …"
+          }
+        }
+      }
+    },
     "mindestens eine Komponente hat keine Quelle mehr": {
       "localizations": {
         "de": {
@@ -4881,6 +5681,22 @@
         }
       }
     },
+    "· %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        }
+      }
+    },
     "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.": {
       "localizations": {
         "de": {
@@ -4973,6 +5789,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Show “%@” in inventory"
+          }
+        }
+      }
+    },
+    "„Plan prüfen“ zeigt, was geschehen würde.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Plan prüfen“ zeigt, was geschehen würde."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Check plan” shows what would happen."
           }
         }
       }
