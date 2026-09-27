@@ -110,7 +110,7 @@ enum HelperClient {
         guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess, let authRef else { return nil }
         if AuthorizationRightGet(HelperRight.name, nil) != errAuthorizationSuccess {
             _ = AuthorizationRightSet(authRef, HelperRight.name, HelperRight.definition as CFDictionary,
-                                      HelperRight.prompt as CFString, nil, nil)
+                                      nil, nil, nil)  // prompts: the definition's default-prompt
         }
         var external = AuthorizationExternalForm()
         guard AuthorizationMakeExternalForm(authRef, &external) == errAuthorizationSuccess else {
@@ -199,7 +199,7 @@ struct PrivilegedPerformer: ActionPerforming {
                                  steps: [], messages: [], undo: nil)
         }
         guard let authorization = HelperClient.authorize() else {
-            return ActionOutcome(state: .failed("keine Autorisierung möglich"), steps: [], messages: [], undo: nil)
+            return ActionOutcome(state: .failed(String(localized: "keine Autorisierung möglich")), steps: [], messages: [], undo: nil)
         }
         return .from(privileged: HelperClient.perform(privileged, authorization: authorization))
     }

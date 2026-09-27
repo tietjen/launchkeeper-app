@@ -76,6 +76,10 @@ HPLIST
 # Only the app's own resource bundle — a glob would also ship stale bundles
 # of earlier target names left in .build.
 cp -R "$BIN/launchkeeper-app_LaunchKeeperGUI.bundle" "$APP/Contents/Resources/"
+# Localization: the String Catalog (keys = German source text) compiled into
+# de.lproj/en.lproj of the MAIN bundle — SwiftUI's Text and String(localized:)
+# look there by default. Scripts/localize.sh keeps the catalog complete.
+xcrun xcstringstool compile Localization/Localizable.xcstrings --output-directory "$APP/Contents/Resources"
 # App icon: no asset catalog without Xcode — iconutil turns the .iconset into .icns.
 iconutil -c icns Assets/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 BUILD=$(git rev-list --count HEAD 2>/dev/null || echo 1)
@@ -92,7 +96,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>$VERSION</string>
   <key>CFBundleVersion</key><string>$BUILD</string>
-  <key>CFBundleDevelopmentRegion</key><string>de</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
   <key>CFBundleLocalizations</key><array><string>de</string><string>en</string></array>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>

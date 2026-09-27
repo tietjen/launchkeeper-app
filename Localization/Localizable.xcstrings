@@ -1,0 +1,4998 @@
+{
+  "sourceLanguage": "de",
+  "strings": {
+    "": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        }
+      }
+    },
+    " + %lld weitere": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " + %lld weitere"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " + %lld more"
+          }
+        }
+      }
+    },
+    " · nur alle zehn Minuten (Dateiereignisse nicht verfügbar)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · nur alle zehn Minuten (Dateiereignisse nicht verfügbar)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · every ten minutes only (file events unavailable)"
+          }
+        }
+      }
+    },
+    "%@ im Finder zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ im Finder zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show %@ in Finder"
+          }
+        }
+      }
+    },
+    "%@ — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — shows the plan in Terminal first; nothing runs without --apply."
+          }
+        }
+      }
+    },
+    "%@ → %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ → %@"
+          }
+        }
+      }
+    },
+    "%@: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld Komponente(n)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Komponente(n)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld component(s)"
+          }
+        }
+      }
+    },
+    "%lld Komponente(n) per launchd deaktiviert — in den Systemeinstellungen unsichtbar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Komponente(n) per launchd deaktiviert — in den Systemeinstellungen unsichtbar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld component(s) disabled via launchd — invisible in System Settings"
+          }
+        }
+      }
+    },
+    "%lld Ordner/Dateien, %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Ordner/Dateien, %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld folders/files, %@"
+          }
+        }
+      }
+    },
+    "%lld Pfad(e)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Pfad(e)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld path(s)"
+          }
+        }
+      }
+    },
+    "%lld von %lld eigenen Dateien fehlen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld eigenen Dateien fehlen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld own files missing"
+          }
+        }
+      }
+    },
+    "%lld von %lld eigenen Dateien vorhanden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld eigenen Dateien vorhanden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld own files present"
+          }
+        }
+      }
+    },
+    "%lld. %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld. %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld. %@"
+          }
+        }
+      }
+    },
+    ", zuletzt geprüft %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", zuletzt geprüft %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", last checked %@"
+          }
+        }
+      }
+    },
+    "Abbrechen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Aktiv — %lld Einträge im Blick": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiv — %lld Einträge im Blick"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active — watching %lld entries"
+          }
+        }
+      }
+    },
+    "Aktiv — erstes Inventar wird gelesen …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiv — erstes Inventar wird gelesen …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active — reading the first inventory …"
+          }
+        }
+      }
+    },
+    "Alle Details anzeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Details anzeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all details"
+          }
+        }
+      }
+    },
+    "Alle Einträge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Einträge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All entries"
+          }
+        }
+      }
+    },
+    "Anlass": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anlass"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trigger"
+          }
+        }
+      }
+    },
+    "Anmelde-/Abmelde-Skript (veraltete Methode)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmelde-/Abmelde-Skript (veraltete Methode)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Login/logout script (legacy method)"
+          }
+        }
+      }
+    },
+    "Anmeldeobjekt — öffnet beim Anmelden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmeldeobjekt — öffnet beim Anmelden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Login item — opens at login"
+          }
+        }
+      }
+    },
+    "Anmeldung abgebrochen oder abgelehnt — nichts geändert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmeldung abgebrochen oder abgelehnt — nichts geändert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Authentication cancelled or denied — nothing changed"
+          }
+        }
+      }
+    },
+    "Ansehen empfohlen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansehen empfohlen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worth a look"
+          }
+        }
+      }
+    },
+    "Ansehen empfohlen: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansehen empfohlen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worth a look: %@"
+          }
+        }
+      }
+    },
+    "Ansichten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Views"
+          }
+        }
+      }
+    },
+    "App": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
+          }
+        }
+      }
+    },
+    "App ohne Installationsbeleg": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App ohne Installationsbeleg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "app without an install receipt"
+          }
+        }
+      }
+    },
+    "App-Eintrag": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Eintrag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App entry"
+          }
+        }
+      }
+    },
+    "App-Erweiterung — wird von anderen Apps geladen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Erweiterung — wird von anderen Apps geladen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App extension — loaded by other apps"
+          }
+        }
+      }
+    },
+    "App-Reste": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Reste"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App leftovers"
+          }
+        }
+      }
+    },
+    "Apple ausblenden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple ausblenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Apple"
+          }
+        }
+      }
+    },
+    "Apple-signierte Einträge sind ausgeblendet — klicken zum Anzeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple-signierte Einträge sind ausgeblendet — klicken zum Anzeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple-signed entries are hidden — click to show"
+          }
+        }
+      }
+    },
+    "Apple-signierte Einträge werden angezeigt — klicken zum Ausblenden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple-signierte Einträge werden angezeigt — klicken zum Ausblenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple-signed entries are shown — click to hide"
+          }
+        }
+      }
+    },
+    "Argumente": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Argumente"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arguments"
+          }
+        }
+      }
+    },
+    "Auch vorhandene/unklare zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auch vorhandene/unklare zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also show present/unclear"
+          }
+        }
+      }
+    },
+    "Aus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off"
+          }
+        }
+      }
+    },
+    "Aus der Quarantäne wiederherstellen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Quarantäne wiederherstellen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore from quarantine"
+          }
+        }
+      }
+    },
+    "Ausführen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausführen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run"
+          }
+        }
+      }
+    },
+    "Ausführen (Touch ID)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausführen (Touch ID)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run (Touch ID)"
+          }
+        }
+      }
+    },
+    "Ausführen…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausführen…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run…"
+          }
+        }
+      }
+    },
+    "Automatisch nach Updates suchen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch nach Updates suchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for updates automatically"
+          }
+        }
+      }
+    },
+    "Basismodus — klicken für alle Details (⌥⌘E)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basismodus — klicken für alle Details (⌥⌘E)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basic mode — click for all details (⌥⌘E)"
+          }
+        }
+      }
+    },
+    "Befehl kopieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Befehl kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy command"
+          }
+        }
+      }
+    },
+    "Befund": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Befund"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding"
+          }
+        }
+      }
+    },
+    "Bei der Anmeldung starten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bei der Anmeldung starten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch at login"
+          }
+        }
+      }
+    },
+    "Beim Anmelden öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Anmelden öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open at login"
+          }
+        }
+      }
+    },
+    "Beim Start bei der Anmeldung öffnet LaunchKeeper sein Fenster; schließt du es, beobachtet die App weiter — das Auge in der Menüleiste zeigt es.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Start bei der Anmeldung öffnet LaunchKeeper sein Fenster; schließt du es, beobachtet die App weiter — das Auge in der Menüleiste zeigt es."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When started at login, LaunchKeeper opens its window; close it and the app keeps watching — the eye in the menu bar shows it."
+          }
+        }
+      }
+    },
+    "Beleg entfernen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beleg entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove receipt"
+          }
+        }
+      }
+    },
+    "Bemerkt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bemerkt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noticed"
+          }
+        }
+      }
+    },
+    "Beobachtung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachtung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch"
+          }
+        }
+      }
+    },
+    "Beobachtung aktiv": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachtung aktiv"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch active"
+          }
+        }
+      }
+    },
+    "Beobachtung aus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachtung aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch off"
+          }
+        }
+      }
+    },
+    "Beobachtung ausschalten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachtung ausschalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn off watch"
+          }
+        }
+      }
+    },
+    "Braucht Administratorrechte": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Braucht Administratorrechte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs administrator rights"
+          }
+        }
+      }
+    },
+    "Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Braucht Administratorrechte — nach dem Klick fragt macOS nach Touch ID oder deinem Passwort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs administrator rights — after the click macOS asks for Touch ID or your password."
+          }
+        }
+      }
+    },
+    "Darf im Hintergrund laufen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Darf im Hintergrund laufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed in the background"
+          }
+        }
+      }
+    },
+    "Das Hilfsprogramm hat nichts ausgeführt — auf dem Mac ist nichts geändert.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Hilfsprogramm hat nichts ausgeführt — auf dem Mac ist nichts geändert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The helper ran nothing — nothing on the Mac has changed."
+          }
+        }
+      }
+    },
+    "Das würde passieren — noch ist nichts geändert:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das würde passieren — noch ist nichts geändert:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This would happen — nothing has changed yet:"
+          }
+        }
+      }
+    },
+    "Dateien": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files"
+          }
+        }
+      }
+    },
+    "Daten einer installierten App": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daten einer installierten App"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data of an installed app"
+          }
+        }
+      }
+    },
+    "Daten eines Werkzeugs oder Frameworks": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daten eines Werkzeugs oder Frameworks"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data of a tool or framework"
+          }
+        }
+      }
+    },
+    "Deaktivieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktivieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable"
+          }
+        }
+      }
+    },
+    "Deaktivieren (umkehrbar)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktivieren (umkehrbar)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable (reversible)"
+          }
+        }
+      }
+    },
+    "Deaktiviert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktiviert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disabled"
+          }
+        }
+      }
+    },
+    "Deaktiviert den Eintrag und verschiebt seine Startdatei in die Quarantäne — wiederherstellbar. Das Programm selbst bleibt; legt eine App die Datei neu an, startet sie trotzdem nicht, weil der Eintrag deaktiviert bleibt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktiviert den Eintrag und verschiebt seine Startdatei in die Quarantäne — wiederherstellbar. Das Programm selbst bleibt; legt eine App die Datei neu an, startet sie trotzdem nicht, weil der Eintrag deaktiviert bleibt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disables the entry and moves its launch file into the quarantine — restorable. The program itself stays; if an app writes the file again, it still does not start, because the entry stays disabled."
+          }
+        }
+      }
+    },
+    "Deinstallieren (Vorschau)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deinstallieren (Vorschau)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uninstall (preview)"
+          }
+        }
+      }
+    },
+    "Den Schalter dieser Zeile verwaltet macOS selbst — LaunchKeeper schreibt dort nicht hinein.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den Schalter dieser Zeile verwaltet macOS selbst — LaunchKeeper schreibt dort nicht hinein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS manages the switch of this row itself — LaunchKeeper does not write there."
+          }
+        }
+      }
+    },
+    "Der Eintrag ist im aktuellen Inventar nicht (mehr) vorhanden.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Eintrag ist im aktuellen Inventar nicht (mehr) vorhanden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry is not (or no longer) in the current inventory."
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details"
+          }
+        }
+      }
+    },
+    "Die Ansicht entsteht aus dem Inventar — ⌘R.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Ansicht entsteht aus dem Inventar — ⌘R."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This view is built from the inventory — ⌘R."
+          }
+        }
+      }
+    },
+    "Die App selbst ist als Hintergrundobjekt registriert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die App selbst ist als Hintergrundobjekt registriert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app itself is registered as a background item"
+          }
+        }
+      }
+    },
+    "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert — sobald eine Autostart-Stelle geschrieben wird, und alle zehn Minuten vollständig. Was LaunchKeeper selbst geändert hat, wird nur aufgelistet, nicht gemeldet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert — sobald eine Autostart-Stelle geschrieben wird, und alle zehn Minuten vollständig. Was LaunchKeeper selbst geändert hat, wird nur aufgelistet, nicht gemeldet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The watch reports when something new wants to start automatically or an entry changes — as soon as an autostart location is written, and in full every ten minutes. What LaunchKeeper changed itself is listed, not notified."
+          }
+        }
+      }
+    },
+    "Die Systemeinstellung nennt es „%@“, weil macOS keinen Entwickler kennt (nicht signiert oder ein Skript) und deshalb den Programmnamen zeigt — Namen wie „bash“ oder „arch“ können darum mehrfach vorkommen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Systemeinstellung nennt es „%@“, weil macOS keinen Entwickler kennt (nicht signiert oder ein Skript) und deshalb den Programmnamen zeigt — Namen wie „bash“ oder „arch“ können darum mehrfach vorkommen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System Settings calls it “%@” because macOS knows no developer (unsigned or a script) and shows the program name instead — so names like “bash” or “arch” can appear more than once."
+          }
+        }
+      }
+    },
+    "Diese Aktion führt die App noch nicht mit Administratorrechten aus. Im Terminal geht es; dort fragt macOS nach deinem Passwort:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Aktion führt die App noch nicht mit Administratorrechten aus. Im Terminal geht es; dort fragt macOS nach deinem Passwort:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app does not run this action with administrator rights yet. Terminal can; macOS asks for your password there:"
+          }
+        }
+      }
+    },
+    "Dort lässt sich die Komponente einzeln steuern.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dort lässt sich die Komponente einzeln steuern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There the component can be controlled on its own."
+          }
+        }
+      }
+    },
+    "Dort steht, was der Eintrag ist, und was du tun kannst.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dort steht, was der Eintrag ist, und was du tun kannst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It shows what the entry is and what you can do."
+          }
+        }
+      }
+    },
+    "Einmalige geplante Aufgabe (at)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einmalige geplante Aufgabe (at)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-time scheduled job (at)"
+          }
+        }
+      }
+    },
+    "Einrichten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einrichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up"
+          }
+        }
+      }
+    },
+    "Einstellungen öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings, caches and data of apps that are no longer installed. Only what provably belongs to a deleted app is shown. Select an entry to review the leftovers and move them into the quarantine."
+          }
+        }
+      }
+    },
+    "Eintrag der Hintergrundaufgaben-Verwaltung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eintrag der Hintergrundaufgaben-Verwaltung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background Task Management record"
+          }
+        }
+      }
+    },
+    "Einträge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einträge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries"
+          }
+        }
+      }
+    },
+    "Endgültig löschen folgt mit dem Hilfsprogramm": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen folgt mit dem Hilfsprogramm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanent deletion comes with the helper"
+          }
+        }
+      }
+    },
+    "Entfernen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Entfernt: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entfernt: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed: %@"
+          }
+        }
+      }
+    },
+    "Entwickler": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entwickler"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Developer"
+          }
+        }
+      }
+    },
+    "Entwickler-Eintrag": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entwickler-Eintrag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Developer entry"
+          }
+        }
+      }
+    },
+    "Ergänzt den Suchpfad für Programme": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ergänzt den Suchpfad für Programme"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adds to the program search path"
+          }
+        }
+      }
+    },
+    "Erlaube „LaunchKeeper“ in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen unter „Im Hintergrund erlauben“, dann „Neu prüfen“.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaube „LaunchKeeper“ in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen unter „Im Hintergrund erlauben“, dann „Neu prüfen“."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow “LaunchKeeper” in System Settings › General › Login Items & Extensions under “Allow in the Background”, then “Check again”."
+          }
+        }
+      }
+    },
+    "Erledigt und überprüft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt und überprüft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done and verified"
+          }
+        }
+      }
+    },
+    "Es läuft noch Version %@ des Hilfsprogramms, diese App bringt %@ mit. Nach dem Neustart kannst du ausführen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es läuft noch Version %@ des Hilfsprogramms, diese App bringt %@ mit. Nach dem Neustart kannst du ausführen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helper version %@ is still running; this app ships %@. After a restart you can run the action."
+          }
+        }
+      }
+    },
+    "Es läuft noch eine ältere Version des Hilfsprogramms (%@). Bis zum Neustart führt LaunchKeeper darüber nichts aus.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es läuft noch eine ältere Version des Hilfsprogramms (%@). Bis zum Neustart führt LaunchKeeper darüber nichts aus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An older version of the helper is still running (%@). LaunchKeeper runs nothing through it until it restarts."
+          }
+        }
+      }
+    },
+    "Expertenmodus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expertenmodus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expert mode"
+          }
+        }
+      }
+    },
+    "Expertenmodus — klicken für die Kurzfassung (⌥⌘E)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expertenmodus — klicken für die Kurzfassung (⌥⌘E)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expert mode — click for the summary (⌥⌘E)"
+          }
+        }
+      }
+    },
+    "Fehlen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing"
+          }
+        }
+      }
+    },
+    "Fertig": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fertig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Für diese Einträge kennt macOS keinen Entwickler — meist nicht signierte Werkzeuge oder Skripte. Die Systemeinstellung zeigt sie deshalb unter dem Namen des Programms, das sie startet; so können Namen wie „bash“ oder „arch“ mehrfach erscheinen. Die zweite Zeile nennt, was tatsächlich dahintersteckt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für diese Einträge kennt macOS keinen Entwickler — meist nicht signierte Werkzeuge oder Skripte. Die Systemeinstellung zeigt sie deshalb unter dem Namen des Programms, das sie startet; so können Namen wie „bash“ oder „arch“ mehrfach erscheinen. Die zweite Zeile nennt, was tatsächlich dahintersteckt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS knows no developer for these entries — mostly unsigned tools or scripts. System Settings therefore shows them under the name of the program that starts them, so names like “bash” or “arch” can appear more than once. The second line names what is really behind them."
+          }
+        }
+      }
+    },
+    "Gatekeeper": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gatekeeper"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gatekeeper"
+          }
+        }
+      }
+    },
+    "Geplante Aufgabe (cron)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geplante Aufgabe (cron)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled job (cron)"
+          }
+        }
+      }
+    },
+    "Geplantes Aufwachen oder Einschalten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geplantes Aufwachen oder Einschalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled wake or power-on"
+          }
+        }
+      }
+    },
+    "Geändert: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geändert: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changed: %@"
+          }
+        }
+      }
+    },
+    "Hardened Runtime": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardened Runtime"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardened Runtime"
+          }
+        }
+      }
+    },
+    "Hash für VirusTotal kopieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hash für VirusTotal kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy hash for VirusTotal"
+          }
+        }
+      }
+    },
+    "Hash kopieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hash kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy hash"
+          }
+        }
+      }
+    },
+    "Hebt die Deaktivierung auf.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hebt die Deaktivierung auf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lifts the disable."
+          }
+        }
+      }
+    },
+    "Herkunft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herkunft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origin"
+          }
+        }
+      }
+    },
+    "Herkunft & Signatur": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herkunft & Signatur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Origin & signature"
+          }
+        }
+      }
+    },
+    "Hier nicht steuerbar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier nicht steuerbar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not controllable here"
+          }
+        }
+      }
+    },
+    "Hilfsprogramm einrichten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfsprogramm einrichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up helper"
+          }
+        }
+      }
+    },
+    "Hilfsprogramm für Administratorrechte": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfsprogramm für Administratorrechte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helper for administrator rights"
+          }
+        }
+      }
+    },
+    "Hilfsprogramm mit Administratorrechten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfsprogramm mit Administratorrechten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helper with administrator rights"
+          }
+        }
+      }
+    },
+    "Hilfsprogramm neu starten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfsprogramm neu starten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart helper"
+          }
+        }
+      }
+    },
+    "Hilfsprogramm veraltet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfsprogramm veraltet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helper outdated"
+          }
+        }
+      }
+    },
+    "Hintergrund": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrund"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background"
+          }
+        }
+      }
+    },
+    "Hintergrunddienst einer App": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrunddienst einer App"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An app's background service"
+          }
+        }
+      }
+    },
+    "Hintergrundkomponente": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrundkomponente"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background component"
+          }
+        }
+      }
+    },
+    "Hintergrundobjekt ohne Entwicklerangabe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrundobjekt ohne Entwicklerangabe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background item without a developer"
+          }
+        }
+      }
+    },
+    "Im Finder zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finder zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in Finder"
+          }
+        }
+      }
+    },
+    "Im Hintergrund ausgeschaltet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Hintergrund ausgeschaltet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off in the background"
+          }
+        }
+      }
+    },
+    "Im Hintergrund erlauben — Apps und Entwickler": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Hintergrund erlauben — Apps und Entwickler"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow in the Background — apps and developers"
+          }
+        }
+      }
+    },
+    "Im Hintergrund erlauben — ohne Entwicklerangabe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Hintergrund erlauben — ohne Entwicklerangabe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow in the Background — no developer"
+          }
+        }
+      }
+    },
+    "Im Inventar zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Inventar zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show in inventory"
+          }
+        }
+      }
+    },
+    "In den Systemeinstellungen erlauben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In den Systemeinstellungen erlauben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow in System Settings"
+          }
+        }
+      }
+    },
+    "In den Systemeinstellungen umschalten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In den Systemeinstellungen umschalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle in System Settings"
+          }
+        }
+      }
+    },
+    "In die Quarantäne verschieben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In die Quarantäne verschieben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move into quarantine"
+          }
+        }
+      }
+    },
+    "Installationsbeleg ohne Dateien — das Programm wurde entfernt, der Beleg blieb": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installationsbeleg ohne Dateien — das Programm wurde entfernt, der Beleg blieb"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install receipt without files — the program was removed, the receipt stayed"
+          }
+        }
+      }
+    },
+    "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installationspakete (.pkg), die auf diesem Mac Spuren hinterlassen haben. Fehlen Dateien, wurde das Programm meist schon gelöscht — der Beleg bleibt trotzdem liegen. Wähle ein Paket, um es sauber zu entfernen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installer packages (.pkg) that left traces on this Mac. If files are missing, the program was usually deleted already — the receipt stays anyway. Select a package to remove it cleanly."
+          }
+        }
+      }
+    },
+    "Installiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed"
+          }
+        }
+      }
+    },
+    "Installiertes Paket": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installiertes Paket"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed package"
+          }
+        }
+      }
+    },
+    "Inventar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory"
+          }
+        }
+      }
+    },
+    "Inventar unvollständig: %@ — ⇧⌘R versucht es erneut": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventar unvollständig: %@ — ⇧⌘R versucht es erneut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventory incomplete: %@ — ⇧⌘R tries again"
+          }
+        }
+      }
+    },
+    "Inventar wird gelesen — die erste Abfrage der Hintergrundaufgaben kann einige Minuten dauern …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventar wird gelesen — die erste Abfrage der Hintergrundaufgaben kann einige Minuten dauern …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading the inventory — the first Background Task Management query can take a few minutes …"
+          }
+        }
+      }
+    },
+    "Inventar wird gelesen …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inventar wird gelesen …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading the inventory …"
+          }
+        }
+      }
+    },
+    "Jetzt nach Updates suchen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt nach Updates suchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for updates now"
+          }
+        }
+      }
+    },
+    "Kategorie": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kategorie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Category"
+          }
+        }
+      }
+    },
+    "Kategorien": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kategorien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Categories"
+          }
+        }
+      }
+    },
+    "Keine": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        }
+      }
+    },
+    "Keine Paket-Belege": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Paket-Belege"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No package receipts"
+          }
+        }
+      }
+    },
+    "Keine Reste gefunden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Reste gefunden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No leftovers found"
+          }
+        }
+      }
+    },
+    "Kennung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kennung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Identifier"
+          }
+        }
+      }
+    },
+    "Kernel-Erweiterung (Treiber)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kernel-Erweiterung (Treiber)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kernel extension (driver)"
+          }
+        }
+      }
+    },
+    "Kette": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kette"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chain"
+          }
+        }
+      }
+    },
+    "Komponenten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Komponenten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Components"
+          }
+        }
+      }
+    },
+    "Kopieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "Kopiert ✓": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiert ✓"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied ✓"
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Label"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Label"
+          }
+        }
+      }
+    },
+    "LaunchKeeper": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper"
+          }
+        }
+      }
+    },
+    "LaunchKeeper beenden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper beenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit LaunchKeeper"
+          }
+        }
+      }
+    },
+    "LaunchKeeper hat das selbst geändert (eine Aktion, die du ausgeführt hast).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper hat das selbst geändert (eine Aktion, die du ausgeführt hast)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper changed this itself (an action you ran)."
+          }
+        }
+      }
+    },
+    "LaunchKeeper öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open LaunchKeeper"
+          }
+        }
+      }
+    },
+    "Legt den SHA-256 von %@ in die Zwischenablage — auf virustotal.com in die Suche einfügen. Die Datei selbst verlässt den Mac nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt den SHA-256 von %@ in die Zwischenablage — auf virustotal.com in die Suche einfügen. Die Datei selbst verlässt den Mac nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copies the SHA-256 of %@ to the clipboard — paste it into the search on virustotal.com. The file itself never leaves the Mac."
+          }
+        }
+      }
+    },
+    "Letzte Prüfung unvollständig, nicht verglichen: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Prüfung unvollständig, nicht verglichen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last check incomplete, not compared: %@"
+          }
+        }
+      }
+    },
+    "Liste leeren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste leeren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear list"
+          }
+        }
+      }
+    },
+    "Läuft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running"
+          }
+        }
+      }
+    },
+    "Löscht die verwaiste Startdatei; vorher wird eine Sicherung angelegt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löscht die verwaiste Startdatei; vorher wird eine Sicherung angelegt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deletes the orphaned launch file; a backup is made first."
+          }
+        }
+      }
+    },
+    "Meist hilft ein Neustart des Hilfsprogramms. Danach wird der Plan neu berechnet und du kannst es noch einmal versuchen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meist hilft ein Neustart des Hilfsprogramms. Danach wird der Plan neu berechnet und du kannst es noch einmal versuchen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restarting the helper usually helps. The plan is then computed again and you can try once more."
+          }
+        }
+      }
+    },
+    "Mindestens eine Komponente ist per launchd deaktiviert — in der Systemeinstellung unsichtbar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindestens eine Komponente ist per launchd deaktiviert — in der Systemeinstellung unsichtbar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least one component is disabled via launchd — invisible in System Settings"
+          }
+        }
+      }
+    },
+    "Mitteilung bei neuen oder geänderten Einträgen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilung bei neuen oder geänderten Einträgen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notify about new or changed entries"
+          }
+        }
+      }
+    },
+    "Mitteilungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        }
+      }
+    },
+    "Möglich": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Möglich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Possible"
+          }
+        }
+      }
+    },
+    "Nach Updates suchen …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach Updates suchen …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for Updates …"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "Name, Label, Pfad, Team …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, Label, Pfad, Team …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, label, path, team …"
+          }
+        }
+      }
+    },
+    "Neu einlesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu einlesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rescan"
+          }
+        }
+      }
+    },
+    "Neu einlesen (⌘R) — ⇧⌘R fragt auch die Hintergrundaufgaben neu ab": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu einlesen (⌘R) — ⇧⌘R fragt auch die Hintergrundaufgaben neu ab"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rescan (⌘R) — ⇧⌘R also queries Background Task Management again"
+          }
+        }
+      }
+    },
+    "Neu laden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu laden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload"
+          }
+        }
+      }
+    },
+    "Neu prüfen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check again"
+          }
+        }
+      }
+    },
+    "Neu starten und erneut versuchen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu starten und erneut versuchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart and try again"
+          }
+        }
+      }
+    },
+    "Neu: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New: %@"
+          }
+        }
+      }
+    },
+    "Neue Autostart-Einträge beobachten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Autostart-Einträge beobachten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch for new autostart entries"
+          }
+        }
+      }
+    },
+    "Neue und geänderte Einträge erscheinen hier.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue und geänderte Einträge erscheinen hier."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New and changed entries appear here."
+          }
+        }
+      }
+    },
+    "Nicht sicher zuzuordnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht sicher zuzuordnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot be attributed reliably"
+          }
+        }
+      }
+    },
+    "Nicht signiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht signiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed"
+          }
+        }
+      }
+    },
+    "Nicht vollständig: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht vollständig: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incomplete: %@"
+          }
+        }
+      }
+    },
+    "Nichts gewählt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts gewählt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing selected"
+          }
+        }
+      }
+    },
+    "Nichts registriert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts registriert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing registered"
+          }
+        }
+      }
+    },
+    "Nichts, dessen App nachweislich fehlt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts, dessen App nachweislich fehlt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing whose app is provably gone."
+          }
+        }
+      }
+    },
+    "Nimmt nur Dateien, die noch unverändert vom Paket stammen, und verschiebt sie in die Quarantäne — wiederherstellbar. Veränderte und geteilte Dateien bleiben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nimmt nur Dateien, die noch unverändert vom Paket stammen, und verschiebt sie in die Quarantäne — wiederherstellbar. Veränderte und geteilte Dateien bleiben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Takes only files still unchanged from the package and moves them into the quarantine — restorable. Modified and shared files stay."
+          }
+        }
+      }
+    },
+    "Noch kein Inventar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Inventar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No inventory yet"
+          }
+        }
+      }
+    },
+    "Noch nicht eingelesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht eingelesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not read yet"
+          }
+        }
+      }
+    },
+    "Noch nichts bemerkt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nichts bemerkt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing noticed yet"
+          }
+        }
+      }
+    },
+    "Nur mit fehlenden Dateien": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur mit fehlenden Dateien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only with missing files"
+          }
+        }
+      }
+    },
+    "Nur noch ein Rest-Eintrag — harmlos, macOS räumt ihn selbst auf": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur noch ein Rest-Eintrag — harmlos, macOS räumt ihn selbst auf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only a leftover record — harmless, macOS cleans it up itself"
+          }
+        }
+      }
+    },
+    "Nächste Schritte": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächste Schritte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next steps"
+          }
+        }
+      }
+    },
+    "Oder jetzt im Terminal:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oder jetzt im Terminal:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or now in Terminal:"
+          }
+        }
+      }
+    },
+    "Paket": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paket"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Package"
+          }
+        }
+      }
+    },
+    "Paket deinstallieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paket deinstallieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uninstall package"
+          }
+        }
+      }
+    },
+    "Paketbeleg vergessen — Kopie liegt in der Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paketbeleg vergessen — Kopie liegt in der Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Package receipt forgotten — a copy is in the quarantine"
+          }
+        }
+      }
+    },
+    "Pakete": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pakete"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Packages"
+          }
+        }
+      }
+    },
+    "Pfad": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pfad"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Path"
+          }
+        }
+      }
+    },
+    "Plan wird berechnet — das Inventar wird dafür neu gelesen …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan wird berechnet — das Inventar wird dafür neu gelesen …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Computing the plan — the inventory is read again for it …"
+          }
+        }
+      }
+    },
+    "Plan:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan:"
+          }
+        }
+      }
+    },
+    "Plug-in — wird von macOS oder Apps geladen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plug-in — wird von macOS oder Apps geladen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plug-in — loaded by macOS or apps"
+          }
+        }
+      }
+    },
+    "Programm": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Program"
+          }
+        }
+      }
+    },
+    "Programm ist nicht (oder nur ad hoc) signiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programm ist nicht (oder nur ad hoc) signiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "program is not signed (or only ad hoc)"
+          }
+        }
+      }
+    },
+    "Programm liegt in einem temporären oder versteckten Ordner": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programm liegt in einem temporären oder versteckten Ordner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "program lives in a temporary or hidden folder"
+          }
+        }
+      }
+    },
+    "Programm wird direkt aus „Downloads“ gestartet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programm wird direkt aus „Downloads“ gestartet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "program is started straight from “Downloads”"
+          }
+        }
+      }
+    },
+    "Programm, das Netzwerkverbindungen annimmt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Programm, das Netzwerkverbindungen annimmt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Program accepting network connections"
+          }
+        }
+      }
+    },
+    "Prüfe, welche Apps wirklich weg sind — LaunchServices, Spotlight, App-Ordner …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüfe, welche Apps wirklich weg sind — LaunchServices, Spotlight, App-Ordner …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking which apps are really gone — LaunchServices, Spotlight, app folders …"
+          }
+        }
+      }
+    },
+    "Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantine"
+          }
+        }
+      }
+    },
+    "Quarantäne ist leer": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantäne ist leer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantine is empty"
+          }
+        }
+      }
+    },
+    "Quelle": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source"
+          }
+        }
+      }
+    },
+    "Quelle fehlt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelle fehlt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source missing"
+          }
+        }
+      }
+    },
+    "Quellen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quellen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        }
+      }
+    },
+    "Regel der Firewall": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regel der Firewall"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firewall rule"
+          }
+        }
+      }
+    },
+    "Rest — nur noch ein Eintrag der Hintergrundaufgaben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest — nur noch ein Eintrag der Hintergrundaufgaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leftover — only a Background Task Management record remains"
+          }
+        }
+      }
+    },
+    "Reste einer gelöschten App": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reste einer gelöschten App"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leftovers of a deleted app"
+          }
+        }
+      }
+    },
+    "Reste in die Quarantäne verschieben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reste in die Quarantäne verschieben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move leftovers into quarantine"
+          }
+        }
+      }
+    },
+    "Räumt Einstellungen, Caches und App-Daten weg — wiederherstellbar, falls die App zurückkommt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Räumt Einstellungen, Caches und App-Daten weg — wiederherstellbar, falls die App zurückkommt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears away settings, caches and app data — restorable in case the app comes back."
+          }
+        }
+      }
+    },
+    "Rückweg: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückweg: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Way back: %@"
+          }
+        }
+      }
+    },
+    "SHA-256": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SHA-256"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SHA-256"
+          }
+        }
+      }
+    },
+    "Schalte die Beobachtung ein.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schalte die Beobachtung ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on the watch."
+          }
+        }
+      }
+    },
+    "Schlüssel": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlüssel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key"
+          }
+        }
+      }
+    },
+    "Schritte mit Administratorrechten führt LaunchKeeper über sein Hilfsprogramm aus — mit Touch ID bei jeder Ausführung. Einmal einrichten:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schritte mit Administratorrechten führt LaunchKeeper über sein Hilfsprogramm aus — mit Touch ID bei jeder Ausführung. Einmal einrichten:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper runs steps that need administrator rights through its helper — with Touch ID every time. Set it up once:"
+          }
+        }
+      }
+    },
+    "Siegel": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siegel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seal"
+          }
+        }
+      }
+    },
+    "Signatur": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signatur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signature"
+          }
+        }
+      }
+    },
+    "Signatur gründlich prüfen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signatur gründlich prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verify signature thoroughly"
+          }
+        }
+      }
+    },
+    "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is how macOS sees background items — the same list as in System Settings › General › Login Items & Extensions. Select a row to see what is behind it and jump to the individual components."
+          }
+        }
+      }
+    },
+    "Startdatei des Terminals (Shell)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startdatei des Terminals (Shell)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminal startup file (shell)"
+          }
+        }
+      }
+    },
+    "Startet automatisch": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet automatisch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts automatically"
+          }
+        }
+      }
+    },
+    "Startet beim Anmelden (LaunchAgent)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet beim Anmelden (LaunchAgent)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts at login (LaunchAgent)"
+          }
+        }
+      }
+    },
+    "Startet zeitgesteuert (LaunchAgent)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet zeitgesteuert (LaunchAgent)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts on a schedule (LaunchAgent)"
+          }
+        }
+      }
+    },
+    "Steuerung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steuerung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Control"
+          }
+        }
+      }
+    },
+    "Systemdienst, dessen Programm ohne Administratorrechte geändert werden kann": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemdienst, dessen Programm ohne Administratorrechte geändert werden kann"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "system service whose program can be changed without administrator rights"
+          }
+        }
+      }
+    },
+    "Systemdienst, startet mit dem Mac (LaunchDaemon)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemdienst, startet mit dem Mac (LaunchDaemon)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System service, starts with the Mac (LaunchDaemon)"
+          }
+        }
+      }
+    },
+    "Systemdienst, zeitgesteuert (LaunchDaemon)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemdienst, zeitgesteuert (LaunchDaemon)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System service, on a schedule (LaunchDaemon)"
+          }
+        }
+      }
+    },
+    "Systemerweiterung (Netzwerk, Sicherheit, Treiber)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Systemerweiterung (Netzwerk, Sicherheit, Treiber)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System extension (network, security, driver)"
+          }
+        }
+      }
+    },
+    "Tatsächlich: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tatsächlich: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actually: %@"
+          }
+        }
+      }
+    },
+    "Team": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team"
+          }
+        }
+      }
+    },
+    "Team %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team %@"
+          }
+        }
+      }
+    },
+    "Teil von macOS": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teil von macOS"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "part of macOS"
+          }
+        }
+      }
+    },
+    "Teilweise eingeschaltet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilweise eingeschaltet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partly on"
+          }
+        }
+      }
+    },
+    "Teilweise noch installiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilweise noch installiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partly still installed"
+          }
+        }
+      }
+    },
+    "Typ": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "Unauffällig": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unauffällig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing unusual"
+          }
+        }
+      }
+    },
+    "Updates": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates"
+          }
+        }
+      }
+    },
+    "Updates sind nur in der installierten App verfügbar.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates sind nur in der installierten App verfügbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates are available only in the installed app."
+          }
+        }
+      }
+    },
+    "Updates werden vor der Installation gegen LaunchKeepers Signaturschlüssel geprüft. Das Hilfsprogramm kommt mit dem Update und startet nach einer Minute Leerlauf in der neuen Version.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates werden vor der Installation gegen LaunchKeepers Signaturschlüssel geprüft. Das Hilfsprogramm kommt mit dem Update und startet nach einer Minute Leerlauf in der neuen Version."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates are checked against LaunchKeeper's signing key before installation. The helper comes with the update and restarts in the new version after a minute of idle time."
+          }
+        }
+      }
+    },
+    "Veraltete Startdatei": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veraltete Startdatei"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legacy launch file"
+          }
+        }
+      }
+    },
+    "Veraltetes Startobjekt — wird nicht mehr ausgeführt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veraltetes Startobjekt — wird nicht mehr ausgeführt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legacy startup item — no longer run"
+          }
+        }
+      }
+    },
+    "Vergisst den Installationsbeleg; eine Kopie bleibt in der Quarantäne.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergisst den Installationsbeleg; eine Kopie bleibt in der Quarantäne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forgets the install receipt; a copy stays in the quarantine."
+          }
+        }
+      }
+    },
+    "Verhindert den automatischen Start; Aktivieren macht es rückgängig.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verhindert den automatischen Start; Aktivieren macht es rückgängig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prevents the automatic start; enabling undoes it."
+          }
+        }
+      }
+    },
+    "Verschiebt den Rest in die Quarantäne — jederzeit wiederherstellbar.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verschiebt den Rest in die Quarantäne — jederzeit wiederherstellbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moves the leftover into the quarantine — restorable at any time."
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        }
+      }
+    },
+    "Version %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
+          }
+        }
+      }
+    },
+    "Verwaist": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwaist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orphaned"
+          }
+        }
+      }
+    },
+    "Verwaist — die Quelle fehlt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwaist — die Quelle fehlt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orphaned — the source is missing"
+          }
+        }
+      }
+    },
+    "Verwaist: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwaist: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orphaned: %@"
+          }
+        }
+      }
+    },
+    "Vollständig neu einlesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vollständig neu einlesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full rescan"
+          }
+        }
+      }
+    },
+    "Wann": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        }
+      }
+    },
+    "Wartungsskript (periodic)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wartungsskript (periodic)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance script (periodic)"
+          }
+        }
+      }
+    },
+    "Was": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What"
+          }
+        }
+      }
+    },
+    "Was LaunchKeeper beim Aufräumen wegnimmt, landet hier — wiederherstellbar.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was LaunchKeeper beim Aufräumen wegnimmt, landet hier — wiederherstellbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What LaunchKeeper takes away while cleaning up lands here — restorable."
+          }
+        }
+      }
+    },
+    "Wieder aktivieren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wieder aktivieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable again"
+          }
+        }
+      }
+    },
+    "Wiederherstellen…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiederherstellen…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore…"
+          }
+        }
+      }
+    },
+    "Wird ausgeführt und danach überprüft …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird ausgeführt und danach überprüft …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running, then verifying …"
+          }
+        }
+      }
+    },
+    "Wähle links eine Zeile — rechts steht dann, was sie bedeutet und was du tun kannst.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle links eine Zeile — rechts steht dann, was sie bedeutet und was du tun kannst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select a row on the left — the right side then explains it and what you can do."
+          }
+        }
+      }
+    },
+    "Zeigt erst den Plan — geändert wird erst nach einem zweiten Klick.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt erst den Plan — geändert wird erst nach einem zweiten Klick."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the plan first — nothing changes before a second click."
+          }
+        }
+      }
+    },
+    "Zustand": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zustand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "State"
+          }
+        }
+      }
+    },
+    "aktiviert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aktiviert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "enabled"
+          }
+        }
+      }
+    },
+    "an": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on"
+          }
+        }
+      }
+    },
+    "aus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "off"
+          }
+        }
+      }
+    },
+    "aus Paket %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aus Paket %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from package %@"
+          }
+        }
+      }
+    },
+    "aus dem App Store": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aus dem App Store"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from the App Store"
+          }
+        }
+      }
+    },
+    "ausgeschaltet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ausgeschaltet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "switched off"
+          }
+        }
+      }
+    },
+    "codesign --verify --strict, Gatekeeper, Zertifikatskette, SHA-256": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "codesign --verify --strict, Gatekeeper, Zertifikatskette, SHA-256"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "codesign --verify --strict, Gatekeeper, certificate chain, SHA-256"
+          }
+        }
+      }
+    },
+    "deaktiviert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "deaktiviert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "disabled"
+          }
+        }
+      }
+    },
+    "der Beleg listet %lld Pfade, davon %lld geteilte Ordner wie /Applications": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "der Beleg listet %lld Pfade, davon %lld geteilte Ordner wie /Applications"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the receipt lists %lld paths, %lld of them shared folders like /Applications"
+          }
+        }
+      }
+    },
+    "die App ist nicht mehr installiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "die App ist nicht mehr installiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the app is no longer installed"
+          }
+        }
+      }
+    },
+    "durch LaunchKeeper": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "durch LaunchKeeper"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by LaunchKeeper"
+          }
+        }
+      }
+    },
+    "eingerichtet und erlaubt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "eingerichtet und erlaubt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "set up and allowed"
+          }
+        }
+      }
+    },
+    "fremder Eintrag startet ein macOS-Programm — Apples Signatur bürgt nur für das Programm, nicht dafür, was der Eintrag damit tut": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fremder Eintrag startet ein macOS-Programm — Apples Signatur bürgt nur für das Programm, nicht dafür, was der Eintrag damit tut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "third-party entry runs a macOS program — Apple's signature vouches for the program, not for what the entry does with it"
+          }
+        }
+      }
+    },
+    "führt aus: Modul %@ (über %@)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "führt aus: Modul %@ (über %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "runs: module %@ (via %@)"
+          }
+        }
+      }
+    },
+    "führt aus: Programm %@ (über %@)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "führt aus: Programm %@ (über %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "runs: program %@ (via %@)"
+          }
+        }
+      }
+    },
+    "führt aus: Skript %@ (über %@)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "führt aus: Skript %@ (über %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "runs: script %@ (via %@)"
+          }
+        }
+      }
+    },
+    "führt eine Befehlszeile aus (über %@): %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "führt eine Befehlszeile aus (über %@): %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "runs a command line (via %@): %@"
+          }
+        }
+      }
+    },
+    "gehört zu %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gehört zu %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "belongs to %@"
+          }
+        }
+      }
+    },
+    "geladen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "geladen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "loaded"
+          }
+        }
+      }
+    },
+    "gemischt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gemischt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mixed"
+          }
+        }
+      }
+    },
+    "installiert am %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "installiert am %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "installed on %@"
+          }
+        }
+      }
+    },
+    "intakt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "intakt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "intact"
+          }
+        }
+      }
+    },
+    "keine App gefunden — aber nichts zeigt, dass es je eine App war": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "keine App gefunden — aber nichts zeigt, dass es je eine App war"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no app found — but nothing shows it ever was an app"
+          }
+        }
+      }
+    },
+    "keine Autorisierung möglich": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "keine Autorisierung möglich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "authorization not possible"
+          }
+        }
+      }
+    },
+    "launchd: aus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "launchd: aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "launchd: off"
+          }
+        }
+      }
+    },
+    "läuft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "läuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "running"
+          }
+        }
+      }
+    },
+    "läuft (PID %lld)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "läuft (PID %lld)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "running (PID %lld)"
+          }
+        }
+      }
+    },
+    "läuft gerade": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "läuft gerade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "running now"
+          }
+        }
+      }
+    },
+    "mindestens eine Komponente hat keine Quelle mehr": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mindestens eine Komponente hat keine Quelle mehr"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "at least one component has lost its source"
+          }
+        }
+      }
+    },
+    "nicht eingerichtet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht eingerichtet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not set up"
+          }
+        }
+      }
+    },
+    "nicht gefunden — die App muss aus ihrem Bundle gestartet werden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht gefunden — die App muss aus ihrem Bundle gestartet werden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not found — the app must be started from its bundle"
+          }
+        }
+      }
+    },
+    "nicht signiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht signiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not signed"
+          }
+        }
+      }
+    },
+    "nicht signiert — Herkunft prüfen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht signiert — Herkunft prüfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not signed — check where it came from"
+          }
+        }
+      }
+    },
+    "ohne Entwicklerangabe · %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ohne Entwicklerangabe · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no developer · %@"
+          }
+        }
+      }
+    },
+    "ohne Entwicklerangabe · %@ · %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ohne Entwicklerangabe · %@ · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no developer · %@ · %@"
+          }
+        }
+      }
+    },
+    "pkgutil hat nicht geantwortet oder das Inventar ist noch nicht eingelesen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pkgutil hat nicht geantwortet oder das Inventar ist noch nicht eingelesen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pkgutil did not answer or the inventory has not been read yet."
+          }
+        }
+      }
+    },
+    "signiert von %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "signiert von %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "signed by %@"
+          }
+        }
+      }
+    },
+    "startet %@ ohne erkennbares Skript": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "startet %@ ohne erkennbares Skript"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "starts %@ without a recognizable script"
+          }
+        }
+      }
+    },
+    "startet eine Shell oder einen Interpreter — prüfen, welches Skript läuft": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "startet eine Shell oder einen Interpreter — prüfen, welches Skript läuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "starts a shell or interpreter — check which script runs"
+          }
+        }
+      }
+    },
+    "startet: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "startet: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "starts: %@"
+          }
+        }
+      }
+    },
+    "unbekannt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unbekannt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unknown"
+          }
+        }
+      }
+    },
+    "war eine App: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "war eine App: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "was an app: %@"
+          }
+        }
+      }
+    },
+    "wartet auf deine Freigabe in den Systemeinstellungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wartet auf deine Freigabe in den Systemeinstellungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting for your approval in System Settings"
+          }
+        }
+      }
+    },
+    "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes to system services, files in /Library, the firewall, package uninstalls and permanent deletion from the quarantine need administrator rights. LaunchKeeper runs them through this helper — only after Touch ID or password, every time, and only actions that pass the same checks as the command line. It takes no commands, only “what to do with which entry”."
+          }
+        }
+      }
+    },
+    "Öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        }
+      }
+    },
+    "öffnet: %@ (über %@)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "öffnet: %@ (über %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "opens: %@ (via %@)"
+          }
+        }
+      }
+    },
+    "über Homebrew installiert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "über Homebrew installiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "installed via Homebrew"
+          }
+        }
+      }
+    },
+    "–": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
+          }
+        }
+      }
+    },
+    "„%@“ im Inventar zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„%@“ im Inventar zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show “%@” in inventory"
+          }
+        }
+      }
+    },
+    "⌘R liest ein, was auf diesem Mac automatisch startet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘R liest ein, was auf diesem Mac automatisch startet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘R reads what starts automatically on this Mac."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

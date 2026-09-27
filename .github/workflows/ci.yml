@@ -27,5 +27,7 @@ jobs:
         run: swift build
       - name: Test (AppCore + HelperCore — no helper, no window)
         run: swift test
+      - name: Localization complete (every string has an English translation)
+        run: Scripts/localize.sh --check
       - name: App bundle (unsigned, universal)
         run: Scripts/build-app.sh --universal --no-sign

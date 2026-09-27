@@ -5,6 +5,26 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.2.0] — 2026-09-27
+
+### Added
+- English. The app follows the system language: German or English; any
+  other language falls back to English. All 312 texts of the interface —
+  views, next steps, verdicts, risk hints, notifications, menus, settings —
+  plus the Touch ID / password prompt of the helper.
+- `Localization/Localizable.xcstrings` (String Catalog, editable in Xcode) as
+  the single source of translations; `Scripts/localize.sh` collects the
+  strings through the compiler and `--check` fails CI when one lacks an
+  English translation.
+
+### Changed
+- Privileged helper 0.1.4: brings the prompt of its authorization rule up to
+  date (German and English) on existing installations; the rest of the rule
+  is left as it is.
+
+Messages that come from the launchkeeper engine (plans, refusals, gate
+reasons) stay English in both languages, as in the CLI.
+
 ## [0.1.1] — 2026-09-27
 
 The first update through Sparkle — it exists to prove the update path.

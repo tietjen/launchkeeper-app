@@ -25,7 +25,7 @@ public enum HelperIdentity {
     /// The helper protocol/build version. Compiled into both sides: the app
     /// compares it with what the running helper reports and asks for a
     /// restart of the helper when they differ.
-    public static let version = "0.1.3"
+    public static let version = "0.1.4"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
@@ -50,8 +50,18 @@ public enum HelperRight {
     /// The right's name in the authorization database.
     public static let name = "de.paranoidsecurity.LaunchKeeper.modify"
 
-    /// The prompt macOS shows in the authentication dialog.
-    public static let prompt = "LaunchKeeper möchte einen Autostart-Eintrag auf Systemebene ändern."
+    /// The prompt macOS shows in the authentication dialog, per language.
+    /// macOS (SecurityAgent) picks the entry for the user's language; ""
+    /// is the fallback. The helper runs no localization bundle, so the
+    /// translations live in the rule itself (`default-prompt`).
+    public static let prompts: [String: String] = [
+        "": "LaunchKeeper wants to change a system-level startup item.",
+        "en": "LaunchKeeper wants to change a system-level startup item.",
+        "de": "LaunchKeeper möchte einen Autostart-Eintrag auf Systemebene ändern.",
+    ]
+
+    /// The fallback prompt (English), passed where one string is expected.
+    public static var defaultPrompt: String { prompts[""]! }
 
     /// The rule, modelled on `authenticate-admin-nonshared` with timeout 0.
     public static var definition: [String: Any] {
@@ -65,6 +75,7 @@ public enum HelperRight {
             "timeout": 0,
             "tries": 3,
             "comment": "Used by LaunchKeeper to change system-level startup items through its privileged helper.",
+            "default-prompt": prompts,
         ]
     }
 }

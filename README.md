@@ -32,6 +32,16 @@ LAUNCHKEEPER_KIT_PATH=../launchkeeper Scripts/build-app.sh   # against a local l
 swift test                                             # AppCore tests
 ```
 
+### Localization
+
+German and English. Keys are the German source text; translations live in
+`Localization/Localizable.xcstrings` (open it in Xcode, or edit the JSON).
+After changing UI text run `Scripts/localize.sh` — it collects every
+localizable string through the compiler, adds new ones (English marked
+"new") and drops unused ones; `Scripts/localize.sh --check` (CI) fails while a
+string lacks its translation. `build-app.sh` compiles the catalog into the
+bundle's `de.lproj`/`en.lproj`; other system languages fall back to English.
+
 ### Cutting a release (maintainer)
 
 Bump `VERSION`, add a `## [x.y.z]` section to `CHANGELOG.md`, commit, then push

@@ -18,24 +18,36 @@ import LaunchKeeperKit
 /// The helper's version; the app compares it with its own.
 let helperVersion = HelperIdentity.version
 
-/// Makes sure LaunchKeeper's authorization right exists in the database.
+/// Makes sure LaunchKeeper's authorization right exists in the database,
+/// with the current per-language prompts.
 ///
-/// Adding a *new* right is allowed for everyone (`config.add.` is `allow`);
-/// an existing one is left as it is — an admin may have tightened it.
+/// Adding a *new* right is allowed for everyone (`config.add.` is `allow`).
+/// An existing rule is kept as it is — an admin may have tightened it —
+/// except for its prompts: rules written before 0.1.2 carried a German-only
+/// prompt, so only `default-prompt` is brought up to date (the helper runs
+/// as root, which may modify rules). Best effort: on failure the old prompt
+/// stays and nothing else changes.
 func ensureRight() {
-    guard AuthorizationRightGet(HelperRight.name, nil) != errAuthorizationSuccess else { return }
     var authRef: AuthorizationRef?
     guard AuthorizationCreate(nil, nil, [], &authRef) == errAuthorizationSuccess, let authRef else { return }
     defer { AuthorizationFree(authRef, []) }
-    _ = AuthorizationRightSet(authRef, HelperRight.name, HelperRight.definition as CFDictionary,
-                              HelperRight.prompt as CFString, nil, nil)
+    var existing: CFDictionary?
+    guard AuthorizationRightGet(HelperRight.name, &existing) == errAuthorizationSuccess,
+          var rule = existing as? [String: Any] else {
+        // No descriptionKey: the prompts come from the definition's `default-prompt`.
+        _ = AuthorizationRightSet(authRef, HelperRight.name, HelperRight.definition as CFDictionary, nil, nil, nil)
+        return
+    }
+    guard (rule["default-prompt"] as? [String: String]) != HelperRight.prompts else { return }
+    rule["default-prompt"] = HelperRight.prompts
+    _ = AuthorizationRightSet(authRef, HelperRight.name, rule as CFDictionary, nil, nil, nil)
 }
 
 /// Asks for LaunchKeeper's right on the client's authorization.
 ///
 /// The client sends an empty authorization; here the right is requested
 /// with interaction allowed, so macOS shows the authentication dialog
-/// (Touch ID or admin password, with `HelperRight.prompt`) in the client's
+/// (Touch ID or admin password, with `HelperRight.prompts`) in the client's
 /// session. The right has no grace period: this is the only check, and it
 /// happens right before the action. (Live 2026-09-26: checking a grant the
 /// app had obtained itself failed — with timeout 0 a grant is used up.)

@@ -126,7 +126,7 @@ struct SidebarView: View {
             }
             Section("Kategorien") {
                 ForEach(store.categories, id: \.self) { category in
-                    row(.category(category), category.title, Self.symbol(category))
+                    row(.category(category), LocalizedStringKey(category.title), Self.symbol(category))
                 }
             }
             Section("Ansichten") {
@@ -145,9 +145,10 @@ struct SidebarView: View {
     /// One sidebar row with its entry count as badge.
     /// - Parameters:
     ///   - selection: What the row selects.
-    ///   - title: The visible title.
+    ///   - title: The visible title — a localization key (category names
+    ///     come from the kit in English and are simply not found in the table).
     ///   - symbol: SF Symbol name.
-    private func row(_ selection: SidebarSelection, _ title: String, _ symbol: String) -> some View {
+    private func row(_ selection: SidebarSelection, _ title: LocalizedStringKey, _ symbol: String) -> some View {
         Label(title, systemImage: symbol)
             .badge(store.count(selection))
             .tag(selection)
