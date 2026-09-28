@@ -312,6 +312,14 @@ struct QueuePane: View {
         VStack(spacing: 0) {
             PaneIntro(text: "Gesammelte Aktionen aus allen Ansichten. „Plan prüfen“ rechnet alle auf einmal durch; „Alle ausführen“ fragt für alle Schritte mit Administratorrechten nur einmal nach Touch ID. Ein Fehler hält die übrigen nicht an. Reihenfolge: zuerst alle Schritte mit Administratorrechten, dann die übrigen; Entfernen und Deaktivieren vor Wiederherstellen und Deinstallieren.")
                 .padding(12)
+            if let notice = queue.loadNotice {
+                HStack(alignment: .firstTextBaseline) {
+                    Label(notice, systemImage: "exclamationmark.triangle").foregroundStyle(.orange)
+                    Spacer()
+                    Button("OK") { queue.loadNotice = nil }
+                }
+                .font(.callout).padding(.horizontal, 12).padding(.bottom, 8)
+            }
             if queue.items.isEmpty {
                 ContentUnavailableView("Warteschlange ist leer", systemImage: "tray",
                                        description: Text("Markiere in einer Ansicht Einträge und füge sie rechts hinzu."))
@@ -518,6 +526,8 @@ struct QueueManualRow: View {
                 Text(title).lineLimit(1).strikethrough(item.status == .manual(done: true))
                 if let guide {
                     Text(guide.text).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                } else if item.isListener {
+                    Text("lauscht gerade nicht — vielleicht nur beendet; selbst abhaken").font(.caption).foregroundStyle(.secondary)
                 } else {
                     Text("nicht mehr im Inventar").font(.caption).foregroundStyle(.secondary)
                 }
@@ -579,6 +589,8 @@ struct QueueItemDetail: View {
                 if let path = row.item.path ?? row.item.executable, path.hasPrefix("/") {
                     Button("Im Finder zeigen") { revealInFinder(path) }
                 }
+            } else if item.isListener {
+                Text("Das Programm lauscht gerade nicht. Das kann auch nur heißen, dass es beendet ist — erst abhaken, wenn es auch nach dem nächsten Start nicht wieder lauscht.").foregroundStyle(.secondary)
             } else {
                 Text("Der Eintrag ist nicht mehr im Inventar — damit ist er erledigt.").foregroundStyle(.secondary)
             }

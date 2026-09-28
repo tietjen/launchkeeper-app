@@ -1265,6 +1265,22 @@
         }
       }
     },
+    "Das Programm lauscht gerade nicht. Das kann auch nur heißen, dass es beendet ist — erst abhaken, wenn es auch nach dem nächsten Start nicht wieder lauscht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Programm lauscht gerade nicht. Das kann auch nur heißen, dass es beendet ist — erst abhaken, wenn es auch nach dem nächsten Start nicht wieder lauscht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The program is not listening right now. That may only mean it has quit — tick it off only once it does not listen again after its next start."
+          }
+        }
+      }
+    },
     "Das erledigst du selbst an der genannten Stelle. „Jetzt prüfen“ liest alles frisch ein — auch die Schalter der Systemeinstellungen, die ⌘R aus dem Zwischenspeicher nimmt — und hakt ab, was verschwunden oder ausgeschaltet ist.": {
       "localizations": {
         "de": {
@@ -1553,6 +1569,22 @@
         }
       }
     },
+    "Die Datei liegt unverändert als %@ daneben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Datei liegt unverändert als %@ daneben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file is kept unchanged next to it as %@."
+          }
+        }
+      }
+    },
     "Die Systemeinstellung nennt es „%@“, weil macOS keinen Entwickler kennt (nicht signiert oder ein Skript) und deshalb den Programmnamen zeigt — Namen wie „bash“ oder „arch“ können darum mehrfach vorkommen.": {
       "localizations": {
         "de": {
@@ -1581,6 +1613,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The queue is running — this can run afterwards."
+          }
+        }
+      }
+    },
+    "Die gespeicherte Warteschlange ließ sich nicht lesen (vermutlich von einer neueren Version).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die gespeicherte Warteschlange ließ sich nicht lesen (vermutlich von einer neueren Version)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The saved queue could not be read (probably written by a newer version)."
           }
         }
       }
@@ -1649,18 +1697,34 @@
         }
       }
     },
-    "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall).": {
+    "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall). Abhaken musst du selbst: ein beendetes Programm verschwindet auch aus der Liste.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall)."
+            "value": "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall). Abhaken musst du selbst: ein beendetes Programm verschwindet auch aus der Liste."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A program accepting connections can only be quit or switched off in its own settings; the firewall blocks incoming connections (System Settings › Network › Firewall)."
+            "value": "A program that accepts connections can only be quit here or switched off in its own settings; the firewall blocks incoming connections (System Settings › Network › Firewall). Tick it off yourself: a program that has quit also disappears from the list."
+          }
+        }
+      }
+    },
+    "Eine Kopie ließ sich nicht anlegen; damit nichts verloren geht, speichert LaunchKeeper die Warteschlange bis zum nächsten Start nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Kopie ließ sich nicht anlegen; damit nichts verloren geht, speichert LaunchKeeper die Warteschlange bis zum nächsten Start nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A copy could not be made; so that nothing is lost, LaunchKeeper does not save the queue until the next launch."
           }
         }
       }
@@ -3537,6 +3601,22 @@
         }
       }
     },
+    "Nicht lesbare Einträge in der gespeicherten Warteschlange: %lld (vermutlich von einer neueren Version).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht lesbare Einträge in der gespeicherten Warteschlange: %lld (vermutlich von einer neueren Version)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unreadable entries in the saved queue: %lld (probably written by a newer version)."
+          }
+        }
+      }
+    },
     "Nicht sicher zuzuordnen": {
       "localizations": {
         "de": {
@@ -3757,6 +3837,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next steps"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -5789,6 +5885,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "launchd: off"
+          }
+        }
+      }
+    },
+    "lauscht gerade nicht — vielleicht nur beendet; selbst abhaken": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lauscht gerade nicht — vielleicht nur beendet; selbst abhaken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not listening right now — maybe just quit; tick it off yourself"
           }
         }
       }

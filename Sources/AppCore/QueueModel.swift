@@ -11,6 +11,7 @@
 //
 
 import Foundation
+import Darwin
 import Observation
 import LaunchKeeperKit
 
@@ -92,6 +93,15 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
         }
     }
 
+    /// `true` for a network listener: it is in the inventory only while its
+    /// program runs, so "gone" may just mean "quit" — never a proof that the
+    /// user switched it off (review 2026-09-27, C7). Listener keys start with
+    /// `net:` (kit `ItemCorrelator`).
+    public var isListener: Bool {
+        if case .entry(let key) = target { return key.hasPrefix("net:") }
+        return false
+    }
+
     /// `true` for by-hand items — never planned or executed by the app.
     public var isManual: Bool {
         if case .manual = action { return true }
@@ -131,6 +141,12 @@ public final class QueueModel {
     public private(set) var outcomes: [QueueItem.ID: ActionOutcome] = [:]
     /// What the queue is doing.
     public private(set) var phase: Phase = .idle
+    /// Set once when the saved queue could not be read completely (see
+    /// `load(from:notice:)`); the view shows it until dismissed.
+    public var loadNotice: String?
+    /// `true` when queue.json holds something unreadable that could not be
+    /// copied aside — then this session never overwrites it.
+    private var savingHeld = false
     /// Runs requests in the app process (no administrator steps).
     private let local: BatchPerforming
     /// Runs administrator steps through the privileged helper; `nil` until it is set up.
@@ -153,10 +169,11 @@ public final class QueueModel {
     public init(local: BatchPerforming, storeURL: URL? = QueueModel.defaultStoreURL) {
         self.local = local
         self.storeURL = storeURL
-        if let storeURL, let data = try? Data(contentsOf: storeURL),
-           let saved = try? JSONDecoder().decode([QueueItem].self, from: data) {
+        var loaded = Loaded(items: [], notice: nil, keptAside: true)
+        if let storeURL, let result = Self.load(from: storeURL) {
+            loaded = result
             // A run interrupted by quitting is not "running" any more.
-            items = saved.map { item in
+            items = result.items.map { item in
                 var item = item
                 if item.status == .running || { if case .planned = item.status { return true }; return false }() {
                     item.status = .pending
@@ -164,6 +181,99 @@ public final class QueueModel {
                 return item
             }
         }
+        loadNotice = loaded.notice
+        if !loaded.keptAside {
+            // The unreadable original exists only in queue.json: no save may
+            // overwrite it in this session (review 2026-09-28, S1).
+            savingHeld = true
+        } else if loaded.notice != nil {
+            // The original is kept aside; saving the readable part at once
+            // keeps the next launch from copying and reporting it again.
+            save()
+        }
+    }
+
+    /// What `load(from:)` found.
+    struct Loaded {
+        /// The readable items.
+        var items: [QueueItem]
+        /// Set when items were dropped or the file was unreadable.
+        var notice: String?
+        /// `false` when something was unreadable and the copy aside failed —
+        /// then queue.json is the only copy and must not be overwritten.
+        var keptAside: Bool
+    }
+
+    /// Reads the saved queue item by item.
+    ///
+    /// An item this version cannot decode (a status or action added by a newer
+    /// version, e.g. after a downgrade) drops only that item, not the queue.
+    /// Whenever something could not be read, the file is copied beside the
+    /// store as `queue-unreadable-<date>.json` (owner only) and the notice
+    /// says so (review 2026-09-27, C4). A new copy per launch is possible
+    /// only while saving keeps failing.
+    /// - Parameter url: The store file.
+    /// - Returns: What was read; `nil` when there is no file (or an empty one —
+    ///   `save` writes atomically, so empty means never written).
+    nonisolated static func load(from url: URL) -> Loaded? {
+        guard let data = try? Data(contentsOf: url), !data.isEmpty else { return nil }
+        let decoded = try? JSONDecoder().decode([LossyItem].self, from: data)
+        let items = decoded?.compactMap(\.item) ?? []
+        let dropped = decoded.map { $0.count - items.count } ?? -1
+        guard dropped != 0 else { return Loaded(items: items, notice: nil, keptAside: true) }
+        let stamp = ISO8601DateFormatter().string(from: Date()).replacingOccurrences(of: ":", with: "-")
+        let aside = url.deletingLastPathComponent().appendingPathComponent("queue-unreadable-\(stamp).json")
+        let keptAside = writeOwnerOnly(data, to: aside)
+        let what = dropped < 0
+            ? String(localized: "Die gespeicherte Warteschlange ließ sich nicht lesen (vermutlich von einer neueren Version).")
+            : String(localized: "Nicht lesbare Einträge in der gespeicherten Warteschlange: \(dropped) (vermutlich von einer neueren Version).")
+        let whereTo = keptAside
+            ? String(localized: "Die Datei liegt unverändert als \(aside.lastPathComponent) daneben.")
+            : String(localized: "Eine Kopie ließ sich nicht anlegen; damit nichts verloren geht, speichert LaunchKeeper die Warteschlange bis zum nächsten Start nicht.")
+        return Loaded(items: items, notice: what + " " + whereTo, keptAside: keptAside)
+    }
+
+    /// Writes `data` atomically as a file only its owner can read — created
+    /// with mode 0600 from the start, never readable by others for a moment
+    /// (review 2026-09-28, S2: `Data.write` creates 0644 and a later chmod
+    /// leaves a window).
+    /// - Parameters:
+    ///   - data: The content.
+    ///   - url: The destination; its directory is created (0700) if missing.
+    /// - Returns: Whether the file is in place. A crash between creating and
+    ///   renaming leaves a small owner-only `.<name>.<uuid>` file behind.
+    nonisolated static func writeOwnerOnly(_ data: Data, to url: URL) -> Bool {
+        let directory = url.deletingLastPathComponent()
+        let fileManager = FileManager.default
+        try? fileManager.createDirectory(at: directory, withIntermediateDirectories: true,
+                                         attributes: [.posixPermissions: 0o700])
+        // Our own directory: it holds nothing others need to list.
+        try? fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: directory.path)
+        let temporary = directory.appendingPathComponent(".\(url.lastPathComponent).\(UUID().uuidString)")
+        let descriptor = open(temporary.path, O_WRONLY | O_CREAT | O_EXCL, 0o600)
+        guard descriptor >= 0 else { return false }
+        let written = data.withUnsafeBytes { buffer -> Bool in
+            var offset = 0
+            while offset < buffer.count {
+                let result = write(descriptor, buffer.baseAddress! + offset, buffer.count - offset)
+                if result < 0 && errno == EINTR { continue }
+                if result <= 0 { return false }   // 0 would never advance
+                offset += result
+            }
+            return true
+        }
+        let closed = close(descriptor) == 0
+        guard written, closed, rename(temporary.path, url.path) == 0 else {
+            unlink(temporary.path)
+            return false
+        }
+        return true
+    }
+
+    /// One saved item, or `nil` when this version cannot decode it.
+    private struct LossyItem: Decodable {
+        let item: QueueItem?
+        init(from decoder: Decoder) throws { item = try? QueueItem(from: decoder) }
     }
 
     /// `~/Library/Application Support/de.paranoidsecurity.LaunchKeeper/queue.json`.
@@ -377,7 +487,8 @@ public final class QueueModel {
     // MARK: By hand (step 4)
 
     /// Ticks off by-hand items a scan shows as done: the entry is gone, or it
-    /// was enabled when queued and is switched off now.
+    /// was enabled when queued and is switched off now. Listeners are never
+    /// ticked off here (see `QueueItem.isListener`).
     /// - Parameters:
     ///   - complete: Whether the scan was complete. An incomplete scan (e.g.
     ///     the Background Task Management dump timed out) lacks whole layers —
@@ -390,7 +501,8 @@ public final class QueueModel {
     public func updateManual(complete: Bool = true, state: (String) -> Bool?) -> Int {
         var ticked = 0
         for index in items.indices where items[index].status == .manual(done: false) {
-            guard case .entry(let key) = items[index].target else { continue }
+            // Listeners come and go with their program: only the user can say done.
+            guard case .entry(let key) = items[index].target, !items[index].isListener else { continue }
             let enabledNow = state(key)
             let gone = enabledNow == nil && complete
             if gone || (items[index].manualBaseline == true && enabledNow == false) {
@@ -412,7 +524,12 @@ public final class QueueModel {
     public func setManual(done: Bool, for id: QueueItem.ID, enabledNow: Bool? = nil) {
         guard let index = items.firstIndex(where: { $0.id == id }), items[index].isManual else { return }
         if !done {
-            guard let enabledNow else { return }   // gone entries cannot be "open" again
+            // Gone entries cannot be "open" again — except listeners, which
+            // only need the user's word either way.
+            guard let enabledNow else {
+                if items[index].isListener { items[index].status = .manual(done: false); save() }
+                return
+            }
             items[index].manualBaseline = enabledNow
         }
         items[index].status = .manual(done: done)
@@ -453,11 +570,9 @@ public final class QueueModel {
 
     /// Writes the queue (items and statuses, not the plans) to its file.
     private func save() {
-        guard let storeURL, let data = try? JSONEncoder().encode(items) else { return }
-        try? FileManager.default.createDirectory(at: storeURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try? data.write(to: storeURL, options: .atomic)
+        guard !savingHeld, let storeURL, let data = try? JSONEncoder().encode(items) else { return }
         // Owner only: the queue lists what may run with administrator rights.
-        try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: storeURL.path)
+        _ = Self.writeOwnerOnly(data, to: storeURL)
     }
 }
 

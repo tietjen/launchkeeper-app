@@ -5,6 +5,30 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.3.3] — 2026-09-28
+
+### Changed
+- Network listeners queued "by hand" are no longer ticked off automatically.
+  A listener is in the inventory only while its program runs, so its
+  disappearance may just mean the program quit. The row says so and the
+  user ticks it off (and can open it again even when it is gone).
+
+### Fixed
+- The saved queue is read item by item: an entry this version cannot read
+  (for example one written by a newer version before a downgrade) drops
+  alone instead of emptying the whole queue. Whenever something could not be
+  read, the file is kept unchanged as `queue-unreadable-<date>.json` next to
+  `queue.json` (owner-only) and the queue shows a notice once. If that copy
+  cannot be made, the app does not save the queue in that session, so the
+  only copy is never overwritten.
+
+### Security
+- `queue.json` and its copies are created owner-only (0600) from the first
+  byte instead of being written and then restricted, and the app's support
+  folder is set to 0700.
+- Note: versions before 0.3.3 lose the whole queue when they meet an entry
+  they cannot read — downgrading below 0.3.3 may empty it.
+
 ## [0.3.2] — 2026-09-27
 
 ### Added

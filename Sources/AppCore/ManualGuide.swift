@@ -7,7 +7,8 @@
 //  items, system extensions, configuration profiles, privacy grants, kernel
 //  extensions. LaunchKeeper does not write there on purpose; the queue lists
 //  such entries with the one place where the user can act, and ticks them
-//  off by itself once a new scan shows the change.
+//  off by itself once a new scan shows the change (listeners excepted: they
+//  vanish whenever their program quits, so the user ticks them).
 //
 
 import Foundation
@@ -47,7 +48,7 @@ public struct ManualGuide: Equatable, Sendable {
             return ManualGuide(text: String(localized: "Freigaben widerrufen: Systemeinstellungen › Datenschutz & Sicherheit, dort in der passenden Rubrik (z. B. Bedienungshilfen, Festplattenvollzugriff) den Schalter ausschalten."),
                                linkTitle: settings, url: privacy)
         case (.network, .listener):
-            return ManualGuide(text: String(localized: "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall)."),
+            return ManualGuide(text: String(localized: "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall). Abhaken musst du selbst: ein beendetes Programm verschwindet auch aus der Liste."),
                                linkTitle: settings, url: network)
         case (.loginItems, _), (_, .loginItem), (_, .smappservice), (_, .btmEntry):
             return ManualGuide(text: String(localized: "Diesen Schalter verwaltet macOS selbst: Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen, bei der App oder dem Entwickler ausschalten — oder die App löschen."),

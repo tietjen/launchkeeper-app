@@ -224,6 +224,88 @@ final class QueueModelTests: XCTestCase {
         XCTAssertEqual(queue.items[0].status, .manual(done: true))
     }
 
+    func testListenersAreNeverTickedOffByAScan() {
+        // Review C7: a listener vanishes whenever its program quits — only the user can say done.
+        let queue = QueueModel(local: StubBatch(), storeURL: nil)
+        queue.add([QueueItem(target: .entry(key: "net:/usr/local/bin/srv"), title: "srv", origin: "Netzwerk",
+                             action: .manual(key: "net:/usr/local/bin/srv"), manualBaseline: true)])
+        XCTAssertTrue(queue.items[0].isListener)
+        XCTAssertEqual(queue.updateManual { _ in nil }, 0, "gone from a complete scan")
+        XCTAssertEqual(queue.updateManual { _ in false }, 0)
+        let id = queue.items[0].id
+        queue.setManual(done: true, for: id)
+        XCTAssertEqual(queue.items[0].status, .manual(done: true))
+        // Unlike other entries, a gone listener can be opened again.
+        queue.setManual(done: false, for: id, enabledNow: nil)
+        XCTAssertEqual(queue.items[0].status, .manual(done: false))
+    }
+
+    func testUnreadableItemsDropAloneAndTheFileIsKeptAside() throws {
+        // Review C4: a newer version's status (after a downgrade) must not empty the queue.
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("queue-\(UUID())")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let url = dir.appendingPathComponent("queue.json")
+        func asideFiles() throws -> [URL] {
+            try FileManager.default.contentsOfDirectory(atPath: dir.path).filter { $0.hasPrefix("queue-unreadable-") }
+                .sorted().map { dir.appendingPathComponent($0) }
+        }
+        // good, unknown status, good, not an object at all — the broken ones in the middle.
+        var array = try XCTUnwrap(JSONSerialization.jsonObject(
+            with: JSONEncoder().encode([entry("a"), entry("b"), entry("c")])) as? [Any])
+        var broken = try XCTUnwrap(array[1] as? [String: Any])
+        broken["status"] = ["fromTheFuture": [:] as [String: Any]]
+        array[1] = broken
+        array.append(42)
+        let original = try JSONSerialization.data(withJSONObject: array)
+        try original.write(to: url)
+
+        let queue = QueueModel(local: StubBatch(), storeURL: url)
+        XCTAssertEqual(queue.items.map(\.title), ["a", "c"], "only the unreadable items are dropped")
+        XCTAssertNotNil(queue.loadNotice)
+        let aside = try asideFiles()
+        XCTAssertEqual(aside.count, 1)
+        XCTAssertEqual(try Data(contentsOf: aside[0]), original, "kept unchanged")
+        XCTAssertEqual(try FileManager.default.attributesOfItem(atPath: aside[0].path)[.posixPermissions] as? Int, 0o600)
+        XCTAssertEqual(try FileManager.default.attributesOfItem(atPath: url.path)[.posixPermissions] as? Int, 0o600)
+        XCTAssertEqual(try FileManager.default.attributesOfItem(atPath: dir.path)[.posixPermissions] as? Int, 0o700)
+        XCTAssertNil(QueueModel(local: StubBatch(), storeURL: url).loadNotice, "the readable part was saved: reported once")
+
+        // Not JSON at all: nothing readable, still kept aside, byte for byte.
+        try FileManager.default.removeItem(at: aside[0])
+        let garbage = Data("garbage".utf8)
+        try garbage.write(to: url)
+        let unreadable = QueueModel(local: StubBatch(), storeURL: url)
+        XCTAssertTrue(unreadable.items.isEmpty)
+        XCTAssertNotNil(unreadable.loadNotice)
+        XCTAssertEqual(try asideFiles().map { try Data(contentsOf: $0) }, [garbage])
+
+        // Empty file: never written by `save` — treated as no file, no notice.
+        try Data().write(to: url)
+        XCTAssertNil(QueueModel(local: StubBatch(), storeURL: url).loadNotice)
+    }
+
+    func testUnreadableFileIsNeverOverwrittenWhenItCannotBeKeptAside() throws {
+        // Review 2026-09-28 (S1): without a copy aside, queue.json is the only copy.
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("queue-\(UUID())")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let url = dir.appendingPathComponent("queue.json")
+        let garbage = Data("garbage".utf8)
+        try garbage.write(to: url)
+        // An immutable directory: no new file (no copy aside, no rename) — and no chmod either.
+        XCTAssertEqual(chflags(dir.path, UInt32(UF_IMMUTABLE)), 0)
+        defer {
+            chflags(dir.path, 0)
+            try? FileManager.default.removeItem(at: dir)
+        }
+        let queue = QueueModel(local: StubBatch(), storeURL: url)
+        XCTAssertNotNil(queue.loadNotice)
+        chflags(dir.path, 0)   // saving would work again now — it must still not happen
+        queue.add([entry("x")])
+        XCTAssertEqual(try Data(contentsOf: url), garbage, "held for the session")
+        XCTAssertTrue(try FileManager.default.contentsOfDirectory(atPath: dir.path) == ["queue.json"])
+    }
+
     func testViewsFindWhatIsQueuedAndCanTakeItOut() {
         // TJ 2026-09-27: queued rows are marked in their view and can be taken out there.
         let queue = QueueModel(local: StubBatch(), storeURL: nil)
