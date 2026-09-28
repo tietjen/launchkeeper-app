@@ -5,7 +5,7 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
-## [Unreleased]
+## [0.3.4] — 2026-09-28
 
 ### Fixed
 - The queue's buttons were truncated in a narrow column ("Erledigte e…",
