@@ -223,6 +223,32 @@ enum HelperClient {
         (batchConnection?.remoteObjectProxy as? LaunchKeeperHelperXPC)?.stopBatch()
     }
 
+    /// A fresh Background Task Management dump read by the helper as root —
+    /// no Touch ID (0.2.0). Only the system's and this user's sections.
+    ///
+    /// Used for every fresh inventory when the helper is set up, allowed and
+    /// of this app's build; otherwise `nil`, and the scan runs `sfltool`
+    /// itself (macOS then asks for administrator authentication).
+    /// - Parameter timeout: Upper bound; a cold BTM daemon can take minutes.
+    /// - Returns: The dump; `.unavailable` without a usable helper (then the
+    ///   scan asks macOS itself); `.failed` when the helper did not deliver.
+    static func readBTM(timeout: TimeInterval = 200) -> QuietBTMRead {
+        // Never start a connection to a helper that is not allowed or of another build.
+        guard SMAppService.daemon(plistName: HelperIdentity.daemonPlistName).status == .enabled,
+              version() == HelperIdentity.version else { return .unavailable }
+        let connection = connect()
+        defer { connection.invalidate() }
+        let reply = Reply<String>()
+        let proxy = connection.remoteObjectProxyWithErrorHandler { _ in reply.done.signal() } as? LaunchKeeperHelperXPC
+        guard let proxy else { return .failed }
+        proxy.readBTM { data, _ in
+            reply.value = data.flatMap { String(data: $0, encoding: .utf8) }
+            reply.done.signal()
+        }
+        guard reply.done.wait(timeout: .now() + timeout) == .success, let text = reply.value else { return .failed }
+        return .dump(text)
+    }
+
     /// The helper's version, or `nil` when it does not answer within a few seconds.
     static func version() -> String? {
         let connection = connect()

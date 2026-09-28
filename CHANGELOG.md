@@ -5,7 +5,32 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
-## [Unreleased]
+## [1.0.0] — 2026-09-28
+
+The first stable release: every planned phase is done and the acceptance
+test on a second Mac passed (installation, updates, helper, Touch ID, the
+queue, the watch, the CLI from Homebrew).
+
+### Changed
+- Far fewer Touch ID prompts. Reading Background Task Management (`sfltool
+  dumpbtm`) makes macOS ask for administrator authentication — on launch,
+  ⇧⌘R, "Jetzt prüfen" and, with the watch on, every ten minutes. With the
+  helper set up, the helper reads it as root and nothing is asked. Without
+  the helper, the watch's periodic check reads it fresh at most every six
+  hours (a cancelled dialog counts as a read); file events still trigger
+  quick rescans at once. If the helper is there but fails, the kept dump is
+  used instead of asking, and the watch waits six hours before trying again.
+- Needs launchkeeper 0.12.2.
+
+### Security
+- Privileged helper 0.2.0 with a new read-only call, `readBTM`, that asks
+  for no authorization. Trust decision: it hands back only the system's
+  sections (UIDs below 500) and the caller's own — the caller's UID comes
+  from the XPC connection — never other users' login items. On a Mac with
+  several users, a user without administrator rights can therefore see the
+  system-wide background items through LaunchKeeper without a dialog; most
+  of them are readable from /Library anyway. Only the team-signed app can
+  call the helper.
 
 ### Added
 - Settings › Beobachtung explains the most common reason for a missing

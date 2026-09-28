@@ -72,4 +72,39 @@ final class InventoryStoreTests: XCTestCase {
         XCTAssertNotNil(s.lastScan)
         XCTAssertFalse(s.isScanning)
     }
+
+    func testFreshScansTakeTheHelpersDumpAndQuickOnesNeverAsk() async {
+        // TJ 2026-09-28: Touch ID on every fresh inventory was too much — the helper reads BTM as root.
+        final class Probe: @unchecked Sendable { var reads = 0; var seen: [(prefer: Bool, text: String?)] = [] }
+        let probe = Probe()
+        let s = InventoryStore(scanner: { cache in
+            probe.seen.append((cache.preferCached, cache.text))
+            return ScanReport(items: [], uncorrelated: [], warnings: [])
+        })
+        s.quietBTMReader = { probe.reads += 1; return .dump("helper dump") }
+        await s.refresh()
+        XCTAssertEqual(probe.reads, 1)
+        XCTAssertEqual(probe.seen.last?.prefer, true, "the scan uses the helper's dump instead of running sfltool")
+        XCTAssertEqual(probe.seen.last?.text, "helper dump")
+        XCTAssertTrue(s.lastFreshBTMWasQuiet)
+        XCTAssertNotNil(s.btmDumpTaken)
+
+        await s.refresh(reuseBTM: true)
+        XCTAssertEqual(probe.reads, 1, "a quick refresh never asks the helper")
+        XCTAssertTrue(s.lastFreshBTMWasQuiet, "a reused dump changes nothing")
+
+        // Helper there but failed: the kept dump, no dialog instead (review C5).
+        s.quietBTMReader = { .failed }
+        await s.refresh()
+        XCTAssertEqual(probe.seen.last?.prefer, true)
+        XCTAssertFalse(s.lastFreshBTMWasQuiet, "the watch backs off from a failing helper")
+        XCTAssertNotNil(s.lastPromptedFreshBTM)
+
+        // Helper unavailable: the scan reads BTM itself (and macOS asks).
+        s.quietBTMReader = { .unavailable }
+        await s.refresh()
+        XCTAssertEqual(probe.seen.last?.prefer, false)
+        XCTAssertFalse(s.lastFreshBTMWasQuiet)
+        XCTAssertNotNil(s.lastPromptedFreshBTM, "the attempt counts, whether or not it worked")
+    }
 }

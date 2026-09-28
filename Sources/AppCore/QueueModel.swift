@@ -96,9 +96,9 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
     /// `true` for a network listener: it is in the inventory only while its
     /// program runs, so "gone" may just mean "quit" — never a proof that the
     /// user switched it off (review 2026-09-27, C7). Listener keys start with
-    /// `net:` (kit `ItemCorrelator`).
+    /// `BackgroundItem.listenerKeyPrefix` (kit 0.12.2).
     public var isListener: Bool {
-        if case .entry(let key) = target { return key.hasPrefix("net:") }
+        if case .entry(let key) = target { return key.hasPrefix(BackgroundItem.listenerKeyPrefix) }
         return false
     }
 

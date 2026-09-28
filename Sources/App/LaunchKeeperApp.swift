@@ -46,6 +46,8 @@ struct LaunchKeeperApp: App {
     init() {
         UserDefaults.standard.register(defaults: [WatchSettings.notify: true])
         let store = InventoryStore()
+        // Fresh BTM dumps through the helper, without Touch ID, when it is set up.
+        store.quietBTMReader = { HelperClient.readBTM() }
         let watch = WatchModel(store: store)
         let router = EntryRouter(store: store)
         let notifier = WatchNotifier(router: router) { UserDefaults.standard.bool(forKey: WatchSettings.notify) }

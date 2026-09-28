@@ -264,6 +264,27 @@ final class HelperService: NSObject, NSXPCListenerDelegate, LaunchKeeperHelperXP
     func version(reply: @escaping @Sendable (String) -> Void) {
         reply(helperVersion)
     }
+
+    /// One `sfltool dumpbtm` at a time; not on `queue`, so a slow cold dump
+    /// never holds up an action (and an action never holds up a scan).
+    private let btmQueue = DispatchQueue(label: "de.paranoidsecurity.LaunchKeeper.Helper.btm")
+
+    func readBTM(reply: @escaping @Sendable (Data?, String?) -> Void) {
+        // Whose sections to hand back comes from the connection, never a payload.
+        guard let uid = NSXPCConnection.current()?.effectiveUserIdentifier else {
+            return reply(nil, "unknown client user")
+        }
+        queue.async { self.idle.begin() }
+        btmQueue.async { [self] in
+            defer { queue.async { self.idle.end() } }
+            // Same budget as the kit's scan: a cold daemon answers after a minute or two.
+            let result = SystemCommandRunner().run(command: "/usr/bin/sfltool", arguments: ["dumpbtm"], timeout: 150)
+            guard result.exitCode == 0 else {
+                return reply(nil, "sfltool dumpbtm failed (exit \(result.exitCode))")
+            }
+            reply(Data(BTMDumpFilter.sections(of: result.stdout, visibleTo: Int(uid)).utf8), nil)
+        }
+    }
 }
 
 ensureRight()

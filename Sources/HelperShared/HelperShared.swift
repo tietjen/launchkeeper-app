@@ -25,7 +25,7 @@ public enum HelperIdentity {
     /// The helper protocol/build version. Compiled into both sides: the app
     /// compares it with what the running helper reports and asks for a
     /// restart of the helper when they differ.
-    public static let version = "0.1.9"
+    public static let version = "0.2.0"
 
     /// What the helper demands of a connecting client: the LaunchKeeper app,
     /// signed by this team with an Apple-issued (Developer ID) certificate.
@@ -112,6 +112,17 @@ public enum HelperRight {
 
     /// The helper's version — the app compares it with its own build.
     func version(reply: @escaping @Sendable (String) -> Void)
+
+    /// Reads Background Task Management (`sfltool dumpbtm`) as root (0.2.0).
+    ///
+    /// Run by the user, `sfltool dumpbtm` makes macOS ask for administrator
+    /// authentication — Touch ID on every fresh inventory (TJ 2026-09-28:
+    /// "zu häufig"). As root it asks nothing. Read-only, so no authorization
+    /// is requested; in exchange the helper hands back only what the caller
+    /// may see: the system's sections and the caller's own (UID from the
+    /// connection), never other users' login items (`BTMDumpFilter`).
+    /// - Parameter reply: The filtered dump, or `nil` and the reason.
+    func readBTM(reply: @escaping @Sendable (Data?, String?) -> Void)
 }
 
 // MARK: - Request / response

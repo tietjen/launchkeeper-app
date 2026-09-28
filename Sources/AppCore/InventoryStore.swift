@@ -160,6 +160,28 @@ struct ScanBox: @unchecked Sendable {
     let report: ScanReport
     let background: BackgroundView
     let receipts: ReceiptsView
+    /// For a fresh scan: where its BTM dump came from; `nil` when the cached one was reused on purpose.
+    let freshBTM: FreshBTM?
+}
+
+/// Where a fresh scan's Background Task Management dump came from.
+enum FreshBTM: Sendable {
+    /// The helper read it as root — no Touch ID.
+    case quiet
+    /// The scan ran `sfltool` itself — macOS asked for Touch ID.
+    case prompted
+    /// The helper failed; the kept dump was used instead of asking.
+    case keptOld
+}
+
+/// What the helper's BTM read gave.
+public enum QuietBTMRead: Sendable {
+    /// No usable helper (not set up, not allowed, another build).
+    case unavailable
+    /// The dump (the system's and this user's sections).
+    case dump(String)
+    /// The helper is there but did not deliver (timeout, sfltool failed).
+    case failed
 }
 
 /// The app's view of the inventory: scan results plus the window's filter state.
@@ -208,6 +230,25 @@ public final class InventoryStore {
     public var btmDumpCache: BTMDumpCache { btmCache }
     private let scanner: @Sendable (BTMDumpCache) -> ScanReport
 
+    /// Reads a fresh Background Task Management dump without Touch ID — the
+    /// app's privileged helper, as root. `nil` (or a `nil` answer) leaves it
+    /// to the scan, which runs `sfltool dumpbtm` itself; macOS then asks for
+    /// administrator authentication (TJ 2026-09-28: Touch ID on every fresh
+    /// inventory was too much). Set by the app; called off the main actor.
+    public var quietBTMReader: (@Sendable () -> QuietBTMRead)?
+    /// Whether the last fresh dump came from `quietBTMReader` — fresh dumps
+    /// cost no Touch ID then. The watch reads BTM fresh as often as it likes
+    /// only while this holds.
+    public private(set) var lastFreshBTMWasQuiet = false
+    /// When a fresh read last cost something: the scan read BTM itself
+    /// (macOS asked for Touch ID) — whether or not that worked, a cancelled
+    /// dialog counts, or the watch would ask again every ten minutes (review
+    /// 2026-09-28, B1) — or the helper failed and the kept dump was used (a
+    /// broken helper must not stall the watch for minutes every ten, C5).
+    public private(set) var lastPromptedFreshBTM: Date?
+    /// When the session's BTM dump was taken, if there is one.
+    public var btmDumpTaken: Date? { btmCache.taken }
+
     /// Called on the main actor after every finished scan, with its reason.
     /// The watch hangs itself in here, so every scan — manual, after an
     /// action or its own — is compared once and nothing is scanned twice.
@@ -249,13 +290,42 @@ public final class InventoryStore {
         btmCache.preferCached = reuseBTM
         let scanner = self.scanner
         let cache = btmCache
+        let quietReader = reuseBTM ? nil : quietBTMReader
         let box = await Task.detached(priority: .userInitiated) { () -> ScanBox in
+            // A fresh dump from the helper is kept and used like a cached one;
+            // without a helper the scan runs sfltool itself (and macOS asks).
+            // A helper that is there but failed (timeout) does not hand the
+            // user a dialog instead: the kept dump is used (review C5).
+            var fresh: FreshBTM?
+            if !reuseBTM {
+                switch quietReader?() ?? .unavailable {
+                case .dump(let text):
+                    cache.store(text)
+                    cache.preferCached = true
+                    fresh = .quiet
+                case .failed where cache.text != nil:
+                    cache.preferCached = true
+                    fresh = .keptOld
+                case .failed, .unavailable:
+                    fresh = .prompted
+                }
+            }
             let report = scanner(cache)
             // The receipts view checks every path each receipt lists (tens of
             // thousands) — it belongs in the background task, not on the main actor.
             return ScanBox(report: report, background: BackgroundView.build(from: report),
-                           receipts: ReceiptsView.build(from: report))
+                           receipts: ReceiptsView.build(from: report), freshBTM: fresh)
         }.value
+        switch box.freshBTM {
+        case .quiet?: lastFreshBTMWasQuiet = true
+        case .prompted?:
+            lastFreshBTMWasQuiet = false
+            lastPromptedFreshBTM = Date()
+        case .keptOld?:
+            lastFreshBTMWasQuiet = false
+            lastPromptedFreshBTM = Date()
+        case nil: break
+        }
         apply(box.report)
         background = box.background
         receipts = box.receipts

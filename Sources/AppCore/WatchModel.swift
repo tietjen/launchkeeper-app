@@ -110,6 +110,8 @@ public final class WatchModel {
     private var periodic: Task<Void, Never>?
     private var pending: Task<Void, Never>?
     private var pendingReasons: [String] = []
+    /// Whether a collected trigger asked for a fresh BTM dump.
+    private var pendingFresh = false
     /// Actions LaunchKeeper is executing right now.
     private var ownActions = 0
     /// When the last own action finished.
@@ -120,6 +122,20 @@ public final class WatchModel {
     static let ownActionGrace: TimeInterval = 30
     /// The quiet period after a file event before scanning (installers write in bursts).
     static let fileEventDelay: Duration = .seconds(5)
+    /// Without the helper, a fresh Background Task Management dump makes
+    /// macOS ask for Touch ID. The periodic check then takes one at most this
+    /// often and otherwise compares with the kept dump (TJ 2026-09-28).
+    static let promptedFreshBTMInterval: TimeInterval = 6 * 3600
+
+    /// Whether the periodic check should read BTM fresh: always while the
+    /// helper supplies the dumps (no Touch ID), else once the last dump or
+    /// the last prompted attempt — even a cancelled one — is
+    /// `promptedFreshBTMInterval` old.
+    var freshBTMDue: Bool {
+        if store.lastFreshBTMWasQuiet { return true }
+        guard let last = [store.lastPromptedFreshBTM, store.btmDumpTaken].compactMap({ $0 }).max() else { return true }
+        return now().timeIntervalSince(last) >= Self.promptedFreshBTMInterval
+    }
 
     /// Creates the watch (not started).
     /// - Parameters:
@@ -166,7 +182,8 @@ public final class WatchModel {
                 while !Task.isCancelled {
                     try? await Task.sleep(for: interval)
                     guard !Task.isCancelled else { return }
-                    self?.schedule("interval", reuseBTM: false, delay: .zero)
+                    guard let self else { return }
+                    self.schedule("interval", reuseBTM: !self.freshBTMDue, delay: .zero)
                 }
             }
         }
@@ -188,6 +205,7 @@ public final class WatchModel {
         periodic?.cancel()
         pending?.cancel()
         pendingReasons.removeAll()
+        pendingFresh = false
         watcher = Self.makeWatcher(slot: slot)
         baselineCount = nil
         lastSkipReason = nil
@@ -224,6 +242,8 @@ public final class WatchModel {
     private func schedule(_ reason: String, reuseBTM: Bool, delay: Duration = WatchModel.fileEventDelay) {
         guard isRunning else { return }
         pendingReasons.append(reason)
+        // One trigger that wants a fresh dump makes the collected scan fresh.
+        if !reuseBTM { pendingFresh = true }
         pending?.cancel()
         pending = Task { [weak self] in
             try? await Task.sleep(for: delay)
@@ -231,8 +251,9 @@ public final class WatchModel {
             let reasons = self.pendingReasons
             self.pendingReasons.removeAll()
             let trigger = reasons.count == 1 ? reasons[0] : "\(reasons[0]) (+\(reasons.count - 1) more)"
-            let fresh = reasons.contains("interval")
-            await self.store.refresh(reuseBTM: !fresh && reuseBTM, reason: .watch(trigger))
+            let fresh = self.pendingFresh
+            self.pendingFresh = false
+            await self.store.refresh(reuseBTM: !fresh, reason: .watch(trigger))
         }
     }
 

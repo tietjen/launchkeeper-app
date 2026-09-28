@@ -52,6 +52,29 @@ final class WatchModelTests: XCTestCase {
         return (store, watch, notifier, scans)
     }
 
+    func testPeriodicCheckReadsBTMFreshOnlyWhenItCostsNoTouchID() async {
+        // TJ 2026-09-28: without the helper every fresh dump asks for Touch ID —
+        // then the periodic check reads fresh at most every six hours.
+        final class Clock: @unchecked Sendable { var offset: TimeInterval = 0 }
+        let clock = Clock()
+        // The stub never fills the cache: like a cancelled dialog or a failed sfltool.
+        let store = InventoryStore(scanner: { _ in ScanReport(items: [], uncorrelated: [], warnings: []) })
+        let watch = WatchModel(store: store, logPath: nil, now: { Date().addingTimeInterval(clock.offset) })
+        XCTAssertTrue(watch.freshBTMDue, "nothing read yet")
+
+        store.quietBTMReader = { .dump("helper dump") }
+        await store.refresh()
+        XCTAssertTrue(watch.freshBTMDue, "with the helper: always fresh")
+
+        store.quietBTMReader = { .unavailable }
+        await store.refresh()   // asked macOS (and, in the stub, got nothing)
+        XCTAssertFalse(watch.freshBTMDue, "review B1: a failed or cancelled attempt counts too")
+        clock.offset = WatchModel.promptedFreshBTMInterval - 60
+        XCTAssertFalse(watch.freshBTMDue)
+        clock.offset = WatchModel.promptedFreshBTMInterval + 60
+        XCTAssertTrue(watch.freshBTMDue, "six hours later: one fresh read")
+    }
+
     func testBaselineThenNewEntryIsRecordedAndNotified() async {
         let (store, watch, notifier, _) = setUp([report(["com.vendor.a"]), report(["com.vendor.a", "com.evil.b"])])
         await store.refresh(reason: .launch)
