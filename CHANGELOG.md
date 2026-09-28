@@ -5,6 +5,15 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Fixed
+- The queue's buttons were truncated in a narrow column ("Erledigte e…",
+  "Alle ausfüh…"). The footer now wraps onto two or three rows instead, and
+  every queue button (also "Herausnehmen", "Markierung aufheben", "Jetzt
+  prüfen", the add buttons of the selection panel) names itself and explains
+  what it does on hover.
+
 ## [0.3.3] — 2026-09-28
 
 ### Changed

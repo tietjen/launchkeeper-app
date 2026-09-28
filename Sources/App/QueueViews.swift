@@ -124,6 +124,7 @@ struct QueuedBanner: View {
                     }
                     Spacer()
                     Button("Herausnehmen") { queue.remove(Set(queued.map(\.id))) }
+                        .help("Herausnehmen — nimmt diesen Eintrag wieder aus der Warteschlange. Es wird nichts ausgeführt.")
                         .disabled(queue.phase != .idle)
                 }
             }
@@ -222,10 +223,12 @@ struct BatchPanel: View {
                 Section {
                     Label("\(added) zur Warteschlange hinzugefügt", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
                     Button("Warteschlange öffnen") { store.selection = .queue }
+                        .help("Warteschlange öffnen — zeigt alle gesammelten Aktionen, dort prüfen und ausführen.")
                 }
             }
             Section {
                 Button("Markierung aufheben") { marks.clear(for: selection) }
+                    .help("Markierung aufheben — entfernt die Häkchen in dieser Ansicht. Einträge, die schon in der Warteschlange stehen, bleiben dort.")
             }
         }
         .formStyle(.grouped)
@@ -290,6 +293,7 @@ struct BatchPanel: View {
                 Text("\(items.count) von \(total)").foregroundStyle(.secondary)
             }
         }
+        .help(String(localized: "\(title) — legt \(items.count) von \(total) markierten Einträgen in die Warteschlange (nur die, zu denen diese Aktion passt). Ausgeführt wird erst dort."))
         .disabled(items.isEmpty || queue.phase != .idle)
     }
 }
@@ -346,6 +350,7 @@ struct QueuePane: View {
                                     .font(.caption).foregroundStyle(.secondary)
                                 Spacer()
                                 Button("Jetzt prüfen") { Task { await store.refresh(reuseBTM: false, reason: .user) } }
+                                    .help("Jetzt prüfen — liest das Inventar frisch ein (ohne Zwischenspeicher) und hakt ab, was sich inzwischen erledigt hat. Netzwerkdienste hakst du selbst ab.")
                                     .disabled(store.isScanning)
                             }
                         }
@@ -381,28 +386,67 @@ struct QueuePane: View {
             case .idle:
                 summary
             }
-            HStack {
-                Button("Leeren") { confirmClear = true }
-                    .disabled(queue.items.isEmpty || queue.phase != .idle)
-                Button("Erledigte entfernen") { queue.clearDone() }
-                    .disabled(!queue.items.contains { $0.status == .done || $0.status == .manual(done: true) } || queue.phase != .idle)
-                let back = queue.undoItems()
-                if !back.isEmpty && queue.phase == .idle {
-                    Button("Rückwege hinzufügen (\(back.count))") { queue.add(back) }
-                        .help("Legt für jede erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne.")
+            // One row when the column is wide enough, else housekeeping and
+            // run controls on two rows — never truncated labels (TJ 2026-09-28).
+            ViewThatFits(in: .horizontal) {
+                HStack { housekeeping; Spacer(); runControls }
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack { housekeeping }
+                    HStack { Spacer(); runControls }
                 }
-                Spacer()
-                if case .running = queue.phase {
-                    Button("Anhalten") { queue.stop() }
-                        .help("Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht.")
-                } else {
-                    Button("Plan prüfen") { Task { await queue.plan() } }
-                        .disabled(!queue.items.contains { $0.status != .done && !$0.isManual } || queue.phase != .idle)
-                    Button(needsTouchID ? "Alle ausführen (Touch ID)" : "Alle ausführen") { Task { await run() } }
-                        .keyboardShortcut(.defaultAction)
-                        .disabled(!queue.items.contains { !$0.isFinished && !$0.isManual } || queue.phase != .idle)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack { clearButtons }
+                    HStack { undoButton }
+                    HStack { Spacer(); runControls }
                 }
             }
+        }
+    }
+
+    /// Emptying the queue, removing what is done, adding the ways back.
+    @ViewBuilder private var housekeeping: some View {
+        clearButtons
+        undoButton
+    }
+
+    /// "Leeren" and "Erledigte entfernen".
+    @ViewBuilder private var clearButtons: some View {
+        Button("Leeren") { confirmClear = true }
+            .help("Leeren — nimmt alle Einträge aus der Warteschlange (mit Rückfrage). Ausgeführtes bleibt ausgeführt.")
+            .disabled(queue.items.isEmpty || queue.phase != .idle)
+            .fixedSize()
+        Button("Erledigte entfernen") { queue.clearDone() }
+            .help("Erledigte entfernen — nimmt alle erfolgreich ausgeführten und abgehakten Einträge aus der Liste; offene, abgelehnte und fehlgeschlagene bleiben.")
+            .disabled(!queue.items.contains { $0.status == .done || $0.status == .manual(done: true) } || queue.phase != .idle)
+            .fixedSize()
+    }
+
+    /// "Rückwege hinzufügen" when the last run left ways back.
+    @ViewBuilder private var undoButton: some View {
+        let back = queue.undoItems()
+        if !back.isEmpty && queue.phase == .idle {
+            Button("Rückwege hinzufügen (\(back.count))") { queue.add(back) }
+                .help("Rückwege hinzufügen — legt für jede in dieser Sitzung erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne.")
+                .fixedSize()
+        }
+    }
+
+    /// Plan, run, stop.
+    @ViewBuilder private var runControls: some View {
+        if case .running = queue.phase {
+            Button("Anhalten") { queue.stop() }
+                .help("Anhalten — hält nach dem laufenden Eintrag an; halbe Sachen gibt es nicht.")
+                .fixedSize()
+        } else {
+            Button("Plan prüfen") { Task { await queue.plan() } }
+                .help("Plan prüfen — rechnet für alle offenen Einträge in einem Durchgang durch, was geschehen würde, ohne etwas zu ändern. Zeigt, welche Schritte Administratorrechte brauchen und was abgelehnt würde.")
+                .disabled(!queue.items.contains { $0.status != .done && !$0.isManual } || queue.phase != .idle)
+                .fixedSize()
+            Button(needsTouchID ? "Alle ausführen (Touch ID)" : "Alle ausführen") { Task { await run() } }
+                .keyboardShortcut(.defaultAction)
+                .help("Alle ausführen — führt alle offenen automatischen Einträge aus. Schritte mit Administratorrechten zuerst, zusammen mit nur einer Touch-ID-Abfrage; ein Fehler hält die übrigen nicht an.")
+                .disabled(!queue.items.contains { !$0.isFinished && !$0.isManual } || queue.phase != .idle)
+                .fixedSize()
         }
     }
 

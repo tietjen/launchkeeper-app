@@ -65,6 +65,22 @@
         }
       }
     },
+    "%@ — legt %lld von %lld markierten Einträgen in die Warteschlange (nur die, zu denen diese Aktion passt). Ausgeführt wird erst dort.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — legt %lld von %lld markierten Einträgen in die Warteschlange (nur die, zu denen diese Aktion passt). Ausgeführt wird erst dort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — adds %lld of %lld marked entries to the queue (only those this action fits). They run only from there."
+          }
+        }
+      }
+    },
     "%@ — zeigt im Terminal erst den Plan; ausgeführt wird erst mit --apply.": {
       "localizations": {
         "de": {
@@ -497,6 +513,22 @@
         }
       }
     },
+    "Alle ausführen — führt alle offenen automatischen Einträge aus. Schritte mit Administratorrechten zuerst, zusammen mit nur einer Touch-ID-Abfrage; ein Fehler hält die übrigen nicht an.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle ausführen — führt alle offenen automatischen Einträge aus. Schritte mit Administratorrechten zuerst, zusammen mit nur einer Touch-ID-Abfrage; ein Fehler hält die übrigen nicht an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run all — runs all open automatic entries. Steps with administrator rights first, together with a single Touch ID prompt; a failure does not stop the rest."
+          }
+        }
+      }
+    },
     "Als erledigt abhaken": {
       "localizations": {
         "de": {
@@ -541,6 +573,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stop"
+          }
+        }
+      }
+    },
+    "Anhalten — hält nach dem laufenden Eintrag an; halbe Sachen gibt es nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anhalten — hält nach dem laufenden Eintrag an; halbe Sachen gibt es nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop — stops after the running entry; nothing is left half done."
           }
         }
       }
@@ -2001,6 +2049,22 @@
         }
       }
     },
+    "Erledigte entfernen — nimmt alle erfolgreich ausgeführten und abgehakten Einträge aus der Liste; offene, abgelehnte und fehlgeschlagene bleiben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigte entfernen — nimmt alle erfolgreich ausgeführten und abgehakten Einträge aus der Liste; offene, abgelehnte und fehlgeschlagene bleiben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove done — takes all successfully run and ticked-off entries off the list; open, refused and failed ones stay."
+          }
+        }
+      }
+    },
     "Es läuft noch Version %@ des Hilfsprogramms, diese App bringt %@ mit. Nach dem Neustart kannst du ausführen.": {
       "localizations": {
         "de": {
@@ -2321,6 +2385,22 @@
         }
       }
     },
+    "Herausnehmen — nimmt diesen Eintrag wieder aus der Warteschlange. Es wird nichts ausgeführt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herausnehmen — nimmt diesen Eintrag wieder aus der Warteschlange. Es wird nichts ausgeführt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take out — removes this entry from the queue again. Nothing is run."
+          }
+        }
+      }
+    },
     "Herkunft": {
       "localizations": {
         "de": {
@@ -2509,22 +2589,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Background item without a developer"
-          }
-        }
-      }
-    },
-    "Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hält nach dem laufenden Eintrag an — halbe Sachen gibt es nicht."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stops after the entry in progress — nothing is left half done."
           }
         }
       }
@@ -2845,6 +2909,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Check now"
+          }
+        }
+      }
+    },
+    "Jetzt prüfen — liest das Inventar frisch ein (ohne Zwischenspeicher) und hakt ab, was sich inzwischen erledigt hat. Netzwerkdienste hakst du selbst ab.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt prüfen — liest das Inventar frisch ein (ohne Zwischenspeicher) und hakt ab, was sich inzwischen erledigt hat. Netzwerkdienste hakst du selbst ab."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check now — reads the inventory afresh (no cache) and ticks off what has been done in the meantime. Tick off network listeners yourself."
           }
         }
       }
@@ -3217,6 +3297,22 @@
         }
       }
     },
+    "Leeren — nimmt alle Einträge aus der Warteschlange (mit Rückfrage). Ausgeführtes bleibt ausgeführt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leeren — nimmt alle Einträge aus der Warteschlange (mit Rückfrage). Ausgeführtes bleibt ausgeführt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear — removes all entries from the queue (asks first). What has run stays done."
+          }
+        }
+      }
+    },
     "Legt den SHA-256 von %@ in die Zwischenablage — auf virustotal.com in die Suche einfügen. Die Datei selbst verlässt den Mac nicht.": {
       "localizations": {
         "de": {
@@ -3229,22 +3325,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copies the SHA-256 of %@ to the clipboard — paste it into the search on virustotal.com. The file itself never leaves the Mac."
-          }
-        }
-      }
-    },
-    "Legt für jede erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Legt für jede erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Queues the way back for every finished action: enable ↔ disable, restore from the quarantine."
           }
         }
       }
@@ -3341,6 +3421,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear selection"
+          }
+        }
+      }
+    },
+    "Markierung aufheben — entfernt die Häkchen in dieser Ansicht. Einträge, die schon in der Warteschlange stehen, bleiben dort.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Markierung aufheben — entfernt die Häkchen in dieser Ansicht. Einträge, die schon in der Warteschlange stehen, bleiben dort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear marks — removes the ticks in this view. Entries already in the queue stay there."
           }
         }
       }
@@ -4001,6 +4097,22 @@
         }
       }
     },
+    "Plan prüfen — rechnet für alle offenen Einträge in einem Durchgang durch, was geschehen würde, ohne etwas zu ändern. Zeigt, welche Schritte Administratorrechte brauchen und was abgelehnt würde.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan prüfen — rechnet für alle offenen Einträge in einem Durchgang durch, was geschehen würde, ohne etwas zu ändern. Zeigt, welche Schritte Administratorrechte brauchen und was abgelehnt würde."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check plan — works out in one pass what would happen for all open entries, without changing anything. Shows which steps need administrator rights and what would be refused."
+          }
+        }
+      }
+    },
     "Plan wird berechnet — das Inventar wird dafür neu gelesen …": {
       "localizations": {
         "de": {
@@ -4365,6 +4477,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add ways back (%lld)"
+          }
+        }
+      }
+    },
+    "Rückwege hinzufügen — legt für jede in dieser Sitzung erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückwege hinzufügen — legt für jede in dieser Sitzung erledigte Aktion den Rückweg in die Warteschlange: Aktivieren ↔ Deaktivieren, Wiederherstellen aus der Quarantäne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add ways back — queues the way back for every action done in this session: enable ↔ disable, restore from the quarantine."
           }
         }
       }
@@ -5165,6 +5293,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open queue"
+          }
+        }
+      }
+    },
+    "Warteschlange öffnen — zeigt alle gesammelten Aktionen, dort prüfen und ausführen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange öffnen — zeigt alle gesammelten Aktionen, dort prüfen und ausführen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open queue — shows all collected actions; check and run them there."
           }
         }
       }
