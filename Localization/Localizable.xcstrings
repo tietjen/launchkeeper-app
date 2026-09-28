@@ -1025,6 +1025,22 @@
         }
       }
     },
+    "Banner sind für LaunchKeeper ausgeschaltet (Stil „Ohne“).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banner sind für LaunchKeeper ausgeschaltet (Stil „Ohne“)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banners are switched off for LaunchKeeper (style “None”)."
+          }
+        }
+      }
+    },
     "Basismodus — klicken für alle Details (⌥⌘E)": {
       "localizations": {
         "de": {
@@ -1745,6 +1761,22 @@
         }
       }
     },
+    "Ein Banner zeigt macOS nur ohne aktiven Fokus.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Banner zeigt macOS nur ohne aktiven Fokus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS shows a banner only without an active Focus."
+          }
+        }
+      }
+    },
     "Ein Programm, das Verbindungen annimmt, lässt sich hier nur beenden oder in seinen eigenen Einstellungen abschalten; eingehende Verbindungen sperrt die Firewall (Systemeinstellungen › Netzwerk › Firewall). Abhaken musst du selbst: ein beendetes Programm verschwindet auch aus der Liste.": {
       "localizations": {
         "de": {
@@ -1997,6 +2029,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Allow “LaunchKeeper” in System Settings › General › Login Items & Extensions under “Allow in the Background”, then “Check again”."
+          }
+        }
+      }
+    },
+    "Erlaubnis anfragen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaubnis anfragen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask for permission"
+          }
+        }
+      }
+    },
+    "Erlaubnis anfragen — macOS fragt, ob LaunchKeeper Mitteilungen senden darf.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaubnis anfragen — macOS fragt, ob LaunchKeeper Mitteilungen senden darf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask for permission — macOS asks whether LaunchKeeper may send notifications."
           }
         }
       }
@@ -3265,6 +3329,22 @@
         }
       }
     },
+    "LaunchKeeper-Test": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper-Test"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper test"
+          }
+        }
+      }
+    },
     "Leeren": {
       "localizations": {
         "de": {
@@ -3473,6 +3553,22 @@
         }
       }
     },
+    "Mitteilung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification"
+          }
+        }
+      }
+    },
     "Mitteilung bei neuen oder geänderten Einträgen": {
       "localizations": {
         "de": {
@@ -3501,6 +3597,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifications"
+          }
+        }
+      }
+    },
+    "Mitteilungen laut macOS": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungen laut macOS"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications according to macOS"
+          }
+        }
+      }
+    },
+    "Mitteilungseinstellungen öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungseinstellungen öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open notification settings"
+          }
+        }
+      }
+    },
+    "Mitteilungseinstellungen öffnen — Systemeinstellungen › Mitteilungen › LaunchKeeper: Erlaubnis, Stil, Ton.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungseinstellungen öffnen — Systemeinstellungen › Mitteilungen › LaunchKeeper: Erlaubnis, Stil, Ton."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open notification settings — System Settings › Notifications › LaunchKeeper: permission, style, sound."
           }
         }
       }
@@ -4609,6 +4753,22 @@
         }
       }
     },
+    "So meldet die Beobachtung neue Autostart-Einträge.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So meldet die Beobachtung neue Autostart-Einträge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is how the watch reports new autostart entries."
+          }
+        }
+      }
+    },
     "So sieht macOS die Hintergrundobjekte — dieselbe Liste wie in Systemeinstellungen › Allgemein › Anmeldeobjekte & Erweiterungen. Wähle eine Zeile, um zu sehen, was dahintersteckt, und springe zu den einzelnen Komponenten.": {
       "localizations": {
         "de": {
@@ -4909,6 +5069,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Partly still installed"
+          }
+        }
+      }
+    },
+    "Test-Mitteilung senden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test-Mitteilung senden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send test notification"
+          }
+        }
+      }
+    },
+    "Test-Mitteilung senden — zeigt, ob und wie macOS Mitteilungen von LaunchKeeper anzeigt, ohne dass sich etwas ändern muss.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test-Mitteilung senden — zeigt, ob und wie macOS Mitteilungen von LaunchKeeper anzeigt, ohne dass sich etwas ändern muss."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send test notification — shows whether and how macOS displays LaunchKeeper's notifications, without anything having to change."
           }
         }
       }
@@ -5537,6 +5729,54 @@
         }
       }
     },
+    "an macOS übergeben um %@ (Mitteilungszentrale für LaunchKeeper aus — ob sie erschien, lässt sich nicht prüfen).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an macOS übergeben um %@ (Mitteilungszentrale für LaunchKeeper aus — ob sie erschien, lässt sich nicht prüfen)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "handed to macOS at %@ (Notification Center is off for LaunchKeeper — whether it appeared cannot be checked)."
+          }
+        }
+      }
+    },
+    "an macOS übergeben um %@; nicht in der Mitteilungszentrale — schon weggeklickt oder von macOS zurückgehalten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an macOS übergeben um %@; nicht in der Mitteilungszentrale — schon weggeklickt oder von macOS zurückgehalten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "handed to macOS at %@; not in the Notification Center — already dismissed or held back by macOS."
+          }
+        }
+      }
+    },
+    "an macOS übergeben um %@; steht in der Mitteilungszentrale.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "an macOS übergeben um %@; steht in der Mitteilungszentrale."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "handed to macOS at %@; listed in the Notification Center."
+          }
+        }
+      }
+    },
     "angehalten — nicht ausgeführt": {
       "localizations": {
         "de": {
@@ -5549,6 +5789,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "stopped — not run"
+          }
+        }
+      }
+    },
+    "angezeigt und um %@ angeklickt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "angezeigt und um %@ angeklickt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shown and clicked at %@"
           }
         }
       }
@@ -5773,6 +6029,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "set up and allowed"
+          }
+        }
+      }
+    },
+    "erlaubt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "erlaubt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "allowed"
+          }
+        }
+      }
+    },
+    "erlaubt, aber ohne Banner (Stil „Ohne“)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "erlaubt, aber ohne Banner (Stil „Ohne“)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "allowed, but without banners (style “None”)"
           }
         }
       }
@@ -6017,6 +6305,38 @@
         }
       }
     },
+    "keine — Entfernungen werden nur aufgelistet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "keine — Entfernungen werden nur aufgelistet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none — removals are only listed"
+          }
+        }
+      }
+    },
+    "keine — LaunchKeeper hat das selbst geändert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "keine — LaunchKeeper hat das selbst geändert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none — LaunchKeeper made this change itself"
+          }
+        }
+      }
+    },
     "launchd: aus": {
       "localizations": {
         "de": {
@@ -6161,6 +6481,22 @@
         }
       }
     },
+    "nicht erlaubt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht erlaubt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not allowed"
+          }
+        }
+      }
+    },
     "nicht gefunden — die App muss aus ihrem Bundle gestartet werden": {
       "localizations": {
         "de": {
@@ -6173,6 +6509,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "not found — the app must be started from its bundle"
+          }
+        }
+      }
+    },
+    "nicht gesendet: Mitteilungen sind in LaunchKeeper ausgeschaltet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht gesendet: Mitteilungen sind in LaunchKeeper ausgeschaltet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not sent: notifications are switched off in LaunchKeeper"
+          }
+        }
+      }
+    },
+    "nicht gesendet: macOS erlaubt LaunchKeeper keine Mitteilungen (%@)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht gesendet: macOS erlaubt LaunchKeeper keine Mitteilungen (%@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not sent: macOS does not allow LaunchKeeper to notify (%@)"
           }
         }
       }
@@ -6221,6 +6589,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "not signed — check where it came from"
+          }
+        }
+      }
+    },
+    "nicht verfügbar (kein App-Bundle)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht verfügbar (kein App-Bundle)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not available (no app bundle)"
+          }
+        }
+      }
+    },
+    "noch nicht gefragt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "noch nicht gefragt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not asked yet"
           }
         }
       }
@@ -6337,6 +6737,22 @@
         }
       }
     },
+    "um %@ zur Anzeige freigegeben (LaunchKeeper war vorne; ein aktiver Fokus kann das Banner trotzdem unterdrücken)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "um %@ zur Anzeige freigegeben (LaunchKeeper war vorne; ein aktiver Fokus kann das Banner trotzdem unterdrücken)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "released for display at %@ (LaunchKeeper was in front; an active Focus may still suppress the banner)"
+          }
+        }
+      }
+    },
     "unbekannt": {
       "localizations": {
         "de": {
@@ -6349,6 +6765,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "unknown"
+          }
+        }
+      }
+    },
+    "unbekannt (vor dem letzten Start der App bemerkt)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unbekannt (vor dem letzten Start der App bemerkt)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unknown (noticed before the app last started)"
           }
         }
       }
@@ -6385,6 +6817,22 @@
         }
       }
     },
+    "von macOS abgelehnt: %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "von macOS abgelehnt: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refused by macOS: %@"
+          }
+        }
+      }
+    },
     "war eine App: %@": {
       "localizations": {
         "de": {
@@ -6413,6 +6861,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "waiting for your approval in System Settings"
+          }
+        }
+      }
+    },
+    "wird gesendet …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wird gesendet …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sending …"
           }
         }
       }

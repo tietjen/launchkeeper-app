@@ -50,11 +50,29 @@ final class EntryRouter {
 ///
 /// Notifications need a bundled, signed app; run via `swift run` (no bundle
 /// identifier) they are skipped instead of crashing the notification center.
+///
+/// Every delivery keeps its outcome (TJ 2026-09-28: a notification went
+/// missing on a second Mac and nothing said why): not sent and why, refused
+/// by macOS with its error, or handed over — and whether macOS then lists it
+/// as delivered. The watch record's detail and Settings show it.
 @MainActor
+@Observable
 final class WatchNotifier: NSObject, WatchNotifying, UNUserNotificationCenterDelegate {
-    private let router: EntryRouter
+    @ObservationIgnored private let router: EntryRouter
     /// Mirrors the "Mitteilungen" setting at delivery time.
-    private let isEnabled: () -> Bool
+    @ObservationIgnored private let isEnabled: () -> Bool
+
+    /// macOS's answer to "may LaunchKeeper notify?"; `nil` until read.
+    private(set) var authorization: UNAuthorizationStatus?
+    /// Whether macOS shows LaunchKeeper's notifications as banners/alerts.
+    private(set) var alertsEnabled: Bool?
+    /// What happened to the notification of each record (this session only,
+    /// the latest `outcomeLimit` — the watch keeps as many records).
+    private(set) var outcomes: [WatchRecord.ID: String] = [:]
+    @ObservationIgnored private var outcomeOrder: [WatchRecord.ID] = []
+    private let outcomeLimit = 200
+    /// What happened to the last test notification.
+    private(set) var testResult: String?
 
     init(router: EntryRouter, isEnabled: @escaping () -> Bool) {
         self.router = router
@@ -72,27 +90,169 @@ final class WatchNotifier: NSObject, WatchNotifying, UNUserNotificationCenterDel
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }
 
+    /// Asks for permission again (shows the prompt only while undecided) and re-reads the state.
+    func requestAgain() {
+        guard Self.available else { return }
+        Task {
+            _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])
+            refreshAuthorization()
+        }
+    }
+
+    /// Re-reads macOS's notification settings for LaunchKeeper.
+    func refreshAuthorization() {
+        guard Self.available else { return }
+        Task {
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            authorization = settings.authorizationStatus
+            alertsEnabled = settings.alertSetting == .enabled
+        }
+    }
+
+    /// Opens LaunchKeeper's page in System Settings › Notifications.
+    func openSettings() {
+        let id = Bundle.main.bundleIdentifier ?? ""
+        if let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension?id=\(id)") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    /// The permission state in words.
+    var authorizationText: String {
+        guard Self.available else { return String(localized: "nicht verfügbar (kein App-Bundle)") }
+        switch authorization {
+        case .authorized?, .provisional?:
+            return alertsEnabled == false
+                ? String(localized: "erlaubt, aber ohne Banner (Stil „Ohne“)")
+                : String(localized: "erlaubt")
+        case .denied?: return String(localized: "nicht erlaubt")
+        case .notDetermined?: return String(localized: "noch nicht gefragt")
+        case nil: return "…"
+        @unknown default: return String(localized: "unbekannt")
+        }
+    }
+
     func deliver(_ record: WatchRecord) {
-        guard Self.available, isEnabled() else { return }
+        guard Self.available else { note(record.id.uuidString, authorizationText); return }
+        guard isEnabled() else {
+            note(record.id.uuidString, String(localized: "nicht gesendet: Mitteilungen sind in LaunchKeeper ausgeschaltet"))
+            return
+        }
+        note(record.id.uuidString, String(localized: "wird gesendet …"))
         let content = UNMutableNotificationContent()
         content.title = record.headline
         content.body = record.detail
         content.sound = .default
         if let key = record.event.key { content.userInfo = ["key": key] }
-        let request = UNNotificationRequest(identifier: record.id.uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(request)
+        post(content, identifier: record.id.uuidString)
     }
 
-    // Also show notifications while LaunchKeeper is in front.
+    /// Sends a notification that only shows how the watch's notifications look.
+    func sendTest() {
+        guard Self.available else { testResult = authorizationText; return }
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "LaunchKeeper-Test")
+        content.body = String(localized: "So meldet die Beobachtung neue Autostart-Einträge.")
+        content.sound = .default
+        let identifier = Self.testPrefix + UUID().uuidString
+        note(identifier, String(localized: "wird gesendet …"))
+        post(content, identifier: identifier)
+    }
+
+    /// Request identifiers of test notifications start with this.
+    private static let testPrefix = "test-"
+
+    /// Stores what became of a notification: a record's outcome (by its
+    /// UUID) or the test result.
+    /// - Parameters:
+    ///   - identifier: The request identifier.
+    ///   - text: The outcome in words.
+    private func note(_ identifier: String, _ text: String) {
+        if identifier.hasPrefix(Self.testPrefix) { testResult = text; return }
+        guard let id = UUID(uuidString: identifier) else { return }
+        if outcomes.updateValue(text, forKey: id) == nil {
+            outcomeOrder.append(id)
+            if outcomeOrder.count > outcomeLimit { outcomes[outcomeOrder.removeFirst()] = nil }
+        }
+    }
+
+    /// Hands a notification to macOS and records what can be known about it.
+    ///
+    /// Checks the permission first (a refused request raises no error of its
+    /// own), awaits the hand-over, then looks a moment later whether the
+    /// notification is listed in the Notification Center. That list says
+    /// nothing about a banner (Focus files notifications there silently), so
+    /// the wording claims only what was measured; the only proof that the
+    /// user saw it is a click or its presentation while LaunchKeeper is in
+    /// front — the delegate records both (review 2026-09-28).
+    /// - Parameters:
+    ///   - content: The notification.
+    ///   - identifier: Its request identifier (a record's UUID or a test id).
+    private func post(_ content: UNMutableNotificationContent, identifier: String) {
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
+        Task {
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+            authorization = settings.authorizationStatus
+            alertsEnabled = settings.alertSetting == .enabled
+            guard [.authorized, .provisional].contains(settings.authorizationStatus) else {
+                note(identifier, String(localized: "nicht gesendet: macOS erlaubt LaunchKeeper keine Mitteilungen (\(authorizationText))"))
+                return
+            }
+            do {
+                try await center.add(request)
+            } catch {
+                note(identifier, String(localized: "von macOS abgelehnt: \(error.localizedDescription)"))
+                return
+            }
+            let time = Date().formatted(date: .omitted, time: .standard)
+            var text: String
+            if settings.notificationCenterSetting == .enabled {
+                try? await Task.sleep(for: .seconds(1))
+                // Clicked or shown in front meanwhile: that note is the better one.
+                if let current = currentNote(identifier), current != String(localized: "wird gesendet …") { return }
+                let listed = await center.deliveredNotifications().contains { $0.request.identifier == identifier }
+                text = listed
+                    ? String(localized: "an macOS übergeben um \(time); steht in der Mitteilungszentrale.")
+                    : String(localized: "an macOS übergeben um \(time); nicht in der Mitteilungszentrale — schon weggeklickt oder von macOS zurückgehalten.")
+            } else {
+                text = String(localized: "an macOS übergeben um \(time) (Mitteilungszentrale für LaunchKeeper aus — ob sie erschien, lässt sich nicht prüfen).")
+            }
+            // What decides about a banner: the style first, then a Focus.
+            text += " " + (settings.alertSetting == .enabled
+                ? String(localized: "Ein Banner zeigt macOS nur ohne aktiven Fokus.")
+                : String(localized: "Banner sind für LaunchKeeper ausgeschaltet (Stil „Ohne“)."))
+            note(identifier, text)
+        }
+    }
+
+    /// The outcome stored so far for an identifier.
+    private func currentNote(_ identifier: String) -> String? {
+        if identifier.hasPrefix(Self.testPrefix) { return testResult }
+        return UUID(uuidString: identifier).flatMap { outcomes[$0] }
+    }
+
+    // Also show notifications while LaunchKeeper is in front — and note that
+    // macOS asked (it reached presentation; a Focus may still hide the banner).
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                             willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .sound, .list]
+        let identifier = notification.request.identifier
+        let time = Date().formatted(date: .omitted, time: .standard)
+        await MainActor.run {
+            note(identifier, String(localized: "um \(time) zur Anzeige freigegeben (LaunchKeeper war vorne; ein aktiver Fokus kann das Banner trotzdem unterdrücken)"))
+        }
+        return [.banner, .sound, .list]
     }
 
-    // A click opens the entry in the main window.
+    // A click opens the entry in the main window; the click is the proof the user saw it.
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                             didReceive response: UNNotificationResponse) async {
+        let identifier = response.notification.request.identifier
         let key = response.notification.request.content.userInfo["key"] as? String
+        let time = Date().formatted(date: .omitted, time: .standard)
+        await MainActor.run {
+            note(identifier, String(localized: "angezeigt und um \(time) angeklickt"))
+        }
         await router.show(key: key)
     }
 }
@@ -234,6 +394,7 @@ struct WatchRecordRow: View {
 struct WatchRecordDetail: View {
     let record: WatchRecord
     @Environment(InventoryStore.self) private var store
+    @Environment(WatchNotifier.self) private var notifier
 
     var body: some View {
         Form {
@@ -259,6 +420,7 @@ struct WatchRecordDetail: View {
             Section("Bemerkt") {
                 LabeledContent("Wann", value: record.date.formatted(date: .abbreviated, time: .standard))
                 LabeledContent("Anlass") { Text(record.event.trigger).textSelection(.enabled) }
+                LabeledContent("Mitteilung") { Text(notificationText).textSelection(.enabled) }
             }
             Section {
                 if let key = record.event.key, store.row(for: key) != nil {
@@ -270,6 +432,14 @@ struct WatchRecordDetail: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    /// Whether a notification went out for this record, and if not, why.
+    private var notificationText: String {
+        if record.isOwn { return String(localized: "keine — LaunchKeeper hat das selbst geändert") }
+        if !record.deservesNotification { return String(localized: "keine — Entfernungen werden nur aufgelistet") }
+        return notifier.outcomes[record.id]
+            ?? String(localized: "unbekannt (vor dem letzten Start der App bemerkt)")
     }
 }
 
@@ -303,6 +473,7 @@ struct WatchMenu: View {
 /// Settings (⌘,) section for the watch and launch at login.
 struct WatchSettingsSection: View {
     @Environment(LoginItem.self) private var loginItem
+    @Environment(WatchNotifier.self) private var notifier
     @AppStorage(WatchSettings.enabled) private var enabled = false
     @AppStorage(WatchSettings.notify) private var notify = true
 
@@ -310,6 +481,20 @@ struct WatchSettingsSection: View {
         Section("Beobachtung") {
             Toggle("Neue Autostart-Einträge beobachten", isOn: $enabled)
             Toggle("Mitteilung bei neuen oder geänderten Einträgen", isOn: $notify).disabled(!enabled)
+            LabeledContent("Mitteilungen laut macOS", value: notifier.authorizationText)
+            HStack {
+                Button("Test-Mitteilung senden") { notifier.sendTest() }
+                    .help("Test-Mitteilung senden — zeigt, ob und wie macOS Mitteilungen von LaunchKeeper anzeigt, ohne dass sich etwas ändern muss.")
+                if notifier.authorization == .notDetermined {
+                    Button("Erlaubnis anfragen") { notifier.requestAgain() }
+                        .help("Erlaubnis anfragen — macOS fragt, ob LaunchKeeper Mitteilungen senden darf.")
+                }
+                Button("Mitteilungseinstellungen öffnen") { notifier.openSettings() }
+                    .help("Mitteilungseinstellungen öffnen — Systemeinstellungen › Mitteilungen › LaunchKeeper: Erlaubnis, Stil, Ton.")
+            }
+            if let result = notifier.testResult {
+                Text(result).font(.callout).foregroundStyle(.secondary)
+            }
             Toggle("Bei der Anmeldung starten", isOn: Binding(get: { loginItem.isEnabled }, set: { loginItem.set($0) }))
             Text("Beim Start bei der Anmeldung öffnet LaunchKeeper sein Fenster; schließt du es, beobachtet die App weiter — das Auge in der Menüleiste zeigt es.")
                 .font(.callout).foregroundStyle(.secondary)
@@ -317,6 +502,12 @@ struct WatchSettingsSection: View {
                 Button("In den Systemeinstellungen erlauben") { SMAppService.openSystemSettingsLoginItems() }
             }
             if let error = loginItem.lastError { Text(error).foregroundStyle(.red).font(.callout) }
+        }
+        // The user may have changed it in System Settings meanwhile — also
+        // while this window stayed open ("Mitteilungseinstellungen öffnen").
+        .onAppear { notifier.refreshAuthorization() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            notifier.refreshAuthorization()
         }
     }
 }

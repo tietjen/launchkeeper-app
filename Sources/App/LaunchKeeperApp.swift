@@ -71,6 +71,7 @@ struct LaunchKeeperApp: App {
                 .environment(leftovers)
                 .environment(quarantine)
                 .environment(helper)
+                .environment(notifier)
                 .frame(minWidth: 980, minHeight: 560)
                 // First scan on launch; a full one, so the BTM dump is fresh.
                 .task { await store.refresh(reason: .launch) }
@@ -96,7 +97,7 @@ struct LaunchKeeperApp: App {
         }
         // ⌘, — the privileged helper's state and controls.
         Settings {
-            HelperSettingsView(updater: updater.updater).environment(helper).environment(loginItem)
+            HelperSettingsView(updater: updater.updater).environment(helper).environment(loginItem).environment(notifier)
         }
         // While the watch is on: an eye in the menu bar, also with no window open.
         MenuBarExtra("LaunchKeeper", systemImage: "eye", isInserted: $watchEnabled) {

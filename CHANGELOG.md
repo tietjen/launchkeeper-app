@@ -5,6 +5,22 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [0.3.5] — 2026-09-28
+
+### Added
+- Notifications can be checked from the app. Settings › Beobachtung shows
+  what macOS allows ("Mitteilungen laut macOS": allowed, not allowed, not
+  asked yet, allowed without banners) and offers "Test-Mitteilung senden",
+  "Mitteilungseinstellungen öffnen" (LaunchKeeper's page in System Settings)
+  and, while undecided, "Erlaubnis anfragen".
+- Every watch record says what became of its notification — only what can
+  be measured: refused by macOS (with its error), handed over and listed in
+  the Notification Center or not, released for display while LaunchKeeper
+  was in front, clicked — or why none was sent (own action, removal,
+  notifications off, not allowed). Found on a second Mac, where a
+  notification went missing without a trace. The permission line refreshes
+  when you come back from System Settings.
+
 ## [0.3.4] — 2026-09-28
 
 ### Fixed
