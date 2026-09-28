@@ -3025,6 +3025,22 @@
         }
       }
     },
+    "Kein Banner, obwohl die Mitteilung freigegeben wurde? Beim Teilen oder Spiegeln des Bildschirms (z. B. Bildschirmfreigabe) unterdrückt macOS Banner standardmäßig — Systemeinstellungen › Mitteilungen › „Beim Spiegeln oder Teilen des Bildschirms“.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Banner, obwohl die Mitteilung freigegeben wurde? Beim Teilen oder Spiegeln des Bildschirms (z. B. Bildschirmfreigabe) unterdrückt macOS Banner standardmäßig — Systemeinstellungen › Mitteilungen › „Beim Spiegeln oder Teilen des Bildschirms“."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No banner although the notification was released? While the screen is shared or mirrored (e.g. Screen Sharing), macOS suppresses banners by default — System Settings › Notifications › “When mirroring or sharing the display”."
+          }
+        }
+      }
+    },
     "Keine": {
       "localizations": {
         "de": {

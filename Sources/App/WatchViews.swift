@@ -495,6 +495,10 @@ struct WatchSettingsSection: View {
             if let result = notifier.testResult {
                 Text(result).font(.callout).foregroundStyle(.secondary)
             }
+            // Phase 9 (MacMini01, 2026-09-28): everything was handed over and
+            // released, yet no banner — the Mac was used via screen sharing.
+            Text("Kein Banner, obwohl die Mitteilung freigegeben wurde? Beim Teilen oder Spiegeln des Bildschirms (z. B. Bildschirmfreigabe) unterdrückt macOS Banner standardmäßig — Systemeinstellungen › Mitteilungen › „Beim Spiegeln oder Teilen des Bildschirms“.")
+                .font(.caption).foregroundStyle(.secondary)
             Toggle("Bei der Anmeldung starten", isOn: Binding(get: { loginItem.isEnabled }, set: { loginItem.set($0) }))
             Text("Beim Start bei der Anmeldung öffnet LaunchKeeper sein Fenster; schließt du es, beobachtet die App weiter — das Auge in der Menüleiste zeigt es.")
                 .font(.callout).foregroundStyle(.secondary)

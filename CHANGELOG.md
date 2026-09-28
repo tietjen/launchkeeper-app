@@ -5,6 +5,13 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Added
+- Settings › Beobachtung explains the most common reason for a missing
+  banner: macOS suppresses banners while the screen is shared or mirrored
+  (found in the acceptance test on a second Mac used via Screen Sharing).
+
 ## [0.3.5] — 2026-09-28
 
 ### Added
