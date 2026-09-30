@@ -183,7 +183,7 @@ enum HelpContent {
     private static var watch: [HelpSection] {
         [
             HelpSection(blocks: [
-                .text(String(localized: "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. Einschalten im Bereich **Beobachtung** oder in den Einstellungen.")),
+                .text(String(localized: "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. **Einschalten:** links unter Ansichten **Beobachtung** wählen und oben den Schalter **Beobachtung** umlegen — oder in den Einstellungen (⌘,) unter Beobachtung „Neue Autostart-Einträge beobachten“.")),
                 .item(symbol: "bolt", color: .accentColor, title: String(localized: "Sofort"),
                       text: String(localized: "Sobald eine Autostart-Stelle geschrieben wird, liest LaunchKeeper nach wenigen Sekunden neu ein und vergleicht.")),
                 .item(symbol: "clock", color: .accentColor, title: String(localized: "Regelmäßig"),

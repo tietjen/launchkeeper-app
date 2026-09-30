@@ -18,24 +18,52 @@ import AppCore
 
 /// Where a step points in the main window.
 enum TourSpot: Hashable {
-    case sidebar, content, detail, refresh, viewsRow, watchRow, queueRow
+    case sidebar, content, detail
+    /// The three toolbar buttons.
+    case modeToggle, appleToggle, refresh
+    /// The rows under "Ansichten".
+    case backgroundRow, packagesRow, leftoversRow, quarantineRow
+    case watchRow, watchSwitch, queueRow
 }
 
 /// One step of the introduction.
 enum TourStep: Int, CaseIterable {
     case welcome, sidebar, list, detail, toolbar, views, watch, queue, helper, done
 
-    /// The part of the window the step points at; `nil` = shown as a sheet.
+    /// Where the step's card points; `nil` = shown as a sheet.
     var spot: TourSpot? {
         switch self {
         case .welcome, .helper, .done: return nil
         case .sidebar: return .sidebar
         case .list: return .content
         case .detail: return .detail
-        case .toolbar: return .refresh
-        case .views: return .viewsRow
+        case .toolbar: return .appleToggle        // the middle one of the three it explains
+        case .views: return .packagesRow          // among the four rows it explains
         case .watch: return .watchRow
         case .queue: return .queueRow
+        }
+    }
+
+    /// Everything the step talks about, outlined together (TJ 2026-09-30:
+    /// a card explaining three buttons must mark all three).
+    var outlined: Set<TourSpot> {
+        switch self {
+        case .toolbar: return [.modeToggle, .appleToggle, .refresh]
+        case .views: return [.backgroundRow, .packagesRow, .leftoversRow, .quarantineRow]
+        case .watch: return [.watchRow, .watchSwitch]
+        default: return spot.map { [$0] } ?? []
+        }
+    }
+
+    /// The sidebar row to scroll into view first — a card can only point at
+    /// a row that is on screen (TJ 2026-09-30: watch and queue rows were
+    /// scrolled away and the card fell back to the middle of the window).
+    var sidebarRow: SidebarSelection? {
+        switch self {
+        case .views: return .leftovers
+        case .watch: return .watch
+        case .queue: return .queue
+        default: return nil
         }
     }
 
@@ -83,13 +111,13 @@ enum TourStep: Int, CaseIterable {
         case .detail:
             return String(localized: "Ampel, ein Satz in Klartext, die Fakten — und die **Nächsten Schritte**: nur Aktionen, die hier sicher möglich sind.\n\n**Ausführen…** zeigt erst den Plan; ein zweiter Klick führt aus. Änderungen am System fragen nach Touch ID.")
         case .toolbar:
-            return String(localized: "Basis- oder **Expertenmodus** (⌥⌘E), **Apple-Einträge** aus- oder einblenden und **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab).")
+            return String(localized: "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)")
         case .views:
-            return String(localized: "**Hintergrund** wie in den Systemeinstellungen, **Pakete** mit Deinstallation, **App-Reste** gelöschter Apps und die **Quarantäne**: alles Entfernte, jederzeit wiederherstellbar.")
+            return String(localized: "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar.")
         case .watch:
-            return String(localized: "Einmal eingeschaltet, meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).")
+            return String(localized: "Eingeschaltet wird sie hier: in der Ansicht **Beobachtung** oben der Schalter **Beobachtung** (oder in den Einstellungen, ⌘,).\n\nDann meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).")
         case .queue:
-            return String(localized: "Häkchen setzen, rechts **Zur Warteschlange hinzufügen**, hier **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**.")
+            return String(localized: "In jeder Ansicht Häkchen setzen und rechts **Zur Warteschlange hinzufügen** — gesammelt wird hier. Unten **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**.")
         case .helper:
             return String(localized: "Änderungen an Systemdiensten und in /Library brauchen Administratorrechte. Dafür richtest du **einmal** das Hilfsprogramm ein: Einstellungen (⌘,) › **Einrichten**, dann in den Systemeinstellungen erlauben.\n\nDanach liest LaunchKeeper auch ohne Touch-ID-Abfrage ein; gefragt wird nur noch vor echten Änderungen.")
         case .done:
@@ -101,7 +129,7 @@ enum TourStep: Int, CaseIterable {
     @MainActor
     func prepare(_ store: InventoryStore) {
         switch self {
-        case .sidebar, .list, .toolbar:
+        case .sidebar, .list, .toolbar, .views:
             store.selection = .all
         case .detail:
             store.selection = .all
@@ -109,6 +137,11 @@ enum TourStep: Int, CaseIterable {
             if store.row(for: store.selectedKey) == nil {
                 store.selectedKey = store.visibleRows.min { $0.name.localizedStandardCompare($1.name) == .orderedAscending }?.id
             }
+        case .watch:
+            // The watch view shows its switch — the card says where to turn it on.
+            store.selection = .watch
+        case .queue:
+            store.selection = .queue
         default:
             break
         }
@@ -229,7 +262,7 @@ final class TourModel {
     private var shownSpot: TourSpot? { asSheet ? nil : presentation?.step.spot }
 
     /// Whether `spot` is outlined in `window`.
-    func isOutlined(_ spot: TourSpot, in window: UUID) -> Bool { owner == window && step?.spot == spot }
+    func isOutlined(_ spot: TourSpot, in window: UUID) -> Bool { owner == window && step?.outlined.contains(spot) == true }
 
     /// A card was closed. It ends the introduction only when it is the card
     /// on screen — same place — and has been there a moment: a click outside
@@ -378,5 +411,21 @@ struct TourSheetModifier: ViewModifier {
             TourCard(tour: tour, step: shown.step, openHelp: openHelp)
                 .onAppear { tour.cardAppeared(shown.id) }
         }
+    }
+}
+
+// MARK: - The window's token in the environment
+
+/// The main window's tour token, for views outside the window's own body
+/// that mark a stop (the watch switch). Not for list or table cells.
+private struct TourWindowKey: EnvironmentKey {
+    static let defaultValue: UUID? = nil
+}
+
+extension EnvironmentValues {
+    /// The main window's tour token; `nil` outside the main window.
+    var tourWindow: UUID? {
+        get { self[TourWindowKey.self] }
+        set { self[TourWindowKey.self] = newValue }
     }
 }

@@ -81,11 +81,13 @@ struct ContentView: View {
                 }
                 .help(expertMode ? "Expertenmodus — klicken für die Kurzfassung (⌥⌘E)"
                                  : "Basismodus — klicken für alle Details (⌥⌘E)")
+                .tourSpot(.modeToggle, tour: tour, window: windowToken, arrowEdge: .bottom, openHelp: openHelp)
                 Toggle(isOn: $store.hideApple) {
                     Label { Text("Apple ausblenden") } icon: { ToolbarIcon.apple(hidden: store.hideApple).image }
                 }
                 .help(store.hideApple ? "Apple-signierte Einträge sind ausgeblendet — klicken zum Anzeigen"
                                       : "Apple-signierte Einträge werden angezeigt — klicken zum Ausblenden")
+                .tourSpot(.appleToggle, tour: tour, window: windowToken, arrowEdge: .bottom, openHelp: openHelp)
                 Button { Task { await store.refresh(reuseBTM: true) } } label: {
                     Label("Neu einlesen", systemImage: "arrow.clockwise")
                 }
@@ -96,6 +98,7 @@ struct ContentView: View {
         }
         .overlay(alignment: .bottom) { StatusBar() }
         .modifier(TourSheetModifier(tour: tour, window: windowToken, openHelp: openHelp))
+        .environment(\.tourWindow, windowToken)
         .task {
             // The window prepares itself for each step; then the introduction
             // starts once per session if it is wanted at launch.
@@ -175,6 +178,7 @@ struct SidebarView: View {
 
     var body: some View {
         @Bindable var store = store
+        ScrollViewReader { proxy in
         List(selection: $store.selection) {
             Section("Inventar") {
                 row(.all, "Alle Einträge", "list.bullet")
@@ -187,25 +191,38 @@ struct SidebarView: View {
             }
             Section("Ansichten") {
                 Label("Hintergrund", systemImage: "switch.2")
-                    .tourSpot(.viewsRow, tour: tour, window: window, openHelp: openHelp)
-                    .tag(SidebarSelection.background)
-                Label("Pakete", systemImage: "shippingbox").tag(SidebarSelection.receipts)
-                Label("App-Reste", systemImage: "leaf").tag(SidebarSelection.leftovers)
-                Label("Quarantäne", systemImage: "archivebox").tag(SidebarSelection.quarantine)
+                    .tourSpot(.backgroundRow, tour: tour, window: window, openHelp: openHelp)
+                    .tag(SidebarSelection.background).id(SidebarSelection.background)
+                Label("Pakete", systemImage: "shippingbox")
+                    .tourSpot(.packagesRow, tour: tour, window: window, openHelp: openHelp)
+                    .tag(SidebarSelection.receipts).id(SidebarSelection.receipts)
+                Label("App-Reste", systemImage: "leaf")
+                    .tourSpot(.leftoversRow, tour: tour, window: window, openHelp: openHelp)
+                    .tag(SidebarSelection.leftovers).id(SidebarSelection.leftovers)
+                Label("Quarantäne", systemImage: "archivebox")
+                    .tourSpot(.quarantineRow, tour: tour, window: window, openHelp: openHelp)
+                    .tag(SidebarSelection.quarantine).id(SidebarSelection.quarantine)
                 Label("Beobachtung", systemImage: watch.isRunning ? "eye" : "eye.slash")
                     .badge(watch.records.filter { !$0.isOwn && $0.event.kind != .removed }.count)
                     .tourSpot(.watchRow, tour: tour, window: window, openHelp: openHelp)
-                    .tag(SidebarSelection.watch)
+                    .tag(SidebarSelection.watch).id(SidebarSelection.watch)
             }
             // At the bottom (TJ): the queue collects actions from every view above.
             Section("Stapelverarbeitung") {
                 Label("Warteschlange", systemImage: "tray.full")
                     .badge(queue.items.filter { !$0.isFinished }.count)
                     .tourSpot(.queueRow, tour: tour, window: window, openHelp: openHelp)
-                    .tag(SidebarSelection.queue)
+                    .tag(SidebarSelection.queue).id(SidebarSelection.queue)
             }
         }
         .listStyle(.sidebar)
+        // The introduction scrolls the row it talks about into view (before
+        // its card appears — a card needs its row on screen).
+        .onChange(of: tour.step) { _, step in
+            guard let row = step?.sidebarRow else { return }
+            withAnimation { proxy.scrollTo(row, anchor: .center) }
+        }
+        }
     }
 
     /// One sidebar row with its entry count as badge.

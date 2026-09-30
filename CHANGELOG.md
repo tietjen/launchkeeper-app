@@ -5,6 +5,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Fixed
+- Introduction (TJ's test of 1.1.0): a step outlines everything its card
+  talks about — all three toolbar buttons, all four rows under "Ansichten",
+  the watch row and the watch switch. The sidebar scrolls the row a step
+  talks about into view first, and the watch and queue steps open their view,
+  so the card points at the row instead of falling back to the middle of the
+  window. The views and toolbar cards list their items one per line; the
+  watch card and the help say where the watch is switched on.
+
 ## [1.1.0] — 2026-09-30
 
 ### Added

@@ -417,22 +417,6 @@
         }
       }
     },
-    "**Hintergrund** wie in den Systemeinstellungen, **Pakete** mit Deinstallation, **App-Reste** gelöschter Apps und die **Quarantäne**: alles Entfernte, jederzeit wiederherstellbar.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**Hintergrund** wie in den Systemeinstellungen, **Pakete** mit Deinstallation, **App-Reste** gelöschter Apps und die **Quarantäne**: alles Entfernte, jederzeit wiederherstellbar."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**Background** like in System Settings, **Packages** with uninstallation, **App leftovers** of deleted apps, and the **Quarantine**: everything removed, restorable at any time."
-          }
-        }
-      }
-    },
     ", zuletzt geprüft %@": {
       "localizations": {
         "de": {
@@ -1277,22 +1261,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Banners are switched off for LaunchKeeper (style “None”)."
-          }
-        }
-      }
-    },
-    "Basis- oder **Expertenmodus** (⌥⌘E), **Apple-Einträge** aus- oder einblenden und **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab).": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Basis- oder **Expertenmodus** (⌥⌘E), **Apple-Einträge** aus- oder einblenden und **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Basic or **Expert mode** (⌥⌘E), show or hide **Apple entries**, and **Rescan** (⌘R; ⇧⌘R also asks macOS's Background Task Management again)."
           }
         }
       }
@@ -2145,18 +2113,18 @@
         }
       }
     },
-    "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. Einschalten im Bereich **Beobachtung** oder in den Einstellungen.": {
+    "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. **Einschalten:** links unter Ansichten **Beobachtung** wählen und oben den Schalter **Beobachtung** umlegen — oder in den Einstellungen (⌘,) unter Beobachtung „Neue Autostart-Einträge beobachten“.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. Einschalten im Bereich **Beobachtung** oder in den Einstellungen."
+            "value": "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. **Einschalten:** links unter Ansichten **Beobachtung** wählen und oben den Schalter **Beobachtung** umlegen — oder in den Einstellungen (⌘,) unter Beobachtung „Neue Autostart-Einträge beobachten“."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Watch reports when something new wants to start automatically, or when an entry changes. Turn it on in the **Watch** section or in Settings."
+            "value": "The watch tells you when something new wants to start automatically or an entry changes. **To turn it on:** choose **Watch** under Views on the left and flip the **Watch** switch at the top — or in Settings (⌘,) under Watch, “Watch for new autostart entries”."
           }
         }
       }
@@ -2353,6 +2321,22 @@
         }
       }
     },
+    "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The three outlined buttons, from the left:\n• **Basic or Expert mode** — the short version or all details on the right (⌥⌘E)\n• Hide or show **Apple entries**\n• **Rescan** (⌘R; ⇧⌘R also asks macOS’s Background Task Management afresh)"
+          }
+        }
+      }
+    },
     "Die erste Zeile braucht es einmal ab Homebrew 7, das fremden Taps sonst nicht vertraut.": {
       "localizations": {
         "de": {
@@ -2381,6 +2365,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The saved queue could not be read (probably written by a newer version)."
+          }
+        }
+      }
+    },
+    "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The four outlined views each answer one question:\n• **Background** — which app may do what in the background? As in System Settings, with the reason something is off.\n• **Packages** — what did an installer leave behind? With uninstall.\n• **App leftovers** — what remains of deleted apps?\n• **Quarantine** — everything LaunchKeeper removed, restorable at any time."
           }
         }
       }
@@ -2625,6 +2625,22 @@
         }
       }
     },
+    "Eingeschaltet wird sie hier: in der Ansicht **Beobachtung** oben der Schalter **Beobachtung** (oder in den Einstellungen, ⌘,).\n\nDann meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eingeschaltet wird sie hier: in der Ansicht **Beobachtung** oben der Schalter **Beobachtung** (oder in den Einstellungen, ⌘,).\n\nDann meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You turn it on here: the **Watch** switch at the top of the **Watch** view (or in Settings, ⌘,).\n\nThen LaunchKeeper sends a notification when something new wants to start automatically — even with the window closed (eye in the menu bar)."
+          }
+        }
+      }
+    },
     "Einlesen": {
       "localizations": {
         "de": {
@@ -2637,22 +2653,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scan"
-          }
-        }
-      }
-    },
-    "Einmal eingeschaltet, meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Einmal eingeschaltet, meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste)."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Once turned on, LaunchKeeper reports by notification when something new wants to start automatically — even with the window closed (an eye in the menu bar)."
           }
         }
       }
@@ -3793,22 +3793,6 @@
         }
       }
     },
-    "Häkchen setzen, rechts **Zur Warteschlange hinzufügen**, hier **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Häkchen setzen, rechts **Zur Warteschlange hinzufügen**, hier **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check the boxes, **Add to queue** on the right, then **Check plan** and **Run all** here: one Touch ID prompt for the whole run. What only works in System Settings appears with instructions under **By hand**."
-          }
-        }
-      }
-    },
     "Häufige Fragen": {
       "localizations": {
         "de": {
@@ -4013,6 +3997,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Move into quarantine"
+          }
+        }
+      }
+    },
+    "In jeder Ansicht Häkchen setzen und rechts **Zur Warteschlange hinzufügen** — gesammelt wird hier. Unten **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In jeder Ansicht Häkchen setzen und rechts **Zur Warteschlange hinzufügen** — gesammelt wird hier. Unten **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick entries in any view and choose **Add to queue** on the right — they are collected here. At the bottom, **Check plan** and **Run all**: one Touch ID prompt for the whole run. What can only be done in System Settings is listed with instructions under **By hand**."
           }
         }
       }

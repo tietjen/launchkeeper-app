@@ -312,6 +312,7 @@ struct WatchPane: View {
             PaneIntro(text: "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert — sobald eine Autostart-Stelle geschrieben wird, und alle zehn Minuten vollständig. Was LaunchKeeper selbst geändert hat, wird nur aufgelistet, nicht gemeldet.")
             HStack(spacing: 16) {
                 Toggle("Beobachtung", isOn: $enabled).toggleStyle(.switch)
+                    .modifier(TourMark(spot: .watchSwitch))
                 Toggle("Mitteilungen", isOn: $notify).disabled(!enabled)
                 Spacer()
                 if !watch.records.isEmpty {
@@ -573,6 +574,23 @@ struct RegisterWindowOpener: ViewModifier {
         content.onAppear {
             let open = openWindow
             router.openMainWindow = { open(id: LaunchKeeperApp.mainWindowID) }
+        }
+    }
+}
+
+/// Outlines a stop of the introduction in a view that is not the window's
+/// own body (the watch switch): tour and window token from the environment.
+/// Not for list or table cells — those read no environment.
+struct TourMark: ViewModifier {
+    let spot: TourSpot
+    @Environment(TourModel.self) private var tour
+    @Environment(\.tourWindow) private var window
+
+    func body(content: Content) -> some View {
+        if let window {
+            content.tourSpot(spot, tour: tour, window: window, arrowEdge: .bottom, openHelp: {})
+        } else {
+            content
         }
     }
 }
