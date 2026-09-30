@@ -46,6 +46,7 @@ struct HelperSettingsView: View {
                 if let error = helper.lastError { Text(error).foregroundStyle(.red).font(.callout) }
             }
             WatchSettingsSection()
+            HelpSettingsSection()
             UpdateSettingsSection(updater: updater)
         }
         .formStyle(.grouped)
@@ -60,6 +61,32 @@ struct HelperSettingsView: View {
         case .notRegistered: return String(localized: "nicht eingerichtet")
         case .notFound: return String(localized: "nicht gefunden — die App muss aus ihrem Bundle gestartet werden")
         @unknown default: return String(localized: "unbekannt")
+        }
+    }
+}
+
+/// Settings section "Hilfe": the introduction at launch, and the ways into help.
+struct HelpSettingsSection: View {
+    @Environment(TourModel.self) private var tour
+    @Environment(HelpRouter.self) private var helpRouter
+    @Environment(\.openWindow) private var openWindow
+    @AppStorage(TourModel.showAtLaunchKey) private var showAtLaunch = true
+
+    var body: some View {
+        Section("Hilfe") {
+            Toggle("Einführung beim Start zeigen", isOn: $showAtLaunch)
+            HStack {
+                Button("Einführung jetzt zeigen") {
+                    // start() brings a main window in front of Settings (opens one if none).
+                    tour.start()
+                }
+                .help("Einführung jetzt zeigen — erklärt Schritt für Schritt am Hauptfenster, wo was ist.")
+                Button("Hilfe öffnen") {
+                    helpRouter.topic = helpRouter.topic ?? .overview
+                    openWindow(id: HelpView.windowID)
+                }
+                .help("Hilfe öffnen — alle Funktionen und Abläufe zum Nachlesen (⌘?).")
+            }
         }
     }
 }

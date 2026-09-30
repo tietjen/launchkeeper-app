@@ -5,6 +5,27 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [1.1.0] — 2026-09-30
+
+### Added
+- Help: Help › "LaunchKeeper-Hilfe" (⌘?) opens a help window with chapters —
+  overview and workflow, the inventory and its symbols, the views, actions and
+  safety, the helper, the queue, watch and notifications, keyboard shortcuts,
+  the command line and frequent questions — and a search over all of it.
+  German and English, like the rest of the app.
+- Introduction at launch: step by step it outlines the parts of the window
+  (sidebar, list, detail column, toolbar, views, watch, queue) and explains
+  them in a card next to them; welcome, helper and end come as a sheet. It
+  opens hidden columns it needs and falls back to a sheet where a card cannot
+  appear. Switch it off in the introduction ("Beim Start zeigen") or in
+  Settings › Hilfe; Help › "Einführung zeigen" and Settings start it again.
+
+### Changed
+- LaunchKeeper has one main window. Opening it again (menu bar, a
+  notification, the Help menu) brings it forward, also when minimized.
+- The quarantine view names the real way to delete for good (`launchkeeper
+  quarantine purge` in Terminal) instead of a feature to come.
+
 ## [1.0.0] — 2026-09-28
 
 The first stable release: every planned phase is done and the acceptance

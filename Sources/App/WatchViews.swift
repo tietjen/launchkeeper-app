@@ -33,12 +33,26 @@ final class EntryRouter {
 
     init(store: InventoryStore) { self.store = store }
 
+    /// Brings LaunchKeeper to the front with a main window, changing nothing
+    /// else: an existing one (also a minimized one) comes forward, in front
+    /// of Help and Settings; only without any is a new one opened.
+    func bringToFront() {
+        NSApp.activate()
+        let main = NSApp.windows.first {
+            $0.identifier?.rawValue.hasPrefix(LaunchKeeperApp.mainWindowID) == true && ($0.isVisible || $0.isMiniaturized)
+        }
+        if let main {
+            if main.isMiniaturized { main.deminiaturize(nil) }
+            main.makeKeyAndOrderFront(nil)
+        } else {
+            openMainWindow?()
+        }
+    }
+
     /// Shows the app with the entry selected (or the watch view when it is gone).
     /// - Parameter key: The entry's stable key, if any.
     func show(key: String?) {
-        NSApp.activate()
-        let hasWindow = NSApp.windows.contains { $0.isVisible && $0.identifier?.rawValue.hasPrefix(LaunchKeeperApp.mainWindowID) == true }
-        if !hasWindow { openMainWindow?() }
+        bringToFront()
         if let key, store.reveal(key: key) { return }
         store.selection = .watch
     }

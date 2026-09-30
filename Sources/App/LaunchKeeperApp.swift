@@ -12,7 +12,7 @@ import AppCore
 /// reopened window and a slow scan is not started twice.
 @main
 struct LaunchKeeperApp: App {
-    /// Identifier of the main window group (prefix of its windows' identifiers).
+    /// Id of the main `Window` scene (its NSWindow identifiers start with it).
     static let mainWindowID = "main"
 
     /// The scanned inventory and the window's filter state.
@@ -39,6 +39,9 @@ struct LaunchKeeperApp: App {
     @State private var quarantine = QuarantineModel()
     /// The privileged helper's registration state (Settings, action sheets).
     @State private var helper = HelperStatus()
+    /// The introduction at launch and the help window (TJ 2026-09-30).
+    @State private var tour: TourModel
+    @State private var helpRouter = HelpRouter()
     /// Basic vs. expert detail view; same key as the toolbar toggle and `DetailView`.
     @AppStorage("expertMode") private var expertMode = false
 
@@ -59,11 +62,17 @@ struct LaunchKeeperApp: App {
                                                                        presence: { LivePresence.sources() })))
         self.router = router
         self.notifier = notifier
+        let tour = TourModel()
+        tour.bringMainWindowToFront = { router.bringToFront() }
+        _tour = State(initialValue: tour)
         watchController = WatchController(watch: watch)
     }
 
     var body: some Scene {
-        WindowGroup("LaunchKeeper", id: Self.mainWindowID) {
+        // One main window (1.1.0): the inventory, the queue and the
+        // introduction exist once — a second window only duplicated them.
+        // Opening it again (menu bar, notification) brings this one forward.
+        Window("LaunchKeeper", id: Self.mainWindowID) {
             ContentView()
                 .environment(store)
                 .environment(watch)
@@ -74,6 +83,8 @@ struct LaunchKeeperApp: App {
                 .environment(quarantine)
                 .environment(helper)
                 .environment(notifier)
+                .environment(tour)
+                .environment(helpRouter)
                 .frame(minWidth: 980, minHeight: 560)
                 // First scan on launch; a full one, so the BTM dump is fresh.
                 .task { await store.refresh(reason: .launch) }
@@ -96,10 +107,16 @@ struct LaunchKeeperApp: App {
                 Button("Vollständig neu einlesen") { Task { await store.refresh() } }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
             }
+            HelpCommands(router: helpRouter, tour: tour)
+        }
+        // Help › LaunchKeeper-Hilfe (⌘?).
+        Window("LaunchKeeper-Hilfe", id: HelpView.windowID) {
+            HelpView().environment(helpRouter)
         }
         // ⌘, — the privileged helper's state and controls.
         Settings {
             HelperSettingsView(updater: updater.updater).environment(helper).environment(loginItem).environment(notifier)
+                .environment(tour).environment(helpRouter)
         }
         // While the watch is on: an eye in the menu bar, also with no window open.
         MenuBarExtra("LaunchKeeper", systemImage: "eye", isInserted: $watchEnabled) {

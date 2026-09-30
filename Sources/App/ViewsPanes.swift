@@ -298,7 +298,7 @@ struct QuarantinePane: View {
                             }
                             Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
                             Spacer()
-                            Text("Endgültig löschen folgt mit dem Hilfsprogramm")
+                            Text("Endgültig löschen: im Terminal mit launchkeeper quarantine purge")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     } label: {

@@ -369,6 +369,70 @@
         }
       }
     },
+    "**Alle Einträge** listet alles, was LaunchKeeper gefunden hat, sortierbar nach jeder Spalte. **Verwaist** zeigt Einträge, deren Programm oder Datei fehlt — typische Reste deinstallierter Software. Darunter stehen die **Kategorien**, die auf diesem Mac vorkommen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Alle Einträge** listet alles, was LaunchKeeper gefunden hat, sortierbar nach jeder Spalte. **Verwaist** zeigt Einträge, deren Programm oder Datei fehlt — typische Reste deinstallierter Software. Darunter stehen die **Kategorien**, die auf diesem Mac vorkommen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**All entries** lists everything LaunchKeeper found, sortable by any column. **Orphaned** shows entries whose program or file is missing — typical leftovers of uninstalled software. Below that are the **categories** present on this Mac."
+          }
+        }
+      }
+    },
+    "**Alle Einträge**, nur die **verwaisten** (deren Programm fehlt) oder eine **Kategorie** wie Hintergrunddienste, Anmeldeobjekte oder Erweiterungen. Die Zahl sagt, wie viele es sind.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Alle Einträge**, nur die **verwaisten** (deren Programm fehlt) oder eine **Kategorie** wie Hintergrunddienste, Anmeldeobjekte oder Erweiterungen. Die Zahl sagt, wie viele es sind."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**All entries**, just the **orphaned** ones (whose program is missing), or a **category** like background services, login items, or extensions. The number says how many there are."
+          }
+        }
+      }
+    },
+    "**Ausführen…** an einem nächsten Schritt öffnet ein Blatt mit dem Plan: jeder Schritt in Worten, darunter der Befehl, Hinweise und der Rückweg. Erst ein zweiter Klick führt aus. Danach prüft LaunchKeeper, ob der Eintrag wirklich im erwarteten Zustand ist, und liest neu ein.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Ausführen…** an einem nächsten Schritt öffnet ein Blatt mit dem Plan: jeder Schritt in Worten, darunter der Befehl, Hinweise und der Rückweg. Erst ein zweiter Klick führt aus. Danach prüft LaunchKeeper, ob der Eintrag wirklich im erwarteten Zustand ist, und liest neu ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Run…** on a next step opens a sheet with the plan: each step in words, with the command, notes, and the way back below it. Only a second click carries it out. Afterward, LaunchKeeper checks that the entry is really in the expected state, and rescans."
+          }
+        }
+      }
+    },
+    "**Hintergrund** wie in den Systemeinstellungen, **Pakete** mit Deinstallation, **App-Reste** gelöschter Apps und die **Quarantäne**: alles Entfernte, jederzeit wiederherstellbar.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Hintergrund** wie in den Systemeinstellungen, **Pakete** mit Deinstallation, **App-Reste** gelöschter Apps und die **Quarantäne**: alles Entfernte, jederzeit wiederherstellbar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Background** like in System Settings, **Packages** with uninstallation, **App leftovers** of deleted apps, and the **Quarantine**: everything removed, restorable at any time."
+          }
+        }
+      }
+    },
     ", zuletzt geprüft %@": {
       "localizations": {
         "de": {
@@ -417,6 +481,22 @@
         }
       }
     },
+    "Aktionen und Sicherheit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktionen und Sicherheit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions and Safety"
+          }
+        }
+      }
+    },
     "Aktiv — %lld Einträge im Blick": {
       "localizations": {
         "de": {
@@ -445,6 +525,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Active — reading the first inventory …"
+          }
+        }
+      }
+    },
+    "Aktivieren stellt den vorherigen Zustand wieder her.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivieren stellt den vorherigen Zustand wieder her."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable restores the previous state."
           }
         }
       }
@@ -513,6 +609,22 @@
         }
       }
     },
+    "Alle ausführen (↩)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle ausführen (↩)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run all (↩)"
+          }
+        }
+      }
+    },
     "Alle ausführen — führt alle offenen automatischen Einträge aus. Schritte mit Administratorrechten zuerst, zusammen mit nur einer Touch-ID-Abfrage; ein Fehler hält die übrigen nicht an.": {
       "localizations": {
         "de": {
@@ -525,6 +637,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "Run all — runs all open automatic entries. Steps with administrator rights first, together with a single Touch ID prompt; a failure does not stop the rest."
+          }
+        }
+      }
+    },
+    "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundverwaltung dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundverwaltung dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A full comparison every ten minutes. Without the helper, LaunchKeeper asks Background Task Management for fresh data at most every six hours, because macOS requires Touch ID for that."
+          }
+        }
+      }
+    },
+    "Alles Weitere steht in der Hilfe (⌘?). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles Weitere steht in der Hilfe (⌘?). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything else is in Help (⌘?). You can find the introduction anytime under Help › **Show Introduction**."
+          }
+        }
+      }
+    },
+    "Alles zu einem Eintrag": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles zu einem Eintrag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything about one entry"
+          }
+        }
+      }
+    },
+    "Alles, was LaunchKeeper entfernt hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles, was LaunchKeeper entfernt hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything LaunchKeeper removed, with the place it came from. Restore from here; deleting for good is done in Terminal (see Command line)."
           }
         }
       }
@@ -557,6 +733,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add to the queue as “By hand”"
+          }
+        }
+      }
+    },
+    "Ampel, ein Satz in Klartext, die Fakten — und die **Nächsten Schritte**: nur Aktionen, die hier sicher möglich sind.\n\n**Ausführen…** zeigt erst den Plan; ein zweiter Klick führt aus. Änderungen am System fragen nach Touch ID.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ampel, ein Satz in Klartext, die Fakten — und die **Nächsten Schritte**: nur Aktionen, die hier sicher möglich sind.\n\n**Ausführen…** zeigt erst den Plan; ein zweiter Klick führt aus. Änderungen am System fragen nach Touch ID."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A status light, a plain-language sentence, the facts — and **Next steps**: only actions that are safely possible here.\n\n**Run…** shows the plan first; a second click carries it out. Changes to the system ask for Touch ID."
           }
         }
       }
@@ -657,6 +849,22 @@
         }
       }
     },
+    "Ansehen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look"
+          }
+        }
+      }
+    },
     "Ansehen empfohlen": {
       "localizations": {
         "de": {
@@ -705,6 +913,22 @@
         }
       }
     },
+    "Ansichten für bestimmte Fragen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansichten für bestimmte Fragen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Views for specific questions"
+          }
+        }
+      }
+    },
     "App": {
       "localizations": {
         "de": {
@@ -733,6 +957,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "app without an install receipt"
+          }
+        }
+      }
+    },
+    "App und Kommandozeile sehen dieselbe Quarantäne. Was das Hilfsprogramm dort abgelegt hat, liegt in einem Ordner, der root gehört — die Kommandozeile ändert es nur mit `sudo`, also nach deinem Passwort.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App und Kommandozeile sehen dieselbe Quarantäne. Was das Hilfsprogramm dort abgelegt hat, liegt in einem Ordner, der root gehört — die Kommandozeile ändert es nur mit `sudo`, also nach deinem Passwort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app and the command line see the same quarantine. What the helper put there lies in a folder owned by root — the command line changes it only with `sudo`, that is, after your password."
           }
         }
       }
@@ -1041,6 +1281,38 @@
         }
       }
     },
+    "Basis- oder **Expertenmodus** (⌥⌘E), **Apple-Einträge** aus- oder einblenden und **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basis- oder **Expertenmodus** (⌥⌘E), **Apple-Einträge** aus- oder einblenden und **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basic or **Expert mode** (⌥⌘E), show or hide **Apple entries**, and **Rescan** (⌘R; ⇧⌘R also asks macOS's Background Task Management again)."
+          }
+        }
+      }
+    },
+    "Basis- oder Expertenmodus": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basis- oder Expertenmodus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basic or Expert mode"
+          }
+        }
+      }
+    },
     "Basismodus — klicken für alle Details (⌥⌘E)": {
       "localizations": {
         "de": {
@@ -1053,6 +1325,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Basic mode — click for all details (⌥⌘E)"
+          }
+        }
+      }
+    },
+    "Beenden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit"
           }
         }
       }
@@ -1153,6 +1441,38 @@
         }
       }
     },
+    "Beim Start liest LaunchKeeper das Inventar ein; ⌘R liest neu.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Start liest LaunchKeeper das Inventar ein; ⌘R liest neu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper reads in the inventory at launch; ⌘R rescans."
+          }
+        }
+      }
+    },
+    "Beim Start zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Start zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show at launch"
+          }
+        }
+      }
+    },
     "Beleg entfernen": {
       "localizations": {
         "de": {
@@ -1181,6 +1501,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Noticed"
+          }
+        }
+      }
+    },
+    "Beobachten im Terminal": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachten im Terminal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch in the terminal"
           }
         }
       }
@@ -1249,6 +1585,22 @@
         }
       }
     },
+    "Beobachtung und Mitteilungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beobachtung und Mitteilungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch and Notifications"
+          }
+        }
+      }
+    },
     "Braucht Administratorrechte": {
       "localizations": {
         "de": {
@@ -1297,6 +1649,22 @@
         }
       }
     },
+    "Das Hilfsprogramm": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Hilfsprogramm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Helper"
+          }
+        }
+      }
+    },
     "Das Hilfsprogramm hat nichts ausgeführt — auf dem Mac ist nichts geändert.": {
       "localizations": {
         "de": {
@@ -1309,6 +1677,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "The helper ran nothing — nothing on the Mac has changed."
+          }
+        }
+      }
+    },
+    "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundverwaltung von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundverwaltung von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The helper is a small service that runs with administrator rights. Through it, LaunchKeeper changes what only an administrator may change — and reads macOS's Background Task Management without macOS asking for Touch ID every time."
+          }
+        }
+      }
+    },
+    "Das Inventar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Inventar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Inventory"
+          }
+        }
+      }
+    },
+    "Das Inventar als Tabelle": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Inventar als Tabelle"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The inventory as a table"
           }
         }
       }
@@ -1345,6 +1761,22 @@
         }
       }
     },
+    "Das Programm trägt keine Code-Signatur — kein Beweis für Böses, aber ein Grund hinzusehen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Programm trägt keine Code-Signatur — kein Beweis für Böses, aber ein Grund hinzusehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The program carries no code signature — not proof of anything malicious, but a reason to take a closer look."
+          }
+        }
+      }
+    },
     "Das erledigst du selbst an der genannten Stelle. „Jetzt prüfen“ liest alles frisch ein — auch die Schalter der Systemeinstellungen, die ⌘R aus dem Zwischenspeicher nimmt — und hakt ab, was verschwunden oder ausgeschaltet ist.": {
       "localizations": {
         "de": {
@@ -1357,6 +1789,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "You take care of these yourself at the place named. “Check now” reads everything afresh — including the System Settings switches that ⌘R takes from the cache — and ticks off what is gone or switched off."
+          }
+        }
+      }
+    },
+    "Das war's": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das war's"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That's it"
           }
         }
       }
@@ -1389,6 +1837,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Files"
+          }
+        }
+      }
+    },
+    "Dateien werden verschoben, nicht gelöscht, und lassen sich wiederherstellen. Endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateien werden verschoben, nicht gelöscht, und lassen sich wiederherstellen. Endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files are moved, not deleted, and can be restored. They are deleted for good only when you explicitly ask for it — in Terminal with `launchkeeper quarantine purge`."
           }
         }
       }
@@ -1453,6 +1917,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Disable (reversible)"
+          }
+        }
+      }
+    },
+    "Deaktivieren lässt sich umkehren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deaktivieren lässt sich umkehren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable can be undone"
           }
         }
       }
@@ -1553,6 +2033,22 @@
         }
       }
     },
+    "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn in die Quarantäne zu verschieben — von wo er sich wiederherstellen lässt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn in die Quarantäne zu verschieben — von wo er sich wiederherstellen lässt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry points to a program or file that no longer exists — usually a leftover from an uninstalled app. It no longer starts anything useful; the detail column says what's missing, and usually offers to move it to the Quarantine — from where it can be restored."
+          }
+        }
+      }
+    },
     "Deren Schalter verwaltet macOS selbst. In der Warteschlange steht unter „Von Hand“, wo es geht; „Jetzt prüfen“ dort hakt ab, was erledigt ist.": {
       "localizations": {
         "de": {
@@ -1601,6 +2097,22 @@
         }
       }
     },
+    "Die Ansichten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Ansichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Views"
+          }
+        }
+      }
+    },
     "Die App selbst ist als Hintergrundobjekt registriert": {
       "localizations": {
         "de": {
@@ -1633,6 +2145,22 @@
         }
       }
     },
+    "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. Einschalten im Bereich **Beobachtung** oder in den Einstellungen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Beobachtung meldet, wenn etwas Neues automatisch starten will oder sich ein Eintrag ändert. Einschalten im Bereich **Beobachtung** oder in den Einstellungen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch reports when something new wants to start automatically, or when an entry changes. Turn it on in the **Watch** section or in Settings."
+          }
+        }
+      }
+    },
     "Die Datei liegt unverändert als %@ daneben.": {
       "localizations": {
         "de": {
@@ -1645,6 +2173,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "The file is kept unchanged next to it as %@."
+          }
+        }
+      }
+    },
+    "Die Detailspalte": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Detailspalte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Detail Column"
+          }
+        }
+      }
+    },
+    "Die Einführung zeigt das Ganze am Fenster selbst: Hilfe › **Einführung zeigen**.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Einführung zeigt das Ganze am Fenster selbst: Hilfe › **Einführung zeigen**."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The introduction shows all of this on the window itself: Help › **Show Introduction**."
+          }
+        }
+      }
+    },
+    "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After a longer period of inactivity, macOS's Background Task Management re-checks all registered programs the first time it's queried. After that, it takes seconds."
+          }
+        }
+      }
+    },
+    "Die Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Quarantine"
+          }
+        }
+      }
+    },
+    "Die Quelle fehlt — das Programm, auf das der Eintrag zeigt, gibt es nicht mehr.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Quelle fehlt — das Programm, auf das der Eintrag zeigt, gibt es nicht mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The source is missing — the program the entry points to no longer exists."
+          }
+        }
+      }
+    },
+    "Die Symbole in der Liste": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Symbole in der Liste"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Icons in the List"
+          }
+        }
+      }
+    },
+    "Die Symbolleiste": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Symbolleiste"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Toolbar"
           }
         }
       }
@@ -1665,6 +2305,38 @@
         }
       }
     },
+    "Die Warteschlange": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Warteschlange"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Queue"
+          }
+        }
+      }
+    },
+    "Die Warteschlange bleibt über einen Neustart der App erhalten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Warteschlange bleibt über einen Neustart der App erhalten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The queue survives a restart of the app."
+          }
+        }
+      }
+    },
     "Die Warteschlange läuft gerade — danach geht es weiter.": {
       "localizations": {
         "de": {
@@ -1677,6 +2349,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "The queue is running — this can run afterwards."
+          }
+        }
+      }
+    },
+    "Die erste Zeile braucht es einmal ab Homebrew 7, das fremden Taps sonst nicht vertraut.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die erste Zeile braucht es einmal ab Homebrew 7, das fremden Taps sonst nicht vertraut."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The first line is needed once from Homebrew 7 on, which otherwise does not trust third-party taps."
           }
         }
       }
@@ -1709,6 +2397,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "The app does not run this action with administrator rights yet. Terminal can; macOS asks for your password there:"
+          }
+        }
+      }
+    },
+    "Diese Hilfe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Hilfe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This help"
+          }
+        }
+      }
+    },
+    "Diesen Schalter verwaltet macOS allein und lässt keine andere App daran. LaunchKeeper zeigt den Weg und öffnet die richtige Stelle der Systemeinstellungen (Abschnitt **Von Hand** in der Warteschlange).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diesen Schalter verwaltet macOS allein und lässt keine andere App daran. LaunchKeeper zeigt den Weg und öffnet die richtige Stelle der Systemeinstellungen (Abschnitt **Von Hand** in der Warteschlange)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS alone manages this switch and doesn't let any other app touch it. LaunchKeeper shows the way and opens the right place in System Settings (the **By hand** section in the Queue)."
           }
         }
       }
@@ -1761,6 +2481,22 @@
         }
       }
     },
+    "Eigene Änderungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eigene Änderungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Its own changes"
+          }
+        }
+      }
+    },
     "Ein Banner zeigt macOS nur ohne aktiven Fokus.": {
       "localizations": {
         "de": {
@@ -1773,6 +2509,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "macOS shows a banner only without an active Focus."
+          }
+        }
+      }
+    },
+    "Ein Klick auf eine Mitteilung öffnet den Eintrag. In den Einstellungen zeigt **Mitteilungen laut macOS**, was macOS erlaubt; **Test-Mitteilung senden** prüft den Weg, und jeder Eintrag der Beobachtung sagt unter **Mitteilung**, was aus seiner Mitteilung wurde.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Klick auf eine Mitteilung öffnet den Eintrag. In den Einstellungen zeigt **Mitteilungen laut macOS**, was macOS erlaubt; **Test-Mitteilung senden** prüft den Weg, und jeder Eintrag der Beobachtung sagt unter **Mitteilung**, was aus seiner Mitteilung wurde."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clicking a notification opens the entry. In Settings, **Notifications according to macOS** shows what macOS allows; **Send test notification** checks the path, and every Watch entry says under **Notification** what became of its notification."
           }
         }
       }
@@ -1805,6 +2557,102 @@
           "stringUnit": {
             "state": "translated",
             "value": "A copy could not be made; so that nothing is lost, LaunchKeeper does not save the queue until the next launch."
+          }
+        }
+      }
+    },
+    "Einführung beim Start zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einführung beim Start zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show introduction at launch"
+          }
+        }
+      }
+    },
+    "Einführung jetzt zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einführung jetzt zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show introduction now"
+          }
+        }
+      }
+    },
+    "Einführung jetzt zeigen — erklärt Schritt für Schritt am Hauptfenster, wo was ist.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einführung jetzt zeigen — erklärt Schritt für Schritt am Hauptfenster, wo was ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show introduction now — explains step by step, on the main window, where everything is."
+          }
+        }
+      }
+    },
+    "Einführung zeigen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einführung zeigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Introduction"
+          }
+        }
+      }
+    },
+    "Einlesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einlesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan"
+          }
+        }
+      }
+    },
+    "Einmal eingeschaltet, meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einmal eingeschaltet, meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once turned on, LaunchKeeper reports by notification when something new wants to start automatically — even with the window closed (an eye in the menu bar)."
           }
         }
       }
@@ -1857,6 +2705,22 @@
         }
       }
     },
+    "Einstellungen öffnen (⌘,)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen öffnen (⌘,)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings (⌘,)"
+          }
+        }
+      }
+    },
     "Einstellungen, Caches und Daten von Apps, die nicht mehr installiert sind. Angezeigt wird nur, was nachweislich zu einer gelöschten App gehört. Wähle einen Eintrag, um die Reste anzusehen und in die Quarantäne zu verschieben.": {
       "localizations": {
         "de": {
@@ -1869,6 +2733,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Settings, caches and data of apps that are no longer installed. Only what provably belongs to a deleted app is shown. Select an entry to review the leftovers and move them into the quarantine."
+          }
+        }
+      }
+    },
+    "Einstellungen, Caches und Hintergrunddienste von Apps, die nicht mehr installiert sind — mit Urteil und Begründung, warum etwas als Rest gilt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen, Caches und Hintergrunddienste von Apps, die nicht mehr installiert sind — mit Urteil und Begründung, warum etwas als Rest gilt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings, caches, and background services of apps that are no longer installed — with a verdict and the reasoning for why something counts as a leftover."
+          }
+        }
+      }
+    },
+    "Einstellungen: Hilfsprogramm, Beobachtung, Updates, Einführung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen: Hilfsprogramm, Beobachtung, Updates, Einführung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings: helper, watch, updates, introduction"
           }
         }
       }
@@ -1905,18 +2801,50 @@
         }
       }
     },
-    "Endgültig löschen folgt mit dem Hilfsprogramm": {
+    "Einzeln über **Ausführen…**, oder viele auf einmal: Häkchen setzen, in die **Warteschlange** legen, dort **Alle ausführen**.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Endgültig löschen folgt mit dem Hilfsprogramm"
+            "value": "Einzeln über **Ausführen…**, oder viele auf einmal: Häkchen setzen, in die **Warteschlange** legen, dort **Alle ausführen**."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Permanent deletion comes with the helper"
+            "value": "One at a time via **Run…**, or many at once: check the boxes, put them in the **Queue**, then **Run all** there."
+          }
+        }
+      }
+    },
+    "Endgültig löschen — ohne `--apply` nur der Plan": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen — ohne `--apply` nur der Plan"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete for good — without `--apply` only the plan"
+          }
+        }
+      }
+    },
+    "Endgültig löschen: im Terminal mit launchkeeper quarantine purge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen: im Terminal mit launchkeeper quarantine purge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete for good: in Terminal with launchkeeper quarantine purge"
           }
         }
       }
@@ -1937,6 +2865,22 @@
         }
       }
     },
+    "Entfernen heißt: in die Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entfernen heißt: in die Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove means: to the Quarantine"
+          }
+        }
+      }
+    },
     "Entfernt: %@": {
       "localizations": {
         "de": {
@@ -1949,6 +2893,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Removed: %@"
+          }
+        }
+      }
+    },
+    "Entferntes liegt in der **Quarantäne** und lässt sich wiederherstellen; Deaktiviertes wieder aktivieren.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entferntes liegt in der **Quarantäne** und lässt sich wiederherstellen; Deaktiviertes wieder aktivieren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed items sit in the **Quarantine** and can be restored; disabled items can be enabled again."
+          }
+        }
+      }
+    },
+    "Entscheiden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entscheiden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decide"
           }
         }
       }
@@ -2129,6 +3105,22 @@
         }
       }
     },
+    "Erst der Plan, dann die Ausführung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erst der Plan, dann die Ausführung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First the plan, then the run"
+          }
+        }
+      }
+    },
     "Es läuft noch Version %@ des Hilfsprogramms, diese App bringt %@ mit. Nach dem Neustart kannst du ausführen.": {
       "localizations": {
         "de": {
@@ -2157,6 +3149,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "An older version of the helper is still running (%@). LaunchKeeper runs nothing through it until it restarts."
+          }
+        }
+      }
+    },
+    "Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“, prüft selbst und nimmt nur Verbindungen der echten, signierten LaunchKeeper-App an.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“, prüft selbst und nimmt nur Verbindungen der echten, signierten LaunchKeeper-App an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It doesn't accept commands, only “what with which entry”, checks things itself, and accepts connections only from the real, signed LaunchKeeper app."
+          }
+        }
+      }
+    },
+    "Etwas ist auffällig, z. B. ein Skript-Interpreter als Programm. Die Detailspalte sagt, was.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etwas ist auffällig, z. B. ein Skript-Interpreter als Programm. Die Detailspalte sagt, was."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something stands out, e.g. a script interpreter as the program. The detail column says what."
           }
         }
       }
@@ -2289,6 +3313,22 @@
         }
       }
     },
+    "Für Änderungen am System: das Hilfsprogramm": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für Änderungen am System: das Hilfsprogramm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For changes to the system: the helper"
+          }
+        }
+      }
+    },
     "Gatekeeper": {
       "localizations": {
         "de": {
@@ -2333,6 +3373,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scheduled wake or power-on"
+          }
+        }
+      }
+    },
+    "Gerade aktiv.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerade aktiv."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Currently active."
+          }
+        }
+      }
+    },
+    "Gesammelte Aktionen aus allen Ansichten, zum gemeinsamen Ausführen (siehe eigenes Kapitel).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesammelte Aktionen aus allen Ansichten, zum gemeinsamen Ausführen (siehe eigenes Kapitel)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions collected from all views, to run together (see its own chapter)."
           }
         }
       }
@@ -2513,6 +3585,70 @@
         }
       }
     },
+    "Hilfe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help"
+          }
+        }
+      }
+    },
+    "Hilfe durchsuchen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfe durchsuchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search help"
+          }
+        }
+      }
+    },
+    "Hilfe öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfe öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Help"
+          }
+        }
+      }
+    },
+    "Hilfe öffnen — alle Funktionen und Abläufe zum Nachlesen (⌘?).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilfe öffnen — alle Funktionen und Abläufe zum Nachlesen (⌘?)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Help — every feature and workflow to read up on (⌘?)."
+          }
+        }
+      }
+    },
     "Hilfsprogramm einrichten": {
       "localizations": {
         "de": {
@@ -2657,6 +3793,38 @@
         }
       }
     },
+    "Häkchen setzen, rechts **Zur Warteschlange hinzufügen**, hier **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Häkchen setzen, rechts **Zur Warteschlange hinzufügen**, hier **Plan prüfen** und **Alle ausführen**: eine Touch-ID-Abfrage für den ganzen Lauf. Was nur in den Systemeinstellungen geht, steht mit Anleitung unter **Von Hand**."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the boxes, **Add to queue** on the right, then **Check plan** and **Run all** here: one Touch ID prompt for the whole run. What only works in System Settings appears with instructions under **By hand**."
+          }
+        }
+      }
+    },
+    "Häufige Fragen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Häufige Fragen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frequently Asked Questions"
+          }
+        }
+      }
+    },
     "Im Finder zeigen": {
       "localizations": {
         "de": {
@@ -2769,6 +3937,22 @@
         }
       }
     },
+    "In der Mitte: die Einträge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Mitte: die Einträge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the middle: the entries"
+          }
+        }
+      }
+    },
     "In der Warteschlange: %@": {
       "localizations": {
         "de": {
@@ -2801,6 +3985,22 @@
         }
       }
     },
+    "In der Warteschlange: Alle ausführen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Warteschlange: Alle ausführen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the queue: Run all"
+          }
+        }
+      }
+    },
     "In die Quarantäne verschieben": {
       "localizations": {
         "de": {
@@ -2813,6 +4013,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Move into quarantine"
+          }
+        }
+      }
+    },
+    "In jeder Ansicht haben die Zeilen ein Häkchen. Sobald eines gesetzt ist, zeigt die rechte Spalte die passenden Aktionen mit einem Zähler wie „3 von 4“ (nicht jede Aktion passt zu jedem Eintrag) und legt sie mit einem Klick in die **Warteschlange**. Eingereihte Zeilen tragen statt des Häkchens ein Warteschlangen-Symbol; ein Klick darauf nimmt sie wieder heraus.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In jeder Ansicht haben die Zeilen ein Häkchen. Sobald eines gesetzt ist, zeigt die rechte Spalte die passenden Aktionen mit einem Zähler wie „3 von 4“ (nicht jede Aktion passt zu jedem Eintrag) und legt sie mit einem Klick in die **Warteschlange**. Eingereihte Zeilen tragen statt des Häkchens ein Warteschlangen-Symbol; ein Klick darauf nimmt sie wieder heraus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In every view, rows have a checkbox. As soon as one is checked, the right-hand column shows the matching actions with a counter like “3 of 4” (not every action fits every entry) and puts them into the **Queue** with one click. Queued rows show a queue icon instead of the checkbox; clicking it takes them back out."
           }
         }
       }
@@ -2945,6 +4161,22 @@
         }
       }
     },
+    "Jede Spalte lässt sich sortieren. Symbole markieren, was Aufmerksamkeit verdient: ⚠︎ verwaist, rot nicht signiert, gelb ansehen empfohlen.\n\nDas **Häkchen** vorne sammelt Einträge für die Warteschlange.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jede Spalte lässt sich sortieren. Symbole markieren, was Aufmerksamkeit verdient: ⚠︎ verwaist, rot nicht signiert, gelb ansehen empfohlen.\n\nDas **Häkchen** vorne sammelt Einträge für die Warteschlange."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every column can be sorted. Icons mark what deserves attention: ⚠︎ orphaned, red not signed, yellow worth a look.\n\nThe **checkbox** in front collects entries for the queue."
+          }
+        }
+      }
+    },
     "Jetzt nach Updates suchen": {
       "localizations": {
         "de": {
@@ -2993,6 +4225,22 @@
         }
       }
     },
+    "Kapitel wählen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapitel wählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a chapter"
+          }
+        }
+      }
+    },
     "Kategorie": {
       "localizations": {
         "de": {
@@ -3037,6 +4285,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "No banner although the notification was released? While the screen is shared or mirrored (e.g. Screen Sharing), macOS suppresses banners by default — System Settings › Notifications › “When mirroring or sharing the display”."
+          }
+        }
+      }
+    },
+    "Kein Banner? Beim Teilen oder Spiegeln des Bildschirms — etwa per Bildschirmfreigabe — und bei aktivem Fokus zeigt macOS keine Banner. Einstellung: Systemeinstellungen › Mitteilungen › „Beim Spiegeln oder Teilen des Bildschirms“.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Banner? Beim Teilen oder Spiegeln des Bildschirms — etwa per Bildschirmfreigabe — und bei aktivem Fokus zeigt macOS keine Banner. Einstellung: Systemeinstellungen › Mitteilungen › „Beim Spiegeln oder Teilen des Bildschirms“."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No banner? While sharing or mirroring the display — for example via Screen Sharing — and while a Focus is active, macOS shows no banners. Setting: System Settings › Notifications › “When mirroring or sharing the display”."
           }
         }
       }
@@ -3153,6 +4417,22 @@
         }
       }
     },
+    "Kommandozeile": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kommandozeile"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command Line"
+          }
+        }
+      }
+    },
     "Komponenten": {
       "localizations": {
         "de": {
@@ -3213,6 +4493,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copied ✓"
+          }
+        }
+      }
+    },
+    "Kurzfassung oder alle Details in der rechten Spalte (⌥⌘E).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurzfassung oder alle Details in der rechten Spalte (⌥⌘E)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short form or all details in the right-hand column (⌥⌘E)."
           }
         }
       }
@@ -3329,6 +4625,54 @@
         }
       }
     },
+    "LaunchKeeper richtet das Hilfsprogramm bewusst nicht von selbst ein: wer nur schauen will, bekommt keinen Dienst mit Administratorrechten. Nach einem Update der App wechselt es nach einer ruhigen Minute von selbst auf die neue Version.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper richtet das Hilfsprogramm bewusst nicht von selbst ein: wer nur schauen will, bekommt keinen Dienst mit Administratorrechten. Nach einem Update der App wechselt es nach einer ruhigen Minute von selbst auf die neue Version."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper deliberately doesn't set up the helper on its own: if you just want to look, you don't get a service with administrator rights. After an app update, it switches to the new version on its own after a quiet minute."
+          }
+        }
+      }
+    },
+    "LaunchKeeper zeigt alles, was auf diesem Mac **automatisch startet** — Hintergrunddienste, Anmeldeobjekte, Erweiterungen, geplante Aufgaben, Netzwerkdienste und mehr — und erklärt jeden Eintrag in Klartext: was er ist, woher er kommt und ob er noch gebraucht wird.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper zeigt alles, was auf diesem Mac **automatisch startet** — Hintergrunddienste, Anmeldeobjekte, Erweiterungen, geplante Aufgaben, Netzwerkdienste und mehr — und erklärt jeden Eintrag in Klartext: was er ist, woher er kommt und ob er noch gebraucht wird."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper shows everything on this Mac that **starts automatically** — background services, login items, extensions, scheduled tasks, network services, and more — and explains every entry in plain language: what it is, where it comes from, and whether it's still needed."
+          }
+        }
+      }
+    },
+    "LaunchKeeper zeigt alles, was auf diesem Mac automatisch startet, und erklärt es in Klartext. **Ohne dein Zutun ändert es nichts** — jede Änderung zeigt vorher ihren Plan und lässt sich rückgängig machen.\n\nDiese Einführung zeigt in einer Minute, wo was ist.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper zeigt alles, was auf diesem Mac automatisch startet, und erklärt es in Klartext. **Ohne dein Zutun ändert es nichts** — jede Änderung zeigt vorher ihren Plan und lässt sich rückgängig machen.\n\nDiese Einführung zeigt in einer Minute, wo was ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper shows everything on this Mac that starts automatically, and explains it in plain language. **It changes nothing without you** — every change shows its plan first and can be undone.\n\nThis introduction shows you in a minute where everything is."
+          }
+        }
+      }
+    },
     "LaunchKeeper öffnen": {
       "localizations": {
         "de": {
@@ -3341,6 +4685,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open LaunchKeeper"
+          }
+        }
+      }
+    },
+    "LaunchKeeper-Hilfe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper-Hilfe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper Help"
           }
         }
       }
@@ -3425,6 +4785,22 @@
         }
       }
     },
+    "Legt für alles, was in dieser Sitzung erledigt wurde, den Weg zurück in die Warteschlange.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt für alles, was in dieser Sitzung erledigt wurde, den Weg zurück in die Warteschlange."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puts the way back into the queue for everything done in this session."
+          }
+        }
+      }
+    },
     "Letzte Prüfung unvollständig, nicht verglichen: %@": {
       "localizations": {
         "de": {
@@ -3441,6 +4817,54 @@
         }
       }
     },
+    "Links eine Ansicht wählen, in der Mitte einen Eintrag — rechts steht, was er bedeutet. Symbole markieren, was Aufmerksamkeit verdient.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links eine Ansicht wählen, in der Mitte einen Eintrag — rechts steht, was er bedeutet. Symbole markieren, was Aufmerksamkeit verdient."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a view on the left, an entry in the middle — the right side says what it means. Icons mark what deserves attention."
+          }
+        }
+      }
+    },
+    "Links steht, was LaunchKeeper kann und wie man damit arbeitet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links steht, was LaunchKeeper kann und wie man damit arbeitet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the left is what LaunchKeeper can do and how to work with it."
+          }
+        }
+      }
+    },
+    "Links: was du sehen willst": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links: was du sehen willst"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the left: what you want to see"
+          }
+        }
+      }
+    },
     "Liste leeren": {
       "localizations": {
         "de": {
@@ -3453,6 +4877,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clear list"
+          }
+        }
+      }
+    },
+    "Los geht's": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los geht's"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's go"
           }
         }
       }
@@ -3485,6 +4925,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deletes the orphaned launch file; a backup is made first."
+          }
+        }
+      }
+    },
+    "Manches verwaltet macOS allein — Anmeldeobjekte, Systemerweiterungen, Profile, Datenschutz-Freigaben. Solche Einträge stehen im Abschnitt **Von Hand** mit einer Anleitung und einem Knopf, der die richtige Stelle der Systemeinstellungen öffnet. Nach **Jetzt prüfen** hakt LaunchKeeper ab, was sich erledigt hat.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manches verwaltet macOS allein — Anmeldeobjekte, Systemerweiterungen, Profile, Datenschutz-Freigaben. Solche Einträge stehen im Abschnitt **Von Hand** mit einer Anleitung und einem Knopf, der die richtige Stelle der Systemeinstellungen öffnet. Nach **Jetzt prüfen** hakt LaunchKeeper ab, was sich erledigt hat."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some things macOS manages on its own — login items, system extensions, profiles, privacy permissions. Such entries appear in the **By hand** section with instructions and a button that opens the right place in System Settings. After **Check now**, LaunchKeeper checks off whatever got done."
           }
         }
       }
@@ -3553,6 +5009,22 @@
         }
       }
     },
+    "Menüleiste und Anmeldung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menüleiste und Anmeldung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu Bar and Login"
+          }
+        }
+      }
+    },
     "Mindestens eine Komponente ist per launchd deaktiviert — in der Systemeinstellung unsichtbar": {
       "localizations": {
         "de": {
@@ -3565,6 +5037,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "At least one component is disabled via launchd — invisible in System Settings"
+          }
+        }
+      }
+    },
+    "Mit dem Installationsprogramm installierte Pakete und ihre Dateien. Hier lässt sich ein Paket vollständig deinstallieren oder nur sein Beleg entfernen, wenn die Dateien längst fehlen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit dem Installationsprogramm installierte Pakete und ihre Dateien. Hier lässt sich ein Paket vollständig deinstallieren oder nur sein Beleg entfernen, wenn die Dateien längst fehlen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Packages installed with the Installer app, and their files. Here you can uninstall a package completely, or just remove its receipt if the files are long gone."
           }
         }
       }
@@ -3729,6 +5217,54 @@
         }
       }
     },
+    "Nein. Das Hilfsprogramm gibt aus der Hintergrundverwaltung nur die systemweiten Einträge und deine eigenen zurück.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nein. Das Hilfsprogramm gibt aus der Hintergrundverwaltung nur die systemweiten Einträge und deine eigenen zurück."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No. From Background Task Management, the helper returns only the system-wide entries and your own."
+          }
+        }
+      }
+    },
+    "Nein. Nur die Suche nach Updates fragt bei GitHub nach einer neuen Version; jedes Update ist signiert und wird vor der Installation geprüft. Den Hash für VirusTotal kopiert LaunchKeeper nur in die Zwischenablage.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nein. Nur die Suche nach Updates fragt bei GitHub nach einer neuen Version; jedes Update ist signiert und wird vor der Installation geprüft. Den Hash für VirusTotal kopiert LaunchKeeper nur in die Zwischenablage."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No. Only the check for updates asks GitHub for a new version; every update is signed and verified before installation. LaunchKeeper only copies the hash for VirusTotal to the clipboard."
+          }
+        }
+      }
+    },
+    "Netzwerkdienste hakst du selbst ab: sie verschwinden auch, wenn das Programm nur beendet wurde.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Netzwerkdienste hakst du selbst ab: sie verschwinden auch, wenn das Programm nur beendet wurde."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You check off network services yourself: they also disappear if the program was merely quit."
+          }
+        }
+      }
+    },
     "Neu einlesen": {
       "localizations": {
         "de": {
@@ -3741,6 +5277,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rescan"
+          }
+        }
+      }
+    },
+    "Neu einlesen (schnell)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu einlesen (schnell)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rescan (fast)"
           }
         }
       }
@@ -3921,6 +5473,22 @@
         }
       }
     },
+    "Nichts geht verloren": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts geht verloren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing gets lost"
+          }
+        }
+      }
+    },
     "Nichts gewählt": {
       "localizations": {
         "de": {
@@ -4033,6 +5601,22 @@
         }
       }
     },
+    "Nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen, werden angeboten. Einträge von Apple und alles unter /System bleiben unangetastet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen, werden angeboten. Einträge von Apple und alles unter /System bleiben unangetastet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only actions that pass the same check as the command line are offered. Entries from Apple and everything under /System stay untouched."
+          }
+        }
+      }
+    },
     "Nur im Terminal: launchkeeper quarantine restore %@": {
       "localizations": {
         "de": {
@@ -4061,6 +5645,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Only with missing files"
+          }
+        }
+      }
+    },
+    "Nur noch ein Eintrag in der Hintergrundverwaltung von macOS, ohne Datei dahinter.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur noch ein Eintrag in der Hintergrundverwaltung von macOS, ohne Datei dahinter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only an entry left in macOS's Background Task Management, with no file behind it anymore."
           }
         }
       }
@@ -4113,6 +5713,22 @@
         }
       }
     },
+    "Oben: Darstellung und Neu einlesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oben: Darstellung und Neu einlesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At the top: display and Rescan"
+          }
+        }
+      }
+    },
     "Oder jetzt im Terminal:": {
       "localizations": {
         "de": {
@@ -4125,6 +5741,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Or now in Terminal:"
+          }
+        }
+      }
+    },
+    "Ohne dein Zutun ändert LaunchKeeper nichts. Jede Änderung zeigt vorher ihren Plan, lässt sich rückgängig machen und wird danach geprüft.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohne dein Zutun ändert LaunchKeeper nichts. Jede Änderung zeigt vorher ihren Plan, lässt sich rückgängig machen und wird danach geprüft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LaunchKeeper changes nothing without you. Every change shows its plan first, can be undone, and is checked afterward."
           }
         }
       }
@@ -4417,6 +6049,22 @@
         }
       }
     },
+    "Protokoll": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protokoll"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log"
+          }
+        }
+      }
+    },
     "Prüfe, welche Apps wirklich weg sind — LaunchServices, Spotlight, App-Ordner …": {
       "localizations": {
         "de": {
@@ -4513,6 +6161,54 @@
         }
       }
     },
+    "Rechnet für alle Einträge in einem Durchgang durch, was geschehen würde — ohne etwas zu ändern. Ein Schloss markiert Schritte mit Administratorrechten.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechnet für alle Einträge in einem Durchgang durch, was geschehen würde — ohne etwas zu ändern. Ein Schloss markiert Schritte mit Administratorrechten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Works out, in one pass, what would happen for every entry — without changing anything. A lock marks steps that need administrator rights."
+          }
+        }
+      }
+    },
+    "Rechts steht zum gewählten Eintrag eine Ampel, ein Satz in Klartext, die wichtigsten Fakten (Zustand, Signierer, Herkunft, zugehörige App) und die **Nächsten Schritte**. **Alle Details anzeigen** oder der **Expertenmodus** (⌥⌘E) zeigen alles, was LaunchKeeper weiß, bis hin zur gründlichen Signaturprüfung und dem Hash zum Nachschlagen bei VirusTotal.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechts steht zum gewählten Eintrag eine Ampel, ein Satz in Klartext, die wichtigsten Fakten (Zustand, Signierer, Herkunft, zugehörige App) und die **Nächsten Schritte**. **Alle Details anzeigen** oder der **Expertenmodus** (⌥⌘E) zeigen alles, was LaunchKeeper weiß, bis hin zur gründlichen Signaturprüfung und dem Hash zum Nachschlagen bei VirusTotal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the right, for the selected entry, is a status light, a plain-language sentence, the key facts (state, signer, origin, associated app), and the **Next steps**. **Show all details** or **Expert mode** (⌥⌘E) show everything LaunchKeeper knows, down to the thorough signature check and the hash to look up on VirusTotal."
+          }
+        }
+      }
+    },
+    "Rechts: was ein Eintrag bedeutet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechts: was ein Eintrag bedeutet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the right: what an entry means"
+          }
+        }
+      }
+    },
     "Regel der Firewall": {
       "localizations": {
         "de": {
@@ -4525,6 +6221,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Firewall rule"
+          }
+        }
+      }
+    },
+    "Regelmäßig": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regelmäßig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regularly"
+          }
+        }
+      }
+    },
+    "Rest": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leftover"
           }
         }
       }
@@ -4625,6 +6353,22 @@
         }
       }
     },
+    "Rückwege hinzufügen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückwege hinzufügen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add ways back"
+          }
+        }
+      }
+    },
     "Rückwege hinzufügen (%lld)": {
       "localizations": {
         "de": {
@@ -4669,6 +6413,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "SHA-256"
+          }
+        }
+      }
+    },
+    "Sammeln": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sammeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collect"
           }
         }
       }
@@ -4721,6 +6481,38 @@
         }
       }
     },
+    "Selbsttest: welche Quellen antworten": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selbsttest: welche Quellen antworten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Self-test: which sources respond"
+          }
+        }
+      }
+    },
+    "Sendet LaunchKeeper Daten ins Internet?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sendet LaunchKeeper Daten ins Internet?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Does LaunchKeeper send data to the internet?"
+          }
+        }
+      }
+    },
     "Siegel": {
       "localizations": {
         "de": {
@@ -4733,6 +6525,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Seal"
+          }
+        }
+      }
+    },
+    "Sieht LaunchKeeper die Einträge anderer Benutzer?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieht LaunchKeeper die Einträge anderer Benutzer?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Does LaunchKeeper see other users' entries?"
           }
         }
       }
@@ -4769,6 +6577,22 @@
         }
       }
     },
+    "So arbeitest du damit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So arbeitest du damit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How you work with it"
+          }
+        }
+      }
+    },
     "So meldet die Beobachtung neue Autostart-Einträge.": {
       "localizations": {
         "de": {
@@ -4797,6 +6621,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "This is how macOS sees background items — the same list as in System Settings › General › Login Items & Extensions. Select a row to see what is behind it and jump to the individual components."
+          }
+        }
+      }
+    },
+    "Sobald eine Autostart-Stelle geschrieben wird, liest LaunchKeeper nach wenigen Sekunden neu ein und vergleicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobald eine Autostart-Stelle geschrieben wird, liest LaunchKeeper nach wenigen Sekunden neu ein und vergleicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As soon as an autostart location is written to, LaunchKeeper rescans after a few seconds and compares."
+          }
+        }
+      }
+    },
+    "Sofort": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sofort"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instantly"
+          }
+        }
+      }
+    },
+    "Solange die Beobachtung läuft, steht ein Auge in der Menüleiste. Mit „Bei der Anmeldung starten“ beobachtet LaunchKeeper auch mit geschlossenem Fenster.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solange die Beobachtung läuft, steht ein Auge in der Menüleiste. Mit „Bei der Anmeldung starten“ beobachtet LaunchKeeper auch mit geschlossenem Fenster."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As long as Watch is running, an eye sits in the menu bar. With “Launch at login”, LaunchKeeper keeps watching even with the window closed."
           }
         }
       }
@@ -4993,6 +6865,22 @@
         }
       }
     },
+    "Tastenkürzel": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastenkürzel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keyboard Shortcuts"
+          }
+        }
+      }
+    },
     "Tatsächlich: %@": {
       "localizations": {
         "de": {
@@ -5149,6 +7037,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nothing unusual"
+          }
+        }
+      }
+    },
+    "Unter **Ansichten** in der Seitenleiste ordnen eigene Bereiche das Inventar so, wie man darüber nachdenkt:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unter **Ansichten** in der Seitenleiste ordnen eigene Bereiche das Inventar so, wie man darüber nachdenkt:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Under **Views** in the sidebar, dedicated sections organize the inventory the way you think about it:"
+          }
+        }
+      }
+    },
+    "Unter **Hilfsprogramm für Administratorrechte** auf **Einrichten** klicken — oder bei der ersten Aktion, die es braucht, **Hilfsprogramm einrichten** wählen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unter **Hilfsprogramm für Administratorrechte** auf **Einrichten** klicken — oder bei der ersten Aktion, die es braucht, **Hilfsprogramm einrichten** wählen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click **Set up** under **Helper for administrator rights** — or, at the first action that needs it, choose **Set up helper**."
+          }
+        }
+      }
+    },
+    "Unter **Nächste Schritte** stehen nur Aktionen, die für diesen Eintrag sicher möglich sind.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unter **Nächste Schritte** stehen nur Aktionen, die für diesen Eintrag sicher möglich sind."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Under **Next steps** are only actions that are safely possible for this entry."
+          }
+        }
+      }
+    },
+    "Unter der App arbeitet das Kommandozeilenwerkzeug **launchkeeper** mit denselben Prüfungen. Installation mit Homebrew:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unter der App arbeitet das Kommandozeilenwerkzeug **launchkeeper** mit denselben Prüfungen. Installation mit Homebrew:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Underneath the app, the command-line tool **launchkeeper** works with the same checks. Install with Homebrew:"
           }
         }
       }
@@ -5377,6 +7329,38 @@
         }
       }
     },
+    "Vollständig neu einlesen, auch die Hintergrundverwaltung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vollständig neu einlesen, auch die Hintergrundverwaltung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fully rescan, including Background Task Management"
+          }
+        }
+      }
+    },
+    "Von Apple signierte Systemeinträge aus- oder einblenden. Ausgeblendet bleibt die Liste übersichtlich; ändern lassen sie sich ohnehin nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von Apple signierte Systemeinträge aus- oder einblenden. Ausgeblendet bleibt die Liste übersichtlich; ändern lassen sie sich ohnehin nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show or hide system entries signed by Apple. Hidden, the list stays easy to read; you can't change them anyway."
+          }
+        }
+      }
+    },
     "Von Hand": {
       "localizations": {
         "de": {
@@ -5425,6 +7409,22 @@
         }
       }
     },
+    "Vorhanden, startet aber nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorhanden, startet aber nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Present, but doesn't start."
+          }
+        }
+      }
+    },
     "Wann": {
       "localizations": {
         "de": {
@@ -5437,6 +7437,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "When"
+          }
+        }
+      }
+    },
+    "Wann Touch ID kommt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann Touch ID kommt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When Touch ID Comes Up"
           }
         }
       }
@@ -5521,6 +7537,22 @@
         }
       }
     },
+    "Warteschlange: vieles auf einmal": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlange: vieles auf einmal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queue: many at once"
+          }
+        }
+      }
+    },
     "Wartungsskript (periodic)": {
       "localizations": {
         "de": {
@@ -5533,6 +7565,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maintenance script (periodic)"
+          }
+        }
+      }
+    },
+    "Warum dauert das erste Einlesen manchmal Minuten?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warum dauert das erste Einlesen manchmal Minuten?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why does the first scan sometimes take minutes?"
+          }
+        }
+      }
+    },
+    "Warum kann LaunchKeeper ein Anmeldeobjekt nicht selbst abschalten?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warum kann LaunchKeeper ein Anmeldeobjekt nicht selbst abschalten?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why can't LaunchKeeper turn off a login item by itself?"
           }
         }
       }
@@ -5569,6 +7633,86 @@
         }
       }
     },
+    "Was LaunchKeeper selbst geändert hat, steht mit „durch LaunchKeeper“ in der Liste und wird nicht gemeldet. Entfernungen werden nur aufgelistet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was LaunchKeeper selbst geändert hat, steht mit „durch LaunchKeeper“ in der Liste und wird nicht gemeldet. Entfernungen werden nur aufgelistet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What LaunchKeeper changed itself appears in the list marked “by LaunchKeeper” and isn't reported. Removals are only listed."
+          }
+        }
+      }
+    },
+    "Was heißt „Verwaist“?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was heißt „Verwaist“?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What does “Orphaned” mean?"
+          }
+        }
+      }
+    },
+    "Was neu hinzukam oder sich geändert hat, seit die Beobachtung läuft (siehe eigenes Kapitel).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was neu hinzukam oder sich geändert hat, seit die Beobachtung läuft (siehe eigenes Kapitel)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's newly appeared or changed since Watch has been running (see its own chapter)."
+          }
+        }
+      }
+    },
+    "Weiter": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        }
+      }
+    },
+    "Wie in den Systemeinstellungen unter Anmeldeobjekte & Erweiterungen: welche App was im Hintergrund darf — und ob der Schalter von macOS oder eine launchd-Einstellung ihn abschaltet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie in den Systemeinstellungen unter Anmeldeobjekte & Erweiterungen: welche App was im Hintergrund darf — und ob der Schalter von macOS oder eine launchd-Einstellung ihn abschaltet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Like in System Settings under Login Items & Extensions: which app is allowed to do what in the background — and whether the switch is turned off by macOS or by a launchd setting."
+          }
+        }
+      }
+    },
     "Wieder aktivieren": {
       "localizations": {
         "de": {
@@ -5597,6 +7741,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restore…"
+          }
+        }
+      }
+    },
+    "Willkommen bei LaunchKeeper": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen bei LaunchKeeper"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome to LaunchKeeper"
           }
         }
       }
@@ -5665,6 +7825,22 @@
         }
       }
     },
+    "Zuerst alle Schritte mit Administratorrechten — mit **einer** Touch-ID-Abfrage, die die Anzahl nennt —, danach die übrigen. Ein Fehler hält die anderen nicht an; **Anhalten** stoppt nach dem laufenden Eintrag.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuerst alle Schritte mit Administratorrechten — mit **einer** Touch-ID-Abfrage, die die Anzahl nennt —, danach die übrigen. Ein Fehler hält die anderen nicht an; **Anhalten** stoppt nach dem laufenden Eintrag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First all steps that need administrator rights — with **one** Touch ID prompt that states the count — then the rest. One failure doesn't stop the others; **Stop** halts after the entry currently running."
+          }
+        }
+      }
+    },
     "Zur Warteschlange hinzufügen": {
       "localizations": {
         "de": {
@@ -5677,6 +7853,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add to queue"
+          }
+        }
+      }
+    },
+    "Zurück": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "Zurück in LaunchKeeper steht dann „eingerichtet und erlaubt“ mit der Version.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück in LaunchKeeper steht dann „eingerichtet und erlaubt“ mit der Version."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back in LaunchKeeper, it then says “set up and allowed” with the version."
+          }
+        }
+      }
+    },
+    "Zurück, falls nötig": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück, falls nötig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back, if needed"
           }
         }
       }
@@ -6449,6 +8673,22 @@
         }
       }
     },
+    "macOS öffnet Allgemein › Anmeldeobjekte & Erweiterungen; dort LaunchKeeper im Hintergrund erlauben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS öffnet Allgemein › Anmeldeobjekte & Erweiterungen; dort LaunchKeeper im Hintergrund erlauben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS opens General › Login Items & Extensions; allow LaunchKeeper in the background there."
+          }
+        }
+      }
+    },
     "mindestens eine Komponente hat keine Quelle mehr": {
       "localizations": {
         "de": {
@@ -6929,6 +9169,38 @@
         }
       }
     },
+    "Ändern — ohne `--apply` nur der Plan": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ändern — ohne `--apply` nur der Plan"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change — without `--apply`, just the plan"
+          }
+        }
+      }
+    },
+    "Änderungen an Systemdiensten und in /Library brauchen Administratorrechte. Dafür richtest du **einmal** das Hilfsprogramm ein: Einstellungen (⌘,) › **Einrichten**, dann in den Systemeinstellungen erlauben.\n\nDanach liest LaunchKeeper auch ohne Touch-ID-Abfrage ein; gefragt wird nur noch vor echten Änderungen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen an Systemdiensten und in /Library brauchen Administratorrechte. Dafür richtest du **einmal** das Hilfsprogramm ein: Einstellungen (⌘,) › **Einrichten**, dann in den Systemeinstellungen erlauben.\n\nDanach liest LaunchKeeper auch ohne Touch-ID-Abfrage ein; gefragt wird nur noch vor echten Änderungen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes to system services and in /Library need administrator rights. For that, you set up the helper **once**: Settings (⌘,) › **Set up**, then allow it in System Settings.\n\nAfter that, LaunchKeeper scans without a Touch ID prompt too; it only asks before actual changes."
+          }
+        }
+      }
+    },
     "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.": {
       "localizations": {
         "de": {
@@ -6945,6 +9217,54 @@
         }
       }
     },
+    "Änderungen an Systemdiensten, an Dateien in /Library, an der Firewall und Paket-Deinstallationen brauchen Administratorrechte. Sie laufen über das **Hilfsprogramm** und fragen **jedes Mal** nach Touch ID oder dem Passwort — eine Aktion, eine Abfrage. Die Warteschlange fragt einmal für den ganzen Lauf.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen an Systemdiensten, an Dateien in /Library, an der Firewall und Paket-Deinstallationen brauchen Administratorrechte. Sie laufen über das **Hilfsprogramm** und fragen **jedes Mal** nach Touch ID oder dem Passwort — eine Aktion, eine Abfrage. Die Warteschlange fragt einmal für den ganzen Lauf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes to system services, to files in /Library, to the firewall and package uninstalls need administrator rights. They go through the **helper** and ask for Touch ID or your password **every time** — one action, one prompt. The queue asks once for the whole run."
+          }
+        }
+      }
+    },
+    "Änderungen in deinem eigenen Benutzerordner brauchen keine Administratorrechte und fragen nicht.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen in deinem eigenen Benutzerordner brauchen keine Administratorrechte und fragen nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes in your own user folder don't need administrator rights and don't prompt."
+          }
+        }
+      }
+    },
+    "Änderungen mit Administratorrechten stehen im Protokoll unter `/Library/Logs/launchkeeper`.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen mit Administratorrechten stehen im Protokoll unter `/Library/Logs/launchkeeper`."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes made with administrator rights appear in the log at `/Library/Logs/launchkeeper`."
+          }
+        }
+      }
+    },
     "Öffnen": {
       "localizations": {
         "de": {
@@ -6957,6 +9277,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open"
+          }
+        }
+      }
+    },
+    "Überblick": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überblick"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overview"
+          }
+        }
+      }
+    },
+    "Überspringen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überspringen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
           }
         }
       }
@@ -7053,6 +9405,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "⌘R reads what starts automatically on this Mac."
+          }
+        }
+      }
+    },
+    "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundverwaltung von macOS frisch ab.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundverwaltung von macOS frisch ab."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘R rescans quickly. ⇧⌘R also asks macOS's Background Task Management for fresh data."
           }
         }
       }

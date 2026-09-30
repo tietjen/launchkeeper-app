@@ -35,11 +35,22 @@ struct ContentView: View {
     /// Ticks for batch processing, per view.
     @Environment(Marks.self) private var marks
     @Environment(QueueModel.self) private var queue
+    /// The introduction and the help window (TJ 2026-09-30).
+    @Environment(TourModel.self) private var tour
+    @Environment(HelpRouter.self) private var helpRouter
+    @Environment(\.openWindow) private var openWindow
+    /// This window's token: after the window was closed and opened again,
+    /// the introduction knows the new one.
+    @State private var windowToken = UUID()
+    /// Which columns show; the introduction opens all of them (a collapsed
+    /// sidebar would leave its steps without a place — review 2026-09-30, S2).
+    @State private var columnVisibility = NavigationSplitViewVisibility.all
 
     var body: some View {
         @Bindable var store = store
-        NavigationSplitView {
-            SidebarView()
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            SidebarView(tour: tour, window: windowToken, openHelp: openHelp)
+                .tourSpot(.sidebar, tour: tour, window: windowToken, openHelp: openHelp)
                 .navigationSplitViewColumnWidth(min: 200, ideal: 230)
         } content: {
             Group {
@@ -55,9 +66,11 @@ struct ContentView: View {
                         .searchable(text: $store.search, placement: .toolbar, prompt: "Name, Label, Pfad, Team …")
                 }
             }
+            .tourSpot(.content, tour: tour, window: windowToken, openHelp: openHelp)
             .navigationSplitViewColumnWidth(min: 480, ideal: 640)
         } detail: {
             detailColumn
+                .tourSpot(.detail, tour: tour, window: windowToken, arrowEdge: .leading, openHelp: openHelp)
         }
         .toolbar {
             ToolbarItemGroup {
@@ -78,9 +91,27 @@ struct ContentView: View {
                 }
                 .disabled(store.isScanning)
                 .help("Neu einlesen (⌘R) — ⇧⌘R fragt auch die Hintergrundaufgaben neu ab")
+                .tourSpot(.refresh, tour: tour, window: windowToken, arrowEdge: .bottom, openHelp: openHelp)
             }
         }
         .overlay(alignment: .bottom) { StatusBar() }
+        .modifier(TourSheetModifier(tour: tour, window: windowToken, openHelp: openHelp))
+        .task {
+            // The window prepares itself for each step; then the introduction
+            // starts once per session if it is wanted at launch.
+            tour.register(window: windowToken) { [store] step in
+                columnVisibility = .all
+                step.prepare(store)
+            }
+            tour.startAtLaunchIfWanted()
+        }
+        .onDisappear { tour.unregister(window: windowToken) }
+    }
+
+    /// Opens the help window at the overview.
+    private func openHelp() {
+        helpRouter.topic = .overview
+        openWindow(id: HelpView.windowID)
     }
 
     /// The right column: the detail for whatever is selected in the current view.
@@ -137,6 +168,10 @@ struct SidebarView: View {
     @Environment(InventoryStore.self) private var store
     @Environment(WatchModel.self) private var watch
     @Environment(QueueModel.self) private var queue
+    /// Passed in, not read from the environment inside list rows (see `MarkBox`).
+    let tour: TourModel
+    let window: UUID
+    let openHelp: () -> Void
 
     var body: some View {
         @Bindable var store = store
@@ -151,18 +186,22 @@ struct SidebarView: View {
                 }
             }
             Section("Ansichten") {
-                Label("Hintergrund", systemImage: "switch.2").tag(SidebarSelection.background)
+                Label("Hintergrund", systemImage: "switch.2")
+                    .tourSpot(.viewsRow, tour: tour, window: window, openHelp: openHelp)
+                    .tag(SidebarSelection.background)
                 Label("Pakete", systemImage: "shippingbox").tag(SidebarSelection.receipts)
                 Label("App-Reste", systemImage: "leaf").tag(SidebarSelection.leftovers)
                 Label("Quarantäne", systemImage: "archivebox").tag(SidebarSelection.quarantine)
                 Label("Beobachtung", systemImage: watch.isRunning ? "eye" : "eye.slash")
                     .badge(watch.records.filter { !$0.isOwn && $0.event.kind != .removed }.count)
+                    .tourSpot(.watchRow, tour: tour, window: window, openHelp: openHelp)
                     .tag(SidebarSelection.watch)
             }
             // At the bottom (TJ): the queue collects actions from every view above.
             Section("Stapelverarbeitung") {
                 Label("Warteschlange", systemImage: "tray.full")
                     .badge(queue.items.filter { !$0.isFinished }.count)
+                    .tourSpot(.queueRow, tour: tour, window: window, openHelp: openHelp)
                     .tag(SidebarSelection.queue)
             }
         }
