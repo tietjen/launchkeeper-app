@@ -1009,6 +1009,22 @@
         }
       }
     },
+    "App-Reste neu prüfen — sucht nur die Reste gelöschter Apps erneut; das Inventar liest „Neu einlesen“ weiter links (⌘R).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Reste neu prüfen — sucht nur die Reste gelöschter Apps erneut; das Inventar liest „Neu einlesen“ weiter links (⌘R)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check app leftovers again — searches only for leftovers of deleted apps again; the inventory is read by “Rescan” further left (⌘R)."
+          }
+        }
+      }
+    },
     "Apple ausblenden": {
       "localizations": {
         "de": {
@@ -1085,6 +1101,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Also show present/unclear"
+          }
+        }
+      }
+    },
+    "Auch vorhandene/unklare zeigen — listet zusätzlich Reste, deren App noch installiert ist oder bei denen das Urteil unsicher ist.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auch vorhandene/unklare zeigen — listet zusätzlich Reste, deren App noch installiert ist oder bei denen das Urteil unsicher ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Also show present/unclear — also lists leftovers whose app is still installed or whose verdict is uncertain."
           }
         }
       }
@@ -5649,6 +5681,22 @@
         }
       }
     },
+    "Nur mit fehlenden Dateien — zeigt nur Pakete, von deren Dateien etwas fehlt: meist Belege längst gelöschter Software.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur mit fehlenden Dateien — zeigt nur Pakete, von deren Dateien etwas fehlt: meist Belege längst gelöschter Software."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only with missing files — shows only packages with missing files: mostly receipts of software deleted long ago."
+          }
+        }
+      }
+    },
     "Nur noch ein Eintrag in der Hintergrundverwaltung von macOS, ohne Datei dahinter.": {
       "localizations": {
         "de": {
@@ -6109,6 +6157,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quarantine is empty"
+          }
+        }
+      }
+    },
+    "Quarantäne neu laden — liest die Einträge der Quarantäne erneut, z. B. nach Änderungen im Terminal.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantäne neu laden — liest die Einträge der Quarantäne erneut, z. B. nach Änderungen im Terminal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload quarantine — reads the quarantine entries again, e.g. after changes made in Terminal."
           }
         }
       }

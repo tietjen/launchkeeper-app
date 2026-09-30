@@ -175,6 +175,7 @@ struct ReceiptsPane: View {
             }
             .toolbar {
                 Toggle(isOn: $onlyMissing) { Label("Nur mit fehlenden Dateien", systemImage: "questionmark.folder") }
+                    .help("Nur mit fehlenden Dateien — zeigt nur Pakete, von deren Dateien etwas fehlt: meist Belege längst gelöschter Software.")
             }
         } else {
             ContentUnavailableView("Keine Paket-Belege", systemImage: "shippingbox",
@@ -219,8 +220,10 @@ struct LeftoversPane: View {
         }
         .toolbar {
             Toggle(isOn: $model.showAll) { Label("Auch vorhandene/unklare zeigen", systemImage: "eye") }
+                .help("Auch vorhandene/unklare zeigen — listet zusätzlich Reste, deren App noch installiert ist oder bei denen das Urteil unsicher ist.")
             Button { Task { await model.reload() } } label: { Label("Neu prüfen", systemImage: "arrow.clockwise") }
                 .disabled(model.isLoading)
+                .help("App-Reste neu prüfen — sucht nur die Reste gelöschter Apps erneut; das Inventar liest „Neu einlesen“ weiter links (⌘R).")
         }
         .task { if !model.loaded { await model.reload() } }
     }
@@ -316,7 +319,10 @@ struct QuarantinePane: View {
                 }
             }
         }
-        .toolbar { Button { model.reload() } label: { Label("Neu laden", systemImage: "arrow.clockwise") } }
+        .toolbar {
+            Button { model.reload() } label: { Label("Neu laden", systemImage: "arrow.clockwise") }
+                .help("Quarantäne neu laden — liest die Einträge der Quarantäne erneut, z. B. nach Änderungen im Terminal.")
+        }
         .onAppear { model.reload() }
         .sheet(item: Binding(get: { restoring.map(RestoreTarget.init) }, set: { restoring = $0?.name })) { target in
             ActionSheet(request: .restore(quarantine: target.name), performer: Performer.make(store: store)) {

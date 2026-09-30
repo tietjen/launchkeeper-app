@@ -119,11 +119,35 @@ struct ContentView: View {
 
     /// The right column: the detail for whatever is selected in the current view.
     @ViewBuilder private var detailColumn: some View {
-        // Ticked items turn the detail column into the batch panel.
         if marks.count(for: store.selection) > 0 {
-            BatchPanel(selection: store.selection)
+            // Ticked items: the batch panel on top, and below it still the
+            // explanation of the row that is clicked (TJ 2026-09-30 — before,
+            // the panel replaced it and no single row could be read up).
+            if hasSingleDetail {
+                VSplitView {
+                    BatchPanel(selection: store.selection)
+                        .frame(minHeight: 150, idealHeight: 260)
+                    singleDetail
+                        .frame(minHeight: 220)
+                }
+            } else {
+                BatchPanel(selection: store.selection)
+            }
         } else {
             singleDetail
+        }
+    }
+
+    /// Whether a row is selected whose detail `singleDetail` can show.
+    private var hasSingleDetail: Bool {
+        switch store.selection {
+        case .all, .orphans, .category: return store.row(for: store.selectedKey) != nil
+        case .receipts: return store.receipts?.rows.contains { $0.id == selectedPackage } == true
+        case .leftovers: return leftovers.candidates.contains { $0.bundleIdentifier == selectedLeftover }
+        case .background: return selectedBackground != nil
+        case .quarantine: return false
+        case .watch: return watch.records.contains { $0.id == selectedRecord }
+        case .queue: return queue.items.contains { $0.id == selectedQueueItem }
         }
     }
 

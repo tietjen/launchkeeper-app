@@ -5,6 +5,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Changed
+- With ticked rows, the detail column shows the selection panel on top and,
+  below it, still the explanation of the clicked row (resizable divider);
+  before, the panel replaced it (TJ).
+
+### Fixed
+- The toolbar buttons of the Pakete, App-Reste and Quarantäne views explain
+  themselves on hover; "Neu prüfen" in App-Reste says it only searches the
+  leftovers again, not the inventory.
+
 ## [1.1.1] — 2026-09-30
 
 ### Fixed
