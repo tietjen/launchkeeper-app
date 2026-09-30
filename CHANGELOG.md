@@ -5,7 +5,7 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
-## [Unreleased]
+## [1.1.2] — 2026-09-30
 
 ### Changed
 - With ticked rows, the detail column shows the selection panel on top and,
