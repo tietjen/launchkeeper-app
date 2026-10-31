@@ -37,32 +37,47 @@ enum HelpTopic: String, CaseIterable, Identifiable, Hashable {
     }
 
     /// The matching part of the handbook on GitHub — the long version with
-    /// examples and reasons (`docs/handbuch/`).
+    /// examples and reasons — in the language the interface shows
+    /// (`docs/handbuch/` German, `docs/en/manual/` English).
     var handbookURL: URL {
-        let file: String
         switch self {
-        case .overview: file = ""
+        case .overview: return HelpTopic.handbookOverview
         case .shortcuts:
-            // The function reference has the full table (anchor percent-encoded: "tastenkürzel").
-            return URL(string: HelpTopic.handbookBase + "/blob/main/docs/funktionen.md#tastenk%C3%BCrzel")!
-        case .inventory: file = "02-das-inventar.md"
-        case .views: file = "03-die-ansichten.md"
-        case .actions: file = "05-eintraege-aendern.md"
-        case .helper: file = "04-das-hilfsprogramm.md"
-        case .queue: file = "06-die-warteschlange.md"
-        case .watch: file = "07-beobachtung.md"
-        case .commandLine: file = "10-kommandozeile.md"
-        case .faq: file = "09-sicherheit-und-datenschutz.md"
+            // The function reference has the full table (German anchor percent-encoded: "tastenkürzel").
+            return HelpTopic.isGerman
+                ? URL(string: HelpTopic.handbookBase + "/blob/main/docs/funktionen.md#tastenk%C3%BCrzel")!
+                : URL(string: HelpTopic.handbookBase + "/blob/main/docs/en/features.md#keyboard-shortcuts")!
+        case .inventory: return HelpTopic.chapter("02-das-inventar.md", "02-the-inventory.md")
+        case .views: return HelpTopic.chapter("03-die-ansichten.md", "03-the-views.md")
+        case .actions: return HelpTopic.chapter("05-eintraege-aendern.md", "05-changing-entries.md")
+        case .helper: return HelpTopic.chapter("04-das-hilfsprogramm.md", "04-the-helper.md")
+        case .queue: return HelpTopic.chapter("06-die-warteschlange.md", "06-the-queue.md")
+        case .watch: return HelpTopic.chapter("07-beobachtung.md", "07-watch.md")
+        case .commandLine: return HelpTopic.chapter("10-kommandozeile.md", "10-command-line.md")
+        case .faq: return HelpTopic.chapter("09-sicherheit-und-datenschutz.md", "09-security-and-privacy.md")
         }
-        return file.isEmpty ? HelpTopic.handbook
-            : URL(string: HelpTopic.handbookBase + "/blob/main/docs/handbuch/" + file)!
     }
+
+    /// One handbook chapter, German or English file by interface language.
+    /// `Scripts/release.sh` reads these pairs and checks both files exist.
+    private static func chapter(_ german: String, _ english: String) -> URL {
+        isGerman ? URL(string: handbookBase + "/blob/main/docs/handbuch/" + german)!
+            : URL(string: handbookBase + "/blob/main/docs/en/manual/" + english)!
+    }
+
+    /// Whether the interface runs in German — the localization the bundle
+    /// actually picked, so the handbook follows the app, not a raw system setting.
+    static var isGerman: Bool { Bundle.main.preferredLocalizations.first == "de" }
 
     /// The repository the handbook lives in (public mirror).
     static let handbookBase = "https://github.com/tietjen/launchkeeper-app"
-    /// The handbook's overview. `Scripts/release.sh` refuses to publish while
-    /// this link does not answer.
+    /// The handbook's overview, German and English. `Scripts/release.sh`
+    /// refuses to publish while either link does not answer — it parses these
+    /// two lines (`static let handbook… = URL(string: "…")!`), so keep their form.
     static let handbook = URL(string: "https://github.com/tietjen/launchkeeper-app/tree/main/docs/handbuch")!
+    static let handbookEnglish = URL(string: "https://github.com/tietjen/launchkeeper-app/tree/main/docs/en/manual")!
+    /// The overview in the interface's language.
+    static var handbookOverview: URL { isGerman ? handbook : handbookEnglish }
 
     /// SF Symbol of the chapter.
     var symbol: String {
@@ -264,7 +279,7 @@ struct HelpCommands: Commands {
                 tour.start()
             }
             Divider()
-            Link("Handbuch öffnen …", destination: HelpTopic.handbook)
+            Link("Handbuch öffnen …", destination: HelpTopic.handbookOverview)
         }
     }
 }

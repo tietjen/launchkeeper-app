@@ -199,7 +199,7 @@ Einstellungen (⌘,) haben vier Abschnitte:
 | Was | Wo | Grenze |
 |---|---|---|
 | **LaunchKeeper-Hilfe** | *Hilfe* (⌘?), Einstellungen › Hilfe | eigenes Fenster, **10** Kapitel (Überblick, Das Inventar, Die Ansichten, Aktionen und Sicherheit, Das Hilfsprogramm, Die Warteschlange, Beobachtung und Mitteilungen, Tastenkürzel, Kommandozeile, Häufige Fragen), Suche über alle Texte; jedes Kapitel verlinkt den passenden Teil der Dokumentation — „Tastenkürzel“ den Abschnitt [Tastenkürzel](#tastenkürzel) dieser Referenz, die übrigen ein Kapitel des Handbuchs |
-| **Handbuch öffnen …** | *Hilfe* | dieses Handbuch auf GitHub |
+| **Handbuch öffnen …** | *Hilfe* | dieses Handbuch auf GitHub — deutsch oder englisch, wie die Oberfläche; ebenso „Im Handbuch weiterlesen“ in jedem Hilfekapitel |
 | **Einführung** | beim ersten Start, *Hilfe › Einführung zeigen*, Einstellungen › Hilfe | **10** Schritte: 7 als Karte am Fenster (Seitenleiste, Liste, Detailspalte, Symbolleiste, Ansichten, Beobachtung, Warteschlange), Willkommen, Hilfsprogramm und Ende als Blatt. Sie öffnet ausgeblendete Spalten und rollt die Seitenleiste zur passenden Zeile; erscheint eine Karte nach **1 s** nicht, kommt der Schritt als Blatt. Startet von selbst einmal je Sitzung, abschaltbar in der Einführung („Beim Start zeigen“) und in den Einstellungen. |
 | **Sprache** | — | Oberfläche, Hilfe und der Touch-ID-Dialog des Hilfsprogramms auf Deutsch oder Englisch nach Systemsprache, sonst Englisch. Die Kategorien heißen deutsch (die Kommandozeile nennt sie englisch). Meldungen des Kerns (Pläne, Ablehnungsgründe) bleiben englisch, wie in der Kommandozeile. |
 

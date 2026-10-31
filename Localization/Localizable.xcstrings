@@ -1377,22 +1377,6 @@
         }
       }
     },
-    "Beenden": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beenden"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quit"
-          }
-        }
-      }
-    },
     "Befehl": {
       "localizations": {
         "de": {
@@ -3164,7 +3148,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Remove done — takes all successfully run and ticked-off entries off the list; open, refused and failed ones stay."
+            "value": "Remove finished — takes all successfully run and ticked-off entries off the list; open, refused and failed ones stay."
           }
         }
       }
@@ -5132,7 +5116,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clear marks — removes the ticks in this view. Entries already in the queue stay there."
+            "value": "Clear selection — removes the ticks in this view. Entries already in the queue stay there."
           }
         }
       }
@@ -6701,6 +6685,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Turn on the watch."
+          }
+        }
+      }
+    },
+    "Schließen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schließen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
           }
         }
       }

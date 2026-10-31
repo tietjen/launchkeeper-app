@@ -57,15 +57,21 @@ grep -q "^## \[$VERSION\]" CHANGELOG.md || { echo "CHANGELOG.md has no section [
 [[ -x "$SIGN_UPDATE" ]] || swift package resolve >/dev/null
 # The help window and the Help menu link to the handbook on GitHub; never
 # ship a version whose link answers 404 (MailKeeper's rule). Read the URL
-# from the source so the check cannot drift from the app.
-HANDBOOK_URL="$(sed -n 's/.*static let handbook = URL(string: "\(.*\)")!.*/\1/p' Sources/App/Help.swift)"
-[[ -n "$HANDBOOK_URL" ]] || { echo "handbook URL not found in Sources/App/Help.swift" >&2; exit 1; }
-curl -fsIL -o /dev/null --max-time 20 "$HANDBOOK_URL" || { echo "handbook link does not answer: $HANDBOOK_URL" >&2; exit 1; }
-# Each help chapter links its handbook chapter: the files must exist in this
-# commit (a renamed chapter would send the help link into a 404).
-for chapter in $(sed -n 's/.*file = "\(.*\.md\)".*/\1/p' Sources/App/Help.swift); do
-    [[ -f "docs/handbuch/$chapter" ]] || { echo "handbook chapter missing: docs/handbuch/$chapter" >&2; exit 1; }
+# from the source so the check cannot drift from the app. The links point at
+# GitHub's main: push main (with the docs) before tagging, or a new chapter
+# folder answers 404 here.
+for HANDBOOK_URL in $(sed -n 's/.*static let handbook[A-Za-z]* = URL(string: "\(.*\)")!.*/\1/p' Sources/App/Help.swift); do
+    curl -fsIL -o /dev/null --max-time 20 "$HANDBOOK_URL" || { echo "handbook link does not answer: $HANDBOOK_URL" >&2; exit 1; }
 done
+[[ -n "${HANDBOOK_URL:-}" ]] || { echo "handbook URL not found in Sources/App/Help.swift" >&2; exit 1; }
+# Each help chapter links its handbook chapter, German and English: the files
+# must exist in this commit (a renamed chapter would send the help link into a 404).
+CHAPTERS="$(sed -n 's/.*chapter("\([^"]*\.md\)", "\([^"]*\.md\)").*/docs\/handbuch\/\1 docs\/en\/manual\/\2/p' Sources/App/Help.swift)"
+[[ -n "$CHAPTERS" ]] || { echo "no handbook chapters found in Sources/App/Help.swift" >&2; exit 1; }
+for chapter in $CHAPTERS; do
+    [[ -f "$chapter" ]] || { echo "handbook chapter missing: $chapter" >&2; exit 1; }
+done
+[[ -f docs/en/features.md ]] || { echo "docs/en/features.md missing (help links it)" >&2; exit 1; }
 [[ -f docs/funktionen.md ]] || { echo "docs/funktionen.md missing (help links it)" >&2; exit 1; }
 
 # Release notes: the CHANGELOG section of this version, unless given.

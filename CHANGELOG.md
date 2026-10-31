@@ -5,6 +5,21 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [1.1.4] — 2026-10-31
+
+### Added
+- English documentation in `docs/en/`: the manual in ten chapters, the
+  feature reference and "How LaunchKeeper is built", every UI label taken
+  from the app's English strings. The help window and Help › "Open Handbook …"
+  open the manual in the interface's language. `Scripts/release.sh` checks
+  both handbook links and both files of every linked chapter.
+
+### Fixed
+- The introduction's "Beenden" button showed "Quit" in English (it shared
+  its string with the app's quit command); it is now „Schließen“ / "Close".
+- Two English tooltips named their buttons differently from the buttons:
+  "Remove done" in the queue, "Clear marks" in the selection panel.
+
 ## [1.1.3] — 2026-10-31
 
 ### Added

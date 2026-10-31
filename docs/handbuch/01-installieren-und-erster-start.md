@@ -58,7 +58,7 @@ Detailspalte, die drei Knöpfe der Symbolleiste, die Ansichten, die Beobachtung,
 Warteschlange — und erklärt ihn in einer Karte daneben. Begrüßung, Hilfsprogramm und Abschluss
 kommen als Blatt in der Fenstermitte.
 
-- **Los geht's** startet, **Weiter** und **Zurück** blättern, **Beenden** hört mittendrin auf.
+- **Los geht's** startet, **Weiter** und **Zurück** blättern, **Schließen** hört mittendrin auf.
 - **Überspringen** auf der ersten Karte schließt die Einführung gleich.
 - Ein Klick neben die Karte oder **Esc** beendet sie ebenfalls.
 

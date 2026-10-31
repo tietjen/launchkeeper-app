@@ -5,7 +5,16 @@ The macOS app for [launchkeeper](https://github.com/tietjen/launchkeeper) —
 a read-only inventory, one gate without bypass, dry-run before every change,
 snapshots/quarantine instead of deletion, verification after every write.
 
-**Status: test releases (0.1.x) — inventory, actions with the privileged helper, watch, in-app updates.**
+**Status: 1.x — inventory, actions with the privileged helper, queue, watch, built-in help and tour, in-app updates.**
+
+## Documentation
+
+| | English | Deutsch |
+|---|---|---|
+| Overview | [docs/en/](docs/en/README.md) | [docs/](docs/README.md) |
+| User manual (10 chapters) | [manual](docs/en/manual/README.md) | [Handbuch](docs/handbuch/README.md) |
+| Feature reference | [features](docs/en/features.md) | [Funktionsreferenz](docs/funktionen.md) |
+| How it is built | [architecture](docs/en/architecture.md) | [Architektur](docs/architektur.md) |
 
 ## Installation (macOS 14+)
 

@@ -335,7 +335,7 @@ struct TourCard: View {
                 if step == .welcome {
                     Button("Überspringen") { tour.end() }
                 } else if step != .done {
-                    Button("Beenden") { tour.end() }
+                    Button("Schließen") { tour.end() }
                 }
                 Spacer()
                 if step != .welcome { Button("Zurück") { tour.back() } }
