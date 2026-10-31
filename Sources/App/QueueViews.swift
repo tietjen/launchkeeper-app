@@ -249,7 +249,7 @@ struct BatchPanel: View {
         switch selection {
         case .all: return String(localized: "Alle Einträge")
         case .orphans: return String(localized: "Verwaist")
-        case .category(let category): return category.title
+        case .category(let category): return category.localizedTitle
         case .background: return String(localized: "Hintergrund")
         case .receipts: return String(localized: "Pakete")
         case .leftovers: return String(localized: "App-Reste")

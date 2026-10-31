@@ -26,7 +26,7 @@ struct HelperSettingsView: View {
                         .font(.callout).foregroundStyle(.orange)
                     Button("Hilfsprogramm neu starten") { Task { await helper.restart() } }
                 }
-                Text("Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.")
+                Text("Änderungen an Systemdiensten, Dateien in /Library, der Firewall und Paket-Deinstallationen brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.")
                     .font(.callout).foregroundStyle(.secondary)
                 HStack {
                     switch helper.status {

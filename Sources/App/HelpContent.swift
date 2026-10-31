@@ -45,7 +45,7 @@ enum HelpContent {
                 .item(symbol: "4.circle.fill", color: .accentColor, title: String(localized: "Ausführen"),
                       text: String(localized: "Einzeln über **Ausführen…**, oder viele auf einmal: Häkchen setzen, in die **Warteschlange** legen, dort **Alle ausführen**.")),
                 .item(symbol: "5.circle.fill", color: .accentColor, title: String(localized: "Zurück, falls nötig"),
-                      text: String(localized: "Entferntes liegt in der **Quarantäne** und lässt sich wiederherstellen; Deaktiviertes wieder aktivieren.")),
+                      text: String(localized: "Jede Änderung nennt vorher ihren **Rückweg**: Entferntes liegt in der **Quarantäne** oder in einer Sicherung, Deaktiviertes lässt sich wieder aktivieren.")),
             ]),
             HelpSection(blocks: [
                 .tip(String(localized: "Die Einführung zeigt das Ganze am Fenster selbst: Hilfe › **Einführung zeigen**.")),
@@ -64,7 +64,7 @@ enum HelpContent {
                 .item(symbol: "exclamationmark.triangle.fill", color: .orange, title: String(localized: "Verwaist"),
                       text: String(localized: "Die Quelle fehlt — das Programm, auf das der Eintrag zeigt, gibt es nicht mehr.")),
                 .item(symbol: "leaf.fill", color: .secondary, title: String(localized: "Rest"),
-                      text: String(localized: "Nur noch ein Eintrag in der Hintergrundverwaltung von macOS, ohne Datei dahinter.")),
+                      text: String(localized: "Nur noch ein Eintrag in den Hintergrundaufgaben von macOS, ohne Datei dahinter.")),
                 .item(symbol: "signature", color: .red, title: String(localized: "Nicht signiert"),
                       text: String(localized: "Das Programm trägt keine Code-Signatur — kein Beweis für Böses, aber ein Grund hinzusehen.")),
                 .item(symbol: "eye.fill", color: .yellow, title: String(localized: "Ansehen empfohlen"),
@@ -83,7 +83,7 @@ enum HelpContent {
                 .item(symbol: "apple.logo", color: .secondary, title: String(localized: "Apple ausblenden"),
                       text: String(localized: "Von Apple signierte Systemeinträge aus- oder einblenden. Ausgeblendet bleibt die Liste übersichtlich; ändern lassen sie sich ohnehin nicht.")),
                 .item(symbol: "arrow.clockwise", color: .accentColor, title: String(localized: "Neu einlesen"),
-                      text: String(localized: "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundverwaltung von macOS frisch ab.")),
+                      text: String(localized: "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundaufgaben von macOS frisch ab.")),
             ]),
         ]
     }
@@ -101,7 +101,7 @@ enum HelpContent {
                 .item(symbol: "leaf", color: .accentColor, title: String(localized: "App-Reste"),
                       text: String(localized: "Einstellungen, Caches und Hintergrunddienste von Apps, die nicht mehr installiert sind — mit Urteil und Begründung, warum etwas als Rest gilt.")),
                 .item(symbol: "archivebox", color: .accentColor, title: String(localized: "Quarantäne"),
-                      text: String(localized: "Alles, was LaunchKeeper entfernt hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).")),
+                      text: String(localized: "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).")),
                 .item(symbol: "eye", color: .accentColor, title: String(localized: "Beobachtung"),
                       text: String(localized: "Was neu hinzukam oder sich geändert hat, seit die Beobachtung läuft (siehe eigenes Kapitel).")),
                 .item(symbol: "tray.full", color: .accentColor, title: String(localized: "Warteschlange"),
@@ -119,8 +119,8 @@ enum HelpContent {
                 .text(String(localized: "Nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen, werden angeboten. Einträge von Apple und alles unter /System bleiben unangetastet.")),
             ]),
             HelpSection(title: String(localized: "Nichts geht verloren"), blocks: [
-                .item(symbol: "archivebox", color: .accentColor, title: String(localized: "Entfernen heißt: in die Quarantäne"),
-                      text: String(localized: "Dateien werden verschoben, nicht gelöscht, und lassen sich wiederherstellen. Endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.")),
+                .item(symbol: "archivebox", color: .accentColor, title: String(localized: "Entfernen hat immer einen Rückweg"),
+                      text: String(localized: "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.")),
                 .item(symbol: "arrow.uturn.backward", color: .accentColor, title: String(localized: "Deaktivieren lässt sich umkehren"),
                       text: String(localized: "Aktivieren stellt den vorherigen Zustand wieder her.")),
                 .item(symbol: "doc.text", color: .accentColor, title: String(localized: "Protokoll"),
@@ -138,7 +138,7 @@ enum HelpContent {
     private static var helper: [HelpSection] {
         [
             HelpSection(blocks: [
-                .text(String(localized: "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundverwaltung von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt.")),
+                .text(String(localized: "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundaufgaben von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt.")),
                 .text(String(localized: "Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“, prüft selbst und nimmt nur Verbindungen der echten, signierten LaunchKeeper-App an.")),
             ]),
             HelpSection(title: String(localized: "Einrichten"), blocks: [
@@ -187,7 +187,7 @@ enum HelpContent {
                 .item(symbol: "bolt", color: .accentColor, title: String(localized: "Sofort"),
                       text: String(localized: "Sobald eine Autostart-Stelle geschrieben wird, liest LaunchKeeper nach wenigen Sekunden neu ein und vergleicht.")),
                 .item(symbol: "clock", color: .accentColor, title: String(localized: "Regelmäßig"),
-                      text: String(localized: "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundverwaltung dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt.")),
+                      text: String(localized: "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundaufgaben dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt.")),
                 .item(symbol: "person.fill.checkmark", color: .secondary, title: String(localized: "Eigene Änderungen"),
                       text: String(localized: "Was LaunchKeeper selbst geändert hat, steht mit „durch LaunchKeeper“ in der Liste und wird nicht gemeldet. Entfernungen werden nur aufgelistet.")),
                 .item(symbol: "eye", color: .secondary, title: String(localized: "Menüleiste und Anmeldung"),
@@ -207,7 +207,7 @@ enum HelpContent {
             HelpSection(blocks: [
                 .keys([
                     (keys: "⌘R", meaning: String(localized: "Neu einlesen (schnell)")),
-                    (keys: "⇧⌘R", meaning: String(localized: "Vollständig neu einlesen, auch die Hintergrundverwaltung")),
+                    (keys: "⇧⌘R", meaning: String(localized: "Vollständig neu einlesen, auch die Hintergrundaufgaben")),
                     (keys: "⌥⌘E", meaning: String(localized: "Basis- oder Expertenmodus")),
                     (keys: "⌘,", meaning: String(localized: "Einstellungen: Hilfsprogramm, Beobachtung, Updates, Einführung")),
                     (keys: "⌘?", meaning: String(localized: "Diese Hilfe")),
@@ -245,19 +245,19 @@ enum HelpContent {
     private static var faq: [HelpSection] {
         [
             HelpSection(title: String(localized: "Warum dauert das erste Einlesen manchmal Minuten?"), blocks: [
-                .text(String(localized: "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden.")),
+                .text(String(localized: "Der Dienst hinter den Hintergrundaufgaben von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden.")),
             ]),
             HelpSection(title: String(localized: "Warum kann LaunchKeeper ein Anmeldeobjekt nicht selbst abschalten?"), blocks: [
                 .text(String(localized: "Diesen Schalter verwaltet macOS allein und lässt keine andere App daran. LaunchKeeper zeigt den Weg und öffnet die richtige Stelle der Systemeinstellungen (Abschnitt **Von Hand** in der Warteschlange).")),
             ]),
             HelpSection(title: String(localized: "Sieht LaunchKeeper die Einträge anderer Benutzer?"), blocks: [
-                .text(String(localized: "Nein. Das Hilfsprogramm gibt aus der Hintergrundverwaltung nur die systemweiten Einträge und deine eigenen zurück.")),
+                .text(String(localized: "Nein. Das Hilfsprogramm gibt aus den Hintergrundaufgaben nur die systemweiten Einträge und deine eigenen zurück.")),
             ]),
             HelpSection(title: String(localized: "Sendet LaunchKeeper Daten ins Internet?"), blocks: [
                 .text(String(localized: "Nein. Nur die Suche nach Updates fragt bei GitHub nach einer neuen Version; jedes Update ist signiert und wird vor der Installation geprüft. Den Hash für VirusTotal kopiert LaunchKeeper nur in die Zwischenablage.")),
             ]),
             HelpSection(title: String(localized: "Was heißt „Verwaist“?"), blocks: [
-                .text(String(localized: "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn in die Quarantäne zu verschieben — von wo er sich wiederherstellen lässt.")),
+                .text(String(localized: "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn zu entfernen — mit einem Rückweg, den der Plan vorher nennt.")),
             ]),
         ]
     }

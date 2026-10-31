@@ -36,6 +36,34 @@ enum HelpTopic: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
+    /// The matching part of the handbook on GitHub — the long version with
+    /// examples and reasons (`docs/handbuch/`).
+    var handbookURL: URL {
+        let file: String
+        switch self {
+        case .overview: file = ""
+        case .shortcuts:
+            // The function reference has the full table (anchor percent-encoded: "tastenkürzel").
+            return URL(string: HelpTopic.handbookBase + "/blob/main/docs/funktionen.md#tastenk%C3%BCrzel")!
+        case .inventory: file = "02-das-inventar.md"
+        case .views: file = "03-die-ansichten.md"
+        case .actions: file = "05-eintraege-aendern.md"
+        case .helper: file = "04-das-hilfsprogramm.md"
+        case .queue: file = "06-die-warteschlange.md"
+        case .watch: file = "07-beobachtung.md"
+        case .commandLine: file = "10-kommandozeile.md"
+        case .faq: file = "09-sicherheit-und-datenschutz.md"
+        }
+        return file.isEmpty ? HelpTopic.handbook
+            : URL(string: HelpTopic.handbookBase + "/blob/main/docs/handbuch/" + file)!
+    }
+
+    /// The repository the handbook lives in (public mirror).
+    static let handbookBase = "https://github.com/tietjen/launchkeeper-app"
+    /// The handbook's overview. `Scripts/release.sh` refuses to publish while
+    /// this link does not answer.
+    static let handbook = URL(string: "https://github.com/tietjen/launchkeeper-app/tree/main/docs/handbuch")!
+
     /// SF Symbol of the chapter.
     var symbol: String {
         switch self {
@@ -159,6 +187,10 @@ struct HelpTopicView: View {
                         }
                     }
                 }
+                Divider().padding(.top, 8)
+                Text("Ausführlich steht das alles im Handbuch — mit Beispielen und den Gründen dahinter.")
+                    .font(.callout).foregroundStyle(.secondary)
+                Link("Im Handbuch weiterlesen", destination: topic.handbookURL)
             }
             .padding(24)
             .frame(maxWidth: 720, alignment: .leading)
@@ -231,6 +263,8 @@ struct HelpCommands: Commands {
                 // Brings a main window to the front first (the introduction points at it).
                 tour.start()
             }
+            Divider()
+            Link("Handbuch öffnen …", destination: HelpTopic.handbook)
         }
     }
 }

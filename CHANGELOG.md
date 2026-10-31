@@ -5,6 +5,31 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [Unreleased]
+
+### Added
+- User documentation in `docs/` (German, like MailKeeper's): a handbook in
+  ten chapters in the order you need them, a function reference with every
+  function, where it is and its limits, and "Wie LaunchKeeper gebaut ist"
+  with diagrams. The help window links each chapter to its part of the
+  handbook ("Im Handbuch weiterlesen"), Help › "Handbuch öffnen …" opens it.
+  `Scripts/release.sh` refuses to publish while the handbook link does not
+  answer or a linked chapter file is missing.
+
+### Changed
+- Category names in the German interface are German ("Hintergrunddienste
+  (launchd)", "Geplante Aufgaben" …); the English interface and the command
+  line keep the English ones.
+- Help, introduction and Settings say "Hintergrundaufgaben" like the rest of
+  the interface (was partly "Hintergrundverwaltung").
+
+### Fixed
+- Help and introduction no longer claim that removing always means the
+  quarantine: an orphaned launch entry is deleted after a backup of the
+  launch folders; the plan names the way back. Settings no longer list
+  "deleting for good from the quarantine" among the helper's actions — the
+  app does not offer it (the command line does).
+
 ## [1.1.2] — 2026-09-30
 
 ### Changed

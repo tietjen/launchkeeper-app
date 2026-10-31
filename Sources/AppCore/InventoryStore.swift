@@ -35,8 +35,8 @@ public struct InventoryRow: Identifiable {
 
     /// Display name of the entry.
     public var name: String { item.displayName }
-    /// Human title of the entry's category ("Launch Items", "App Extensions" …).
-    public var category: String { item.category.title }
+    /// The entry's category in the user's language (`ItemCategory.localizedTitle`).
+    public var category: String { item.category.localizedTitle }
     /// The entry type in the tool's vocabulary ("user-agent", "cron-job" …).
     public var kind: String { item.type.rawValue }
     /// Provenance kind ("receipt", "manual", "apple" …), "unknown" when none was resolved.
@@ -455,5 +455,27 @@ public final class InventoryStore {
     public func row(for key: String?) -> InventoryRow? {
         guard let key else { return nil }
         return rows.first { $0.id == key }
+    }
+}
+
+extension ItemCategory {
+    /// The category's name in the user's language. The kit's `title` is the
+    /// CLI's English name; the app names categories like macOS does in German
+    /// (handbook review 2026-10-31: the German sidebar showed English names).
+    public var localizedTitle: String {
+        switch self {
+        case .launchItems: return String(localized: "Hintergrunddienste (launchd)")
+        case .loginItems: return String(localized: "Anmeldeobjekte & Hintergrund")
+        case .appExtensions: return String(localized: "App-Erweiterungen")
+        case .systemExtensions: return String(localized: "System- und Kernel-Erweiterungen")
+        case .privilegedHelpers: return String(localized: "Privilegierte Hilfsprogramme")
+        case .scheduled: return String(localized: "Geplante Aufgaben")
+        case .legacy: return String(localized: "Veraltete Autostarts")
+        case .shellStartup: return String(localized: "Shell-Startdateien")
+        case .pluginDirectories: return String(localized: "Plug-in-Ordner")
+        case .network: return String(localized: "Netzwerk")
+        case .profiles: return String(localized: "Profile / MDM")
+        case .privacy: return String(localized: "Datenschutz (TCC)")
+        }
     }
 }

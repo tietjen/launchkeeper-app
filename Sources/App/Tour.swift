@@ -111,9 +111,9 @@ enum TourStep: Int, CaseIterable {
         case .detail:
             return String(localized: "Ampel, ein Satz in Klartext, die Fakten — und die **Nächsten Schritte**: nur Aktionen, die hier sicher möglich sind.\n\n**Ausführen…** zeigt erst den Plan; ein zweiter Klick führt aus. Änderungen am System fragen nach Touch ID.")
         case .toolbar:
-            return String(localized: "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)")
+            return String(localized: "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundaufgaben von macOS neu ab)")
         case .views:
-            return String(localized: "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar.")
+            return String(localized: "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper dorthin verschoben hat, jederzeit wiederherstellbar.")
         case .watch:
             return String(localized: "Eingeschaltet wird sie hier: in der Ansicht **Beobachtung** oben der Schalter **Beobachtung** (oder in den Einstellungen, ⌘,).\n\nDann meldet LaunchKeeper per Mitteilung, wenn etwas Neues automatisch starten will — auch mit geschlossenem Fenster (Auge in der Menüleiste).")
         case .queue:
@@ -121,7 +121,7 @@ enum TourStep: Int, CaseIterable {
         case .helper:
             return String(localized: "Änderungen an Systemdiensten und in /Library brauchen Administratorrechte. Dafür richtest du **einmal** das Hilfsprogramm ein: Einstellungen (⌘,) › **Einrichten**, dann in den Systemeinstellungen erlauben.\n\nDanach liest LaunchKeeper auch ohne Touch-ID-Abfrage ein; gefragt wird nur noch vor echten Änderungen.")
         case .done:
-            return String(localized: "Alles Weitere steht in der Hilfe (⌘?). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**.")
+            return String(localized: "Alles Weitere steht in der Hilfe (⌘?) und ausführlich im Handbuch (Hilfe › **Handbuch öffnen …**). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**.")
         }
     }
 

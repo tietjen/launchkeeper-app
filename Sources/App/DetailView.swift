@@ -66,7 +66,7 @@ struct DetailView: View {
     @ViewBuilder private var expertSections: some View {
             Section {
                 LabeledContent("Name", value: item.displayName)
-                LabeledContent("Kategorie", value: item.category.title)
+                LabeledContent("Kategorie", value: item.category.localizedTitle)
                 LabeledContent("Typ", value: item.type.rawValue)
                 if let label = item.label { LabeledContent("Label", value: label) }
                 LabeledContent("Schlüssel") { Text(item.key).textSelection(.enabled) }

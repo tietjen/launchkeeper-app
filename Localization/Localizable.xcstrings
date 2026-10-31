@@ -625,7 +625,7 @@
         }
       }
     },
-    "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundverwaltung dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt.": {
+    "Alle zehn Minuten ein vollständiger Vergleich. Ohne Hilfsprogramm fragt LaunchKeeper die Hintergrundaufgaben dabei höchstens alle sechs Stunden frisch ab, weil macOS dafür Touch ID verlangt.": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -641,18 +641,18 @@
         }
       }
     },
-    "Alles Weitere steht in der Hilfe (⌘?). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**.": {
+    "Alles Weitere steht in der Hilfe (⌘?) und ausführlich im Handbuch (Hilfe › **Handbuch öffnen …**). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alles Weitere steht in der Hilfe (⌘?). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**."
+            "value": "Alles Weitere steht in der Hilfe (⌘?) und ausführlich im Handbuch (Hilfe › **Handbuch öffnen …**). Die Einführung findest du jederzeit unter Hilfe › **Einführung zeigen**."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Everything else is in Help (⌘?). You can find the introduction anytime under Help › **Show Introduction**."
+            "value": "Everything else is in the Help (⌘?) and, in full, in the handbook (Help › **Open Handbook …**). You can find the introduction any time under Help › **Show Introduction**."
           }
         }
       }
@@ -673,18 +673,18 @@
         }
       }
     },
-    "Alles, was LaunchKeeper entfernt hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).": {
+    "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alles, was LaunchKeeper entfernt hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile)."
+            "value": "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile)."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Everything LaunchKeeper removed, with the place it came from. Restore from here; deleting for good is done in Terminal (see Command line)."
+            "value": "Everything LaunchKeeper moved to the Quarantine, with the place it came from. Restore from here; deleting for good is done in Terminal (see Command line)."
           }
         }
       }
@@ -813,6 +813,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Login item — opens at login"
+          }
+        }
+      }
+    },
+    "Anmeldeobjekte & Hintergrund": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmeldeobjekte & Hintergrund"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Login Items & Background"
           }
         }
       }
@@ -989,6 +1005,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "App extension — loaded by other apps"
+          }
+        }
+      }
+    },
+    "App-Erweiterungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App-Erweiterungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Extensions"
           }
         }
       }
@@ -1245,6 +1277,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Run…"
+          }
+        }
+      }
+    },
+    "Ausführlich steht das alles im Handbuch — mit Beispielen und den Gründen dahinter.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausführlich steht das alles im Handbuch — mit Beispielen und den Gründen dahinter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All of this is covered in full in the handbook — with examples and the reasons behind it."
           }
         }
       }
@@ -1681,7 +1729,7 @@
         }
       }
     },
-    "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundverwaltung von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt.": {
+    "Das Hilfsprogramm ist ein kleiner Dienst, der mit Administratorrechten läuft. Über ihn ändert LaunchKeeper, was nur ein Administrator ändern darf — und liest die Hintergrundaufgaben von macOS, ohne dass macOS dafür jedes Mal nach Touch ID fragt.": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -1841,22 +1889,6 @@
         }
       }
     },
-    "Dateien werden verschoben, nicht gelöscht, und lassen sich wiederherstellen. Endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dateien werden verschoben, nicht gelöscht, und lassen sich wiederherstellen. Endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Files are moved, not deleted, and can be restored. They are deleted for good only when you explicitly ask for it — in Terminal with `launchkeeper quarantine purge`."
-          }
-        }
-      }
-    },
     "Daten einer installierten App": {
       "localizations": {
         "de": {
@@ -1885,6 +1917,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Data of a tool or framework"
+          }
+        }
+      }
+    },
+    "Datenschutz (TCC)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datenschutz (TCC)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy (TCC)"
           }
         }
       }
@@ -2001,6 +2049,22 @@
         }
       }
     },
+    "Der Dienst hinter den Hintergrundaufgaben von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After a longer period of inactivity, macOS's Background Task Management re-checks all registered programs the first time it's queried. After that, it takes seconds."
+          }
+        }
+      }
+    },
     "Der Eintrag ist im aktuellen Inventar nicht (mehr) vorhanden.": {
       "localizations": {
         "de": {
@@ -2033,18 +2097,18 @@
         }
       }
     },
-    "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn in die Quarantäne zu verschieben — von wo er sich wiederherstellen lässt.": {
+    "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn zu entfernen — mit einem Rückweg, den der Plan vorher nennt.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn in die Quarantäne zu verschieben — von wo er sich wiederherstellen lässt."
+            "value": "Der Eintrag verweist auf ein Programm oder eine Datei, die es nicht mehr gibt — meist ein Rest einer deinstallierten App. Er startet nichts Brauchbares mehr; die Detailspalte sagt, was fehlt, und bietet meist an, ihn zu entfernen — mit einem Rückweg, den der Plan vorher nennt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The entry points to a program or file that no longer exists — usually a leftover from an uninstalled app. It no longer starts anything useful; the detail column says what's missing, and usually offers to move it to the Quarantine — from where it can be restored."
+            "value": "The entry points to a program or file that no longer exists — usually a leftover from an uninstalled app. It no longer starts anything useful; the detail column says what is missing and usually offers to remove it — with a way back the plan names beforehand."
           }
         }
       }
@@ -2209,22 +2273,6 @@
         }
       }
     },
-    "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Die Hintergrundverwaltung von macOS prüft nach längerer Ruhe beim ersten Abfragen alle registrierten Programme neu. Danach geht es in Sekunden."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "After a longer period of inactivity, macOS's Background Task Management re-checks all registered programs the first time it's queried. After that, it takes seconds."
-          }
-        }
-      }
-    },
     "Die Quarantäne": {
       "localizations": {
         "de": {
@@ -2353,7 +2401,7 @@
         }
       }
     },
-    "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundverwaltung von macOS neu ab)": {
+    "Die drei eingerahmten Knöpfe, von links:\n• **Basis- oder Expertenmodus** — Kurzfassung oder alle Details rechts (⌥⌘E)\n• **Apple-Einträge** aus- oder einblenden\n• **Neu einlesen** (⌘R; ⇧⌘R fragt auch die Hintergrundaufgaben von macOS neu ab)": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -2401,18 +2449,18 @@
         }
       }
     },
-    "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar.": {
+    "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper dorthin verschoben hat, jederzeit wiederherstellbar.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper entfernt hat, jederzeit wiederherstellbar."
+            "value": "Die vier eingerahmten Ansichten beantworten je eine Frage:\n• **Hintergrund** — welche App darf was im Hintergrund? Wie in den Systemeinstellungen, mit dem Grund, warum etwas aus ist.\n• **Pakete** — was hat ein Installationsprogramm hinterlassen? Mit Deinstallation.\n• **App-Reste** — was blieb von gelöschten Apps übrig?\n• **Quarantäne** — alles, was LaunchKeeper dorthin verschoben hat, jederzeit wiederherstellbar."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The four outlined views each answer one question:\n• **Background** — which app may do what in the background? As in System Settings, with the reason something is off.\n• **Packages** — what did an installer leave behind? With uninstall.\n• **App leftovers** — what remains of deleted apps?\n• **Quarantine** — everything LaunchKeeper removed, restorable at any time."
+            "value": "The four outlined views each answer one question:\n• **Background** — which app may do what in the background? As in System Settings, with the reason something is off.\n• **Packages** — what did an installer leave behind? With uninstall.\n• **App leftovers** — what remains of deleted apps?\n• **Quarantine** — everything LaunchKeeper moved there, restorable at any time."
           }
         }
       }
@@ -2897,18 +2945,18 @@
         }
       }
     },
-    "Entfernen heißt: in die Quarantäne": {
+    "Entfernen hat immer einen Rückweg": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entfernen heißt: in die Quarantäne"
+            "value": "Entfernen hat immer einen Rückweg"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Remove means: to the Quarantine"
+            "value": "Removing always has a way back"
           }
         }
       }
@@ -2925,22 +2973,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Removed: %@"
-          }
-        }
-      }
-    },
-    "Entferntes liegt in der **Quarantäne** und lässt sich wiederherstellen; Deaktiviertes wieder aktivieren.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entferntes liegt in der **Quarantäne** und lässt sich wiederherstellen; Deaktiviertes wieder aktivieren."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Removed items sit in the **Quarantine** and can be restored; disabled items can be enabled again."
           }
         }
       }
@@ -3393,6 +3425,22 @@
         }
       }
     },
+    "Geplante Aufgaben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geplante Aufgaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled"
+          }
+        }
+      }
+    },
     "Geplantes Aufwachen oder Einschalten": {
       "localizations": {
         "de": {
@@ -3469,6 +3517,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Changed: %@"
+          }
+        }
+      }
+    },
+    "Handbuch öffnen …": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handbuch öffnen …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Handbook …"
           }
         }
       }
@@ -3793,6 +3857,22 @@
         }
       }
     },
+    "Hintergrunddienste (launchd)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hintergrunddienste (launchd)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch Items"
+          }
+        }
+      }
+    },
     "Hintergrundkomponente": {
       "localizations": {
         "de": {
@@ -3853,6 +3933,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Show in Finder"
+          }
+        }
+      }
+    },
+    "Im Handbuch weiterlesen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Handbuch weiterlesen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read more in the handbook"
           }
         }
       }
@@ -4205,6 +4301,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Every column can be sorted. Icons mark what deserves attention: ⚠︎ orphaned, red not signed, yellow worth a look.\n\nThe **checkbox** in front collects entries for the queue."
+          }
+        }
+      }
+    },
+    "Jede Änderung nennt vorher ihren **Rückweg**: Entferntes liegt in der **Quarantäne** oder in einer Sicherung, Deaktiviertes lässt sich wieder aktivieren.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jede Änderung nennt vorher ihren **Rückweg**: Entferntes liegt in der **Quarantäne** oder in einer Sicherung, Deaktiviertes lässt sich wieder aktivieren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every change names its **way back** beforehand: removed items are in the **Quarantine** or in a backup, disabled ones can be enabled again."
           }
         }
       }
@@ -5041,6 +5153,22 @@
         }
       }
     },
+    "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usually the files move to the **Quarantine** and can be restored from there. Only orphaned autostart entries whose program is missing are deleted — after LaunchKeeper has backed up the whole folder; the plan names the command to bring them back under **Way back**. Deleting from the Quarantine for good happens only when you explicitly ask — in Terminal with `launchkeeper quarantine purge`."
+          }
+        }
+      }
+    },
     "Menüleiste und Anmeldung": {
       "localizations": {
         "de": {
@@ -5249,7 +5377,7 @@
         }
       }
     },
-    "Nein. Das Hilfsprogramm gibt aus der Hintergrundverwaltung nur die systemweiten Einträge und deine eigenen zurück.": {
+    "Nein. Das Hilfsprogramm gibt aus den Hintergrundaufgaben nur die systemweiten Einträge und deine eigenen zurück.": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -5277,6 +5405,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "No. Only the check for updates asks GitHub for a new version; every update is signed and verified before installation. LaunchKeeper only copies the hash for VirusTotal to the clipboard."
+          }
+        }
+      }
+    },
+    "Netzwerk": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Netzwerk"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network"
           }
         }
       }
@@ -5697,7 +5841,7 @@
         }
       }
     },
-    "Nur noch ein Eintrag in der Hintergrundverwaltung von macOS, ohne Datei dahinter.": {
+    "Nur noch ein Eintrag in den Hintergrundaufgaben von macOS, ohne Datei dahinter.": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -6013,6 +6157,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Plug-in — loaded by macOS or apps"
+          }
+        }
+      }
+    },
+    "Plug-in-Ordner": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plug-in-Ordner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plug-in Directories"
+          }
+        }
+      }
+    },
+    "Privilegierte Hilfsprogramme": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privilegierte Hilfsprogramme"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privileged Helper Tools"
+          }
+        }
+      }
+    },
+    "Profile / MDM": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile / MDM"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profiles / MDM"
           }
         }
       }
@@ -6577,6 +6769,22 @@
         }
       }
     },
+    "Shell-Startdateien": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shell-Startdateien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shell Startup"
+          }
+        }
+      }
+    },
     "Siegel": {
       "localizations": {
         "de": {
@@ -6829,6 +7037,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Control"
+          }
+        }
+      }
+    },
+    "System- und Kernel-Erweiterungen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System- und Kernel-Erweiterungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System Extensions & Kexts"
           }
         }
       }
@@ -7217,6 +7441,22 @@
         }
       }
     },
+    "Veraltete Autostarts": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veraltete Autostarts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legacy Persistence"
+          }
+        }
+      }
+    },
     "Veraltete Startdatei": {
       "localizations": {
         "de": {
@@ -7393,7 +7633,7 @@
         }
       }
     },
-    "Vollständig neu einlesen, auch die Hintergrundverwaltung": {
+    "Vollständig neu einlesen, auch die Hintergrundaufgaben": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -9265,18 +9505,18 @@
         }
       }
     },
-    "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.": {
+    "Änderungen an Systemdiensten, Dateien in /Library, der Firewall und Paket-Deinstallationen brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Änderungen an Systemdiensten, Dateien in /Library, der Firewall, Paket-Deinstallationen und das endgültige Löschen aus der Quarantäne brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“."
+            "value": "Änderungen an Systemdiensten, Dateien in /Library, der Firewall und Paket-Deinstallationen brauchen Administratorrechte. LaunchKeeper führt sie über dieses Hilfsprogramm aus — nur nach Touch ID oder Passwort, jedes Mal neu, und nur Aktionen, die dieselbe Prüfung wie die Kommandozeile bestehen. Es nimmt keine Befehle entgegen, nur „was mit welchem Eintrag“."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Changes to system services, files in /Library, the firewall, package uninstalls and permanent deletion from the quarantine need administrator rights. LaunchKeeper runs them through this helper — only after Touch ID or password, every time, and only actions that pass the same checks as the command line. It takes no commands, only “what to do with which entry”."
+            "value": "Changes to system services, files in /Library, the firewall and package uninstalls need administrator rights. LaunchKeeper carries them out through this helper — only after Touch ID or your password, every time, and only actions that pass the same check as the command line. It takes no commands, only “what to do with which entry”."
           }
         }
       }
@@ -9473,7 +9713,7 @@
         }
       }
     },
-    "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundverwaltung von macOS frisch ab.": {
+    "⌘R liest schnell neu. ⇧⌘R fragt auch die Hintergrundaufgaben von macOS frisch ab.": {
       "localizations": {
         "de": {
           "stringUnit": {

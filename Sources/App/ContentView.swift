@@ -210,7 +210,7 @@ struct SidebarView: View {
             }
             Section("Kategorien") {
                 ForEach(store.categories, id: \.self) { category in
-                    row(.category(category), LocalizedStringKey(category.title), Self.symbol(category))
+                    categoryRow(.category(category), category.localizedTitle, Self.symbol(category))
                 }
             }
             Section("Ansichten") {
@@ -252,10 +252,19 @@ struct SidebarView: View {
     /// One sidebar row with its entry count as badge.
     /// - Parameters:
     ///   - selection: What the row selects.
-    ///   - title: The visible title — a localization key (category names
-    ///     come from the kit in English and are simply not found in the table).
+    ///   - title: The visible title — a localization key (categories use
+    ///     `categoryRow` with their already localized name).
     ///   - symbol: SF Symbol name.
     private func row(_ selection: SidebarSelection, _ title: LocalizedStringKey, _ symbol: String) -> some View {
+        Label(title, systemImage: symbol)
+            .badge(store.count(selection))
+            .tag(selection)
+    }
+
+    /// A sidebar row whose title is already localized (category names). Its
+    /// own name: an overload of `row` would catch the string literals above
+    /// and skip their translation.
+    private func categoryRow(_ selection: SidebarSelection, _ title: String, _ symbol: String) -> some View {
         Label(title, systemImage: symbol)
             .badge(store.count(selection))
             .tag(selection)
