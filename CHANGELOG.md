@@ -5,7 +5,7 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
-## [Unreleased]
+## [1.1.3] — 2026-10-31
 
 ### Added
 - User documentation in `docs/` (German, like MailKeeper's): a handbook in
