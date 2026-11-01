@@ -92,7 +92,7 @@ Jede Aktion läuft über dasselbe Blatt: **Plan** (Probelauf, nichts ändert sic
 | **Wieder aktivieren** | Nächste Schritte, Warteschlange | nur für deaktivierte Einträge |
 | **Entfernen** | Nächste Schritte, Warteschlange | nur, wenn die Prüfung es erlaubt — bei launchd-Einträgen nur für **verwaiste**. Ein Rest geht in die Quarantäne; eine verwaiste Startdatei wird gelöscht, vorher wird eine Sicherung angelegt. |
 | **In die Quarantäne verschieben** | Nächste Schritte (nach „Deaktivieren“), Warteschlange | für funktionierende Einträge: erst deaktiviert, dann wandert die Startdatei in die Quarantäne. Das Programm selbst bleibt. |
-| **Reste in die Quarantäne verschieben** | App-Reste | nie über das Hilfsprogramm (die Prüfung „App ist weg“ braucht LaunchServices des Benutzers); bräuchte der Plan Administratorrechte, zeigt das Blatt den Terminal-Befehl |
+| **Reste in die Quarantäne verschieben** | App-Reste | nie über das Hilfsprogramm (die Prüfung „App ist weg“ braucht LaunchServices des Benutzers); bräuchte der Plan Administratorrechte, zeigt das Blatt den Terminal-Befehl. Daten in `~/Library/Containers` (und `Group Containers`) brauchen den **Festplattenvollzugriff** für LaunchKeeper — ohne ihn verweigert macOS das Verschieben, und der Lauf hält beim ersten verweigerten Schritt an. Hat er nichts verschoben, bleibt seit Kit 0.13.1 kein leerer Quarantäne-Eintrag zurück. |
 | **Aus der Quarantäne wiederherstellen** | Quarantäne, Warteschlange | siehe [Quarantäne](#quarantäne) |
 | **Paket deinstallieren** | Pakete › Detailspalte, Warteschlange | braucht **immer** Administratorrechte. Nimmt nur Dateien, die noch unverändert vom Paket stammen; veränderte und geteilte bleiben. Alles geht in die Quarantäne des Hilfsprogramms. |
 | **Beleg entfernen** | Pakete, wenn keine eigene Datei mehr da ist | vergisst den Installationsbeleg; eine Kopie bleibt in der Quarantäne |
@@ -101,6 +101,7 @@ Jede Aktion läuft über dasselbe Blatt: **Plan** (Probelauf, nichts ändert sic
 | **Ohne Hilfsprogramm** | Plan-Blatt | Knopf „Hilfsprogramm einrichten“ bzw. „In den Systemeinstellungen erlauben“, „Einstellungen öffnen“ und der Terminal-Befehl mit `--apply` zum Kopieren |
 | **Veraltetes Hilfsprogramm** | Plan-Blatt | „Hilfsprogramm neu starten“; bis dahin schickt die App ihm nichts |
 | **Hilfsprogramm hat nichts ausgeführt** | Ergebnis | „Neu starten und erneut versuchen“ rechnet danach den Plan neu |
+| **Nicht vollständig** | Ergebnis | seit 1.2.1 mit Erklärung, wenn die Ursache bekannt ist; verweigert macOS den Zugriff auf `~/Library/Containers`, dazu **Festplattenvollzugriff öffnen** |
 | **Während die Warteschlange läuft** | Plan-Blatt | „Ausführen“ ist gesperrt, bis der Lauf vorbei ist |
 | **Protokoll** | — | eigene Aktionen der App: `~/Library/Logs/launchkeeper/operations.log` (dieselbe Datei wie die Kommandozeile); Aktionen des Hilfsprogramms: `/Library/Logs/launchkeeper/operations.log` |
 
@@ -116,8 +117,12 @@ App-Erweiterungen (pluginkit) und deine crontab brauchen keine.
 | **Markieren** | Häkchen in Inventar, Hintergrund, Pakete, App-Reste, Quarantäne | Häkchen sind je Ansicht getrennt und überstehen den Wechsel zwischen Ansichten. Eine Hintergrund-Zeile steht für ihre Komponenten. |
 | **Zur Warteschlange hinzufügen** | rechte Spalte, sobald etwas markiert ist | ein Knopf je möglicher Aktion mit „n von m“ — nur die Einträge, zu denen die Aktion passt. Danach verschwinden die verwendeten Häkchen. |
 | **Als „Von Hand“ in die Warteschlange** | rechte Spalte | für markierte Einträge ohne automatische Aktion; **nie** für Apples eigene |
-| **Eingereihte Zeilen** | in jeder Ansicht | statt des Häkchens ein Warteschlangen-Symbol (blau offen, grün erledigt, orange abgelehnt); ein Klick nimmt die Zeile heraus. Eine Hintergrund-Zeile mit nur einem Teil ihrer Komponenten zeigt „x/y“. |
+| **Eingereihte Zeilen** | in jeder Ansicht | statt des Häkchens ein Warteschlangen-Symbol (blau offen, grün erledigt, orange abgelehnt oder fehlgeschlagen); ein Klick nimmt die Zeile heraus. Eine Hintergrund-Zeile mit nur einem Teil ihrer Komponenten zeigt „x/y“. |
 | **Ein Ziel, ein Eintrag** | — | ein Eintrag steht nie zweimal in der Warteschlange; erneutes Hinzufügen ersetzt die Aktion |
+| **Abschnitte** | Liste | seit 1.2.1: **Offen**, **Fehlgeschlagen oder abgelehnt**, **Erledigt**, **Von Hand** (vorher ein Abschnitt „Automatisch“); leere fehlen |
+| **Grund in der Zeile** | Zeile | „fehlgeschlagen: …“/„abgelehnt: …“ mit kurzem Grund in Worten, wenn bekannt („macOS verweigert den Zugriff — Festplattenvollzugriff fehlt“, „nichts mehr zu tun“), sonst die Meldung des Kerns |
+| **Fehlgeschlagen oder abgelehnt** | Fuß des Abschnitts | sagt, dass diese Einträge nicht oder nicht ganz ausgeführt sind, und nennt die häufige Ursache (Festplattenvollzugriff), wenn sie vorliegt. Knöpfe **Festplattenvollzugriff öffnen** (nur dann), **Erneut versuchen** (fehlgeschlagene und abgelehnte zurück auf offen; „Alle ausführen“ versucht sie dann noch einmal), **Aus der Liste nehmen** (nichts wird ausgeführt) |
+| **Detail eines fehlgeschlagenen Eintrags** | rechte Spalte | Abschnitt **Fehlgeschlagen** bzw. **Abgelehnt**: Erklärung, die unveränderte **Meldung**, **Festplattenvollzugriff öffnen** / **Erneut versuchen** / **Aus der Liste nehmen** — auch nach einem Neustart (das Ergebnis des Laufs wird nicht gespeichert, der Stand schon) |
 | **Aktion wechseln** | Zeile in der Warteschlange | unter den Aktionen, die der Eintrag anbietet; der Plan wird neu geprüft |
 | **Plan prüfen** | unten | rechnet alle offenen Einträge in **einem** Durchgang durch — ein Einlesen für alle Deaktivieren/Aktivieren/Entfernen. Abgelehnte und fehlgeschlagene werden neu geprüft. |
 | **Alle ausführen** | unten, ↩ | prüft offene Pläne zuerst. Dann alle Einträge mit Administratorrechten in **einem** Aufruf des Hilfsprogramms mit **einer** Touch-ID-Abfrage, die die Anzahl nennt — danach die übrigen. Ein Fehler hält die anderen nicht an. |
@@ -174,14 +179,18 @@ App-Erweiterungen (pluginkit) und deine crontab brauchen keine.
 | Was | Wo | Grenze |
 |---|---|---|
 | **Zwei Quarantänen** | Ansicht *Quarantäne* | deine eigene (`~/Library/Application Support/launchkeeper/quarantine`, dieselbe wie die der Kommandozeile) und die des Hilfsprogramms (`/Library/Application Support/launchkeeper/quarantine`, gehört root) — in einer Liste, neueste zuerst |
-| **Zeile** | Liste | Paket oder Notiz, Anzahl der Pfade, Status, Datum; aufgeklappt jeder verschobene Pfad und „Paketbeleg vergessen“, wenn ein Beleg dabei ist |
-| **Wiederherstellen…** | aufgeklappte Zeile | öffnet das Plan-Blatt; ausgegraut bei bereits wiederhergestellten Einträgen. Einträge des Hilfsprogramms gehen über das Hilfsprogramm (Touch ID), deine eigenen mit Dateien im Benutzerordner ohne Administratorrechte. |
-| **Nur im Terminal** | aufgeklappte Zeile | ein Eintrag **deiner** Quarantäne, der Dateien außerhalb deines Benutzerordners zurücklegen müsste (von der Kommandozeile oder einer älteren Version): „Befehl kopieren“ gibt `launchkeeper quarantine restore <name>` |
+| **Liste mit Auswahl** | Liste | seit 1.2.1 wie die anderen Ansichten: ein Klick zeigt den Eintrag in der Detailspalte, nichts wird aufgeklappt |
+| **Zeile** | Liste | Häkchen (siehe *Markieren*), Titel (Paket, Bundle-ID der App oder Eintrag), darunter die Art („App-Reste“, „Paket deinstalliert“, „Eintrag entfernt“), rechts Zustand und Datum |
+| **Abschnitte** | Liste | nach dem, was der Eintrag **jetzt** enthält — von der Festplatte gelesen, nicht aus dem Status im Manifest: **In der Quarantäne** (alle Pfade da), **Unvollständig — nur ein Teil kam an** („N von M Pfaden“), **Leer — nichts verschoben** (mit Erklärung darunter), **Wiederhergestellt** |
+| **Detailspalte** | rechte Spalte | Titel, **Art**, **Zustand**, **Angelegt**, **Ablage** („deine Quarantäne“ / „Quarantäne des Systems (Hilfsprogramm)“), Erklärung des Zustands; **Pfade** mit einem Symbol je Pfad (in der Quarantäne oder nicht) und „Paketbeleg vergessen“, wenn ein Beleg dabei ist; **Begründung** (die Belege, etwa warum die App als gelöscht gilt) |
+| **Wiederherstellen…** | Detailspalte | öffnet das Plan-Blatt; fehlt bei leeren und wiederhergestellten Einträgen. Einträge des Hilfsprogramms gehen über das Hilfsprogramm (Touch ID), deine eigenen mit Dateien im Benutzerordner ohne Administratorrechte. |
+| **Nur im Terminal** | Detailspalte | ein Eintrag **deiner** Quarantäne, der Dateien außerhalb deines Benutzerordners zurücklegen müsste (von der Kommandozeile oder einer älteren Version): „Befehl kopieren“ gibt `launchkeeper quarantine restore <name>` |
 | **Was das Hilfsprogramm zurücklegt** | — | nur Einträge, die es selbst angelegt hat, nach Prüfung von Besitz und Bedeutung: jede Datei genau an ihren Ursprung, nie nach `/System`, nie in deinen Benutzerordner, nie an Orte, die Benutzer ändern können |
-| **Im Finder zeigen** | aufgeklappte Zeile | den Ordner des Eintrags |
-| **Endgültig löschen…** | aufgeklappte Zeile, rechts | seit 1.2; öffnet das Plan-Blatt: ein Schritt `rm -rf -- <Ordner des Eintrags>`, die Zahl der Pfade, roter Hinweis „Nicht wiederherstellbar …“. Ausführen mit **Endgültig löschen** bzw. „Endgültig löschen (Touch ID)“ — nur per Klick, nie mit ↩. Einträge des Hilfsprogramms löscht das Hilfsprogramm (nur eigene, Touch ID jedes Mal); deine eigenen, die dir durch und durch gehören, die App ohne Administratorrechte; deine mit Dateien, die nur root löschen darf, nur das Terminal (`launchkeeper quarantine purge <name> --apply`). Einzeln, nicht in der Warteschlange; auch bei wiederhergestellten Einträgen |
+| **Im Finder zeigen** | Detailspalte | den Ordner des Eintrags |
+| **Endgültig löschen…** | Detailspalte | seit 1.2; öffnet das Plan-Blatt: ein Schritt `rm -rf -- <Ordner des Eintrags>`, die Zahl der Pfade, roter Hinweis „Nicht wiederherstellbar …“. Ausführen mit **Endgültig löschen** bzw. „Endgültig löschen (Touch ID)“ — nur per Klick, nie mit ↩. Einträge des Hilfsprogramms löscht das Hilfsprogramm (nur eigene, Touch ID jedes Mal); deine eigenen, die dir durch und durch gehören, die App ohne Administratorrechte; deine mit Dateien, die nur root löschen darf, nur das Terminal (`launchkeeper quarantine purge <name> --apply`). Einzeln, nicht in der Warteschlange; auch bei wiederhergestellten Einträgen |
+| **Leere Einträge entfernen (n)** | Symbolleiste | seit 1.2.1; nur, wenn **deine** Quarantäne leere Einträge hat. Mit Rückfrage; löscht nur Einträge ohne jede Datei (gescheiterte Versuche), unter deinem Namen, ohne Touch ID; danach „n leere Einträge entfernt.“ Leere Einträge der Quarantäne des Systems nicht in einem Zug — die einzeln mit **Endgültig löschen…** |
 | **Neu laden** | Symbolleiste | liest die Einträge neu, etwa nach Änderungen im Terminal |
-| **Markieren** | Häkchen | nicht bei wiederhergestellten und nicht bei „Nur im Terminal“ |
+| **Markieren** | Häkchen | nur bei Einträgen, die sich in der App wiederherstellen lassen — nicht bei leeren, wiederhergestellten und „Nur im Terminal“ |
 
 ## Einstellungen
 

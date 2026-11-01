@@ -128,6 +128,25 @@ other users of this Mac.
 > administrator rights also sees the system-wide background items — without a prompt — as long
 > as the helper is set up. Most of them are readable in `/Library` anyway.
 
+## Full Disk Access
+
+LaunchKeeper does not need **Full Disk Access** to run, and does not ask for it on its own.
+Granting it is your decision. It is needed for one thing only: to move the leftovers of deleted
+apps that lie in `~/Library/Containers` (or `~/Library/Group Containers`). macOS protects this
+data from other apps, even after the app is deleted; without the access, macOS refuses the move,
+and nothing is moved.
+
+- **Without** Full Disk Access, leftovers outside the containers — caches, settings and the like
+  — still move. But a run stops at the first refused step, so the leftovers of an app with a
+  container need the access.
+- **To grant it:** System Settings › Privacy & Security › Full Disk Access → switch LaunchKeeper
+  on (or add it with **+**), then restart LaunchKeeper. The app shows the **Open Full Disk
+  Access** button when a step failed for this reason (since 1.2.1).
+- **To revoke it:** switch it off in the same place.
+
+The leftovers of deleted apps are always moved by the app itself, never by the helper. Details
+in [chapter 5](05-changing-entries.md#app-leftovers-and-full-disk-access).
+
 ## What leaves your Mac
 
 | | Leaves your Mac? |

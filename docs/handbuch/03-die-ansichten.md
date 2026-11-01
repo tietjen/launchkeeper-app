@@ -140,25 +140,52 @@ die App zurückkommt. Darunter steht jeder einzelne Pfad mit **… im Finder zei
 > die App selbst nicht mit Administratorrechten aus; das Blatt nennt dann den Befehl für das
 > Terminal ([Kapitel 5](05-eintraege-aendern.md)).
 
+> **Daten in `~/Library/Containers` brauchen den Festplattenvollzugriff.** macOS schützt die Daten
+> anderer Apps in ihren Behältern, auch wenn die App gelöscht ist. Ohne Festplattenvollzugriff für
+> LaunchKeeper verweigert macOS das Verschieben, und es wird nichts verschoben. Abhilfe:
+> Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff → LaunchKeeper einschalten
+> (oder mit **+** hinzufügen), LaunchKeeper neu starten, erneut versuchen. Einzelheiten in
+> [Kapitel 5](05-eintraege-aendern.md#app-reste-und-der-festplattenvollzugriff).
+
 ## Quarantäne
 
-Alles, was LaunchKeeper wegnimmt, landet hier — **verschoben, nicht gelöscht**. Jede Zeile ist
-ein **Eintrag** der Quarantäne: das Paket oder die Bundle-ID, die Anzahl der Pfade („… Pfad(e)“), der Status (etwa
-`applied-ok` oder `restored`) und das Datum.
+Alles, was LaunchKeeper wegnimmt, landet hier — **verschoben, nicht gelöscht**. Seit 1.2.1 ist
+die Ansicht eine Liste mit Auswahl wie die anderen: Jede Zeile ist ein **Eintrag** der Quarantäne
+mit einem Häkchen (nur bei Einträgen, die sich in der App wiederherstellen lassen), dem Titel —
+Paket, Bundle-ID der App oder Eintrag —, darunter der Art („App-Reste“, „Paket deinstalliert“,
+„Eintrag entfernt“), rechts dem Zustand und dem Datum.
 
-Ein Klick auf das Dreieck klappt den Eintrag auf: die ursprünglichen Pfade, ein Hinweis, wenn
-dabei ein Paketbeleg vergessen wurde („Paketbeleg vergessen — Kopie liegt in der Quarantäne“),
-und die Knöpfe:
+Die Abschnitte richten sich danach, was ein Eintrag **jetzt** enthält — LaunchKeeper sieht auf der
+Festplatte nach, nicht im Stand des Manifests:
+
+- **In der Quarantäne** — alle Pfade liegen dort.
+- **Unvollständig — nur ein Teil kam an** — „N von M Pfaden“; der Rest blieb an seinem Ort.
+- **Leer — nichts verschoben** — Versuche, bei denen macOS schon den ersten Schritt verweigert hat.
+- **Wiederhergestellt** — die Dateien sind zurück.
+
+Ein Klick auf eine Zeile zeigt rechts die Detailspalte: Titel, **Art**, **Zustand**, **Angelegt**,
+**Ablage** („deine Quarantäne“ oder „Quarantäne des Systems (Hilfsprogramm)“), einen Satz, was der
+Zustand bedeutet, unter **Pfade** jeden ursprünglichen Pfad mit einem Symbol, ob er in der
+Quarantäne liegt, gegebenenfalls „Paketbeleg vergessen — Kopie liegt in der Quarantäne“, unter
+**Begründung** die Belege (bei App-Resten etwa, warum die App als gelöscht gilt), und die Knöpfe:
 
 - **Wiederherstellen…** — öffnet das Blatt mit dem Plan, wie bei jeder Aktion
   ([Kapitel 5](05-eintraege-aendern.md)). Wiederherstellen überschreibt nie: Steht am alten Ort
-  inzwischen etwas Neues, wird dieser Pfad übersprungen und genannt.
+  inzwischen etwas Neues, wird dieser Pfad übersprungen und genannt. Fehlt bei leeren und
+  wiederhergestellten Einträgen.
 - **Im Finder zeigen** — öffnet den Ordner des Eintrags.
-- **Endgültig löschen…** (rechts, seit 1.2) — öffnet das Blatt mit dem Plan; danach gibt es
+- **Endgültig löschen…** (seit 1.2) — öffnet das Blatt mit dem Plan; danach gibt es
   keinen Rückweg. Mehr dazu unten.
 
-**Neu laden** in der Symbolleiste liest die Quarantäne neu, etwa nachdem du im Terminal etwas
-geändert hast.
+In der Symbolleiste:
+
+- **Leere Einträge entfernen (N)** (seit 1.2.1) — nur, wenn **deine** Quarantäne leere Einträge
+  hat. Nach einer Rückfrage löscht es die Einträge, in denen keine Datei liegt, unter deinem Namen
+  und ohne Touch ID; danach steht dort „N leere Einträge entfernt.“ Leere Einträge der Quarantäne
+  des Systems bleiben stehen — die löschst du einzeln.
+- **Neu laden** — liest die Quarantäne neu, etwa nachdem du im Terminal etwas geändert hast.
+
+Mehr in [Kapitel 8](08-quarantaene-und-rueckwege.md#die-ansicht-quarantäne).
 
 ### Zwei Quarantänen
 
@@ -174,8 +201,8 @@ und fragt nach Touch ID.
 
 > Einen Eintrag in **deiner** Quarantäne, der Dateien außerhalb deines Benutzerordners bewegt hat
 > — meist mit der Kommandozeile angelegt —, stellt das Hilfsprogramm nicht wieder her: Es setzt
-> nur zurück, was es selbst verwahrt. Statt **Wiederherstellen…** steht dann „Nur im Terminal:
-> launchkeeper quarantine restore …“ mit **Befehl kopieren**.
+> nur zurück, was es selbst verwahrt. Statt **Wiederherstellen…** steht dann „Wiederherstellen nur
+> im Terminal: launchkeeper quarantine restore …“ mit **Befehl kopieren**.
 
 ### Endgültig löschen
 

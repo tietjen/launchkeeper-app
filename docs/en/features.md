@@ -94,7 +94,7 @@ click) → **verified result**.
 | **Enable again** | Next steps, queue | only for disabled entries |
 | **Remove** | Next steps, queue | only if the check allows it — for launchd entries only for **orphaned** ones. A leftover goes into the quarantine; an orphaned launch file is deleted, after a backup has been made. |
 | **Move into quarantine** | Next steps (after **Disable**), queue | for working entries: first disabled, then the launch file moves into the quarantine. The program itself stays. |
-| **Move leftovers into quarantine** | App leftovers | never through the helper (the “app is gone” check needs the user's LaunchServices); if the plan would need administrator rights, the sheet shows the Terminal command |
+| **Move leftovers into quarantine** | App leftovers | never through the helper (the “app is gone” check needs the user's LaunchServices); if the plan would need administrator rights, the sheet shows the Terminal command. Data in `~/Library/Containers` (and `Group Containers`) needs **Full Disk Access** for LaunchKeeper — without it macOS refuses the move, and the run stops at the first refused step. If it moved nothing, since kit 0.13.1 no empty quarantine entry is left behind. |
 | **Restore from quarantine** | Quarantine, queue | see [Quarantine](#quarantine) |
 | **Uninstall package** | Packages › detail column, queue | **always** needs administrator rights. Takes only files that still come unchanged from the package; changed and shared ones stay. Everything goes into the helper's quarantine. |
 | **Remove receipt** | Packages, when none of its own files are left | forgets the installer receipt; a copy stays in the quarantine |
@@ -103,6 +103,7 @@ click) → **verified result**.
 | **Without the helper** | plan sheet | button **Set up helper** or **Allow in System Settings**, **Open Settings**, and the Terminal command with `--apply` to copy |
 | **Outdated helper** | plan sheet | **Restart helper**; until then the app sends it nothing |
 | **Helper ran nothing** | result | **Restart and try again** then recomputes the plan |
+| **Incomplete** | result | since 1.2.1 with an explanation when the cause is known; if macOS denies access to `~/Library/Containers`, also **Open Full Disk Access** |
 | **While the queue is running** | plan sheet | **Run** is locked until the run is over |
 | **Log** | — | the app's own actions: `~/Library/Logs/launchkeeper/operations.log` (the same file as the command line); the helper's actions: `/Library/Logs/launchkeeper/operations.log` |
 
@@ -118,8 +119,12 @@ extensions (pluginkit) and your crontab need none.
 | **Selecting** | checkboxes in Inventory, Background, Packages, App leftovers, Quarantine | checkboxes are separate per view and survive switching between views. A Background row stands for its components. |
 | **Add to queue** | right column, as soon as something is selected | one button per possible action with “n of m” — only the entries the action fits. Afterwards the used checkboxes disappear. |
 | **Add to the queue as “By hand”** | right column | for selected entries without an automatic action; **never** for Apple's own |
-| **Queued rows** | in every view | a queue icon instead of the checkbox (blue open, green done, orange rejected); a click takes the row out. A Background row with only some of its components queued shows “x/y”. |
+| **Queued rows** | in every view | a queue icon instead of the checkbox (blue open, green done, orange refused or failed); a click takes the row out. A Background row with only some of its components queued shows “x/y”. |
 | **One target, one entry** | — | an entry is never in the queue twice; adding it again replaces the action |
+| **Sections** | list | since 1.2.1: **Open**, **Failed or refused**, **Done**, **By hand** (before, one section “Automatic”); empty ones are left out |
+| **Reason in the row** | row | “failed: …”/“refused: …” with a short reason in words when known (“macOS denies access — Full Disk Access missing”, “nothing left to do”), otherwise the core's message |
+| **Failed or refused** | section footer | says that these entries did not run, or not completely, and names the common cause (Full Disk Access) when it applies. Buttons **Open Full Disk Access** (only then), **Try again** (failed and refused back to open; **Run all** then tries them once more), **Remove from the list** (nothing is run) |
+| **Detail of a failed entry** | right column | a **Failed** or **Refused** section: explanation, the unchanged **Message**, **Open Full Disk Access** / **Try again** / **Remove from the list** — also after a restart (the run's outcome is not kept, the state is) |
 | **Changing the action** | row in the queue | among the actions the entry offers; the plan is checked again |
 | **Check plan** | bottom | computes all open entries in **one** pass — one scan for all Disable/Enable/Remove. Rejected and failed ones are checked again. |
 | **Run all** | bottom, ↩ | checks open plans first. Then all entries with administrator rights in **one** call to the helper with **one** Touch ID prompt that states the number — then the rest. One failure does not stop the others. |
@@ -176,14 +181,18 @@ extensions (pluginkit) and your crontab need none.
 | What | Where | Limit |
 |---|---|---|
 | **Two quarantines** | *Quarantine* view | your own (`~/Library/Application Support/launchkeeper/quarantine`, the same as the command line's) and the helper's (`/Library/Application Support/launchkeeper/quarantine`, owned by root) — in one list, newest first |
-| **Row** | list | package or note, number of paths, status, date; expanded, every moved path and **Package receipt forgotten**, if a receipt is included |
-| **Restore…** | expanded row | opens the plan sheet; dimmed for entries already restored. The helper's entries go through the helper (Touch ID), your own with files in the home folder without administrator rights. |
-| **Terminal only** | expanded row | an entry of **your** quarantine that would have to put back files outside your home folder (from the command line or an older version): **Copy command** gives `launchkeeper quarantine restore <name>` |
+| **List with selection** | list | since 1.2.1 like the other views: a click shows the entry in the detail column, nothing is expanded |
+| **Row** | list | checkbox (see *Selecting*), title (package, the app's bundle ID or entry), the kind below it (“App leftovers”, “Package uninstalled”, “Entry removed”), state and date on the right |
+| **Sections** | list | by what the entry holds **right now** — read from disk, not from the status in the manifest: **In the quarantine** (all paths there), **Incomplete — only part arrived** (“N of M paths”), **Empty — nothing moved** (with an explanation below), **Restored** |
+| **Detail column** | right column | title, **Kind**, **State**, **Created**, **Store** (“your quarantine” / “System quarantine (helper)”), an explanation of the state; **Paths** with an icon per path (in the quarantine or not) and **Package receipt forgotten**, if a receipt is included; **Reasons** (the evidence, such as why the app counts as deleted) |
+| **Restore…** | detail column | opens the plan sheet; missing for empty and restored entries. The helper's entries go through the helper (Touch ID), your own with files in the home folder without administrator rights. |
+| **Terminal only** | detail column | an entry of **your** quarantine that would have to put back files outside your home folder (from the command line or an older version): **Copy command** gives `launchkeeper quarantine restore <name>` |
 | **What the helper puts back** | — | only entries it created itself, after checking ownership and meaning: every file exactly to its origin, never to `/System`, never into your home folder, never to places users can change |
-| **Show in Finder** | expanded row | the entry's folder |
-| **Delete for good…** | expanded row, right | since 1.2; opens the plan sheet: one step `rm -rf -- <entry folder>`, the number of paths, red notice “Cannot be restored …”. Run with **Delete for good** or “Delete for good (Touch ID)” — by click only, never with ↩. The helper's entries are deleted by the helper (only its own, Touch ID every time); your own that are yours through and through by the app without administrator rights; yours with files only root may delete only by the Terminal (`launchkeeper quarantine purge <name> --apply`). One at a time, not in the queue; restored entries too |
+| **Show in Finder** | detail column | the entry's folder |
+| **Delete for good…** | detail column | since 1.2; opens the plan sheet: one step `rm -rf -- <entry folder>`, the number of paths, red notice “Cannot be restored …”. Run with **Delete for good** or “Delete for good (Touch ID)” — by click only, never with ↩. The helper's entries are deleted by the helper (only its own, Touch ID every time); your own that are yours through and through by the app without administrator rights; yours with files only root may delete only by the Terminal (`launchkeeper quarantine purge <name> --apply`). One at a time, not in the queue; restored entries too |
+| **Remove empty entries (n)** | toolbar | since 1.2.1; only when **your** quarantine has empty entries. With a confirmation; deletes only entries without any file (failed attempts), as you, without Touch ID; afterwards “n empty entries removed.” Empty entries of the system quarantine not in one go — those one at a time with **Delete for good…** |
 | **Reload** | toolbar | reads the entries again, for example after changes in the Terminal |
-| **Selecting** | checkbox | not for restored entries and not for **Terminal only** |
+| **Selecting** | checkbox | only for entries that can be restored in the app — not for empty, restored or **Terminal only** ones |
 
 ## Settings
 

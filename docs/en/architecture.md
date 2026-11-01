@@ -295,6 +295,13 @@ by itself.
 **Ways back** exist only for entries that ran in **this** session: a status read from the file
 proves nothing.
 
+**Failures** (since 1.2.1) have a section of their own, not among the open entries. The
+explanation (`QueueFailureHint`) is derived from the saved status with the core's message, not
+from the run's outcome — so it is still there after a restart. Two cases are recognised so far: a
+move under `~/Library/Containers` or `Group Containers` that macOS refused (missing Full Disk
+Access, with a link into System Settings) and “nothing left to do”. “Try again” sets the status
+back to open and discards the old outcome.
+
 **Saving.** The queue lives in
 `~/Library/Application Support/de.paranoidsecurity.LaunchKeeper/queue.json` — it lists what is to
 run with administrator rights, and is therefore created readable only by its owner from the first
@@ -400,6 +407,8 @@ Most of the rules above were not designed but found — in live runs and in revi
 | **A human checks off network services** (0.3.3) | A service is in the inventory only while its program runs; its disappearance may simply mean “quit”. |
 | **The queue survives a downgrade** (0.3.3) | Older versions cleared the whole queue if they could not read one entry. Since then: read entry by entry, put the original aside, when in doubt do not save at all. |
 | **Stable keys instead of numbers** | Position numbers point to different entries after a scan with a different composition — the core learned this in V0.4.3, when a scan without the BTM layer numbered differently. |
+| **A quarantine entry's state comes from the disk** (1.2.1) | The manifest said `applied-fail(5)` for an entry that held nothing just as for one that lacked only one path. The view therefore checks each moved path (`lstat`, links are not followed) and groups by that: complete, incomplete, empty, restored. |
+| **No empty entry for a run that moved nothing** (core 0.13.1) | When macOS refused the very first step, every retry added an empty `applied-fail` entry. Now the core keeps none; “Remove empty entries” clears the old ones away — only in your quarantine; the system's stays a Touch ID decision per entry. |
 | **One main window** (1.1.0) | Inventory, queue and introduction exist once; a second window only duplicated them. |
 | **Help in code, not as a Help Book** (1.1.0) | It is translated through the same string catalog as the interface; help and the interface cannot drift apart in wording, and no help indexer is needed. |
 | **Introduction as a popover on the real views** (1.1.0/1.1.1) | The window's columns are hosted separately; a drawn overlay would not know their position. Where a card cannot appear, a sheet comes after one second. |

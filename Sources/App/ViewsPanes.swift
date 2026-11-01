@@ -253,24 +253,21 @@ struct LeftoverRow: View {
 
 // MARK: - Quarantäne
 
-/// What cleanup moved away: one row per quarantine entry with its moved
-/// paths, its way back (restore) and the one real deletion (purge, 1.2).
+/// What cleanup moved away: one selectable row per entry, grouped by what
+/// it holds right now; the paths, the way back and the one real deletion
+/// are in the detail column (`QuarantineDetail`) — like every other view
+/// (TJ 2026-11-01: rows had to be unfolded before anything could be done).
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
     @Environment(Marks.self) private var marks
     @Environment(InventoryStore.self) private var store
-    @Environment(HelperStatus.self) private var helper
-    @Environment(WatchModel.self) private var watch
     @Environment(QueueModel.self) private var queue
-    /// The entry whose restore or purge sheet is open.
-    @State private var sheet: QuarantineSheet?
-
-    /// An entry of the user's quarantine that moves something outside the
-    /// home: only root can put it back, and the helper restores only its own
-    /// entries (review 2026-09-27) — so the way back is the Terminal.
-    private func terminalOnly(_ entry: QuarantineManifest) -> Bool {
-        !model.isSystemEntry(entry) && entry.moves.contains { !$0.original.hasPrefix(NSHomeDirectory() + "/") }
-    }
+    /// Selected entry name.
+    @Binding var selection: String?
+    @State private var confirmRemoveEmpty = false
+    @State private var removingEmpty = false
+    /// What the last "remove empty entries" did, for one line under the intro.
+    @State private var removalNote: String?
 
     var body: some View {
         Group {
@@ -278,61 +275,136 @@ struct QuarantinePane: View {
                 ContentUnavailableView("Quarantäne ist leer", systemImage: "archivebox",
                                        description: Text("Was LaunchKeeper beim Aufräumen wegnimmt, landet hier — wiederherstellbar."))
             } else {
-                List(model.entries, id: \.name) { entry in
-                    DisclosureGroup {
-                        ForEach(entry.moves, id: \.original) { move in
-                            Text(move.original).font(.callout).textSelection(.enabled)
-                        }
-                        if entry.forgot { Text("Paketbeleg vergessen — Kopie liegt in der Quarantäne").font(.caption) }
-                        HStack {
-                            if terminalOnly(entry) {
-                                // The helper restores only entries it keeps itself (root-owned tree);
-                                // this one is in the user's quarantine and needs root → Terminal.
-                                Text("Nur im Terminal: launchkeeper quarantine restore \(entry.name)")
-                                    .font(.caption.monospaced()).textSelection(.enabled)
-                                Button("Befehl kopieren") {
-                                    NSPasteboard.general.clearContents()
-                                    NSPasteboard.general.setString("launchkeeper quarantine restore \(entry.name)", forType: .string)
-                                }
-                            } else {
-                                Button("Wiederherstellen…") { sheet = QuarantineSheet(name: entry.name, purge: false) }
-                                    .disabled(entry.status == "restored")
-                            }
-                            Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
-                            Spacer()
-                            Button("Endgültig löschen…", role: .destructive) {
-                                sheet = QuarantineSheet(name: entry.name, purge: true, system: model.isSystemEntry(entry))
-                            }
-                            .help("Endgültig löschen — zeigt erst den Plan. Danach sind die Dateien dieses Eintrags weg, ohne Rückweg.")
-                        }
-                    } label: {
-                        HStack {
-                            if entry.status != "restored" && !terminalOnly(entry) {
-                                MarkBox(id: entry.name, set: \.quarantine, marks: marks, queue: queue, targets: [.quarantine(name: entry.name)])
-                            }
-                            Text(entry.packageIdentifier ?? entry.notes.first ?? entry.kind)
-                            Spacer()
-                            Text("\(entry.moves.count) Pfad(e)").foregroundStyle(.secondary)
-                            Text(entry.status).font(.caption).foregroundStyle(entry.status == "applied-ok" ? .green : .secondary)
-                            Text(String(entry.createdAt.prefix(10))).font(.caption).foregroundStyle(.secondary)
+                let groups = grouped
+                List(selection: $selection) {
+                    Section {
+                        PaneIntro(text: "Was LaunchKeeper weggenommen hat, mit dem Ort, von dem es kam. Wähle einen Eintrag: rechts stehen die Pfade, das Wiederherstellen und das endgültige Löschen.")
+                        if let removalNote { Text(removalNote).font(.callout).foregroundStyle(.secondary) }
+                    }
+                    section("In der Quarantäne", groups.held)
+                    section("Unvollständig — nur ein Teil kam an", groups.partial)
+                    if !groups.empty.isEmpty {
+                        Section {
+                            ForEach(groups.empty, id: \.name) { row($0) }
+                        } header: {
+                            Text("Leer — nichts verschoben")
+                        } footer: {
+                            Text("Versuche, bei denen macOS schon den ersten Schritt verweigert hat. Sie enthalten keine Dateien; „Leere Einträge entfernen“ räumt sie weg.")
+                                .font(.caption).foregroundStyle(.secondary)
                         }
                     }
+                    section("Wiederhergestellt", groups.restored)
                 }
             }
         }
         .toolbar {
+            let empty = model.emptyOwnEntries
+            if !empty.isEmpty {
+                Button { confirmRemoveEmpty = true } label: {
+                    Label("Leere Einträge entfernen (\(empty.count))", systemImage: "trash")
+                }
+                .disabled(removingEmpty || queue.phase != .idle)
+                .help("Leere Einträge entfernen — löscht die Einträge deiner Quarantäne, in denen keine Datei liegt (gescheiterte Versuche). Einträge mit Dateien bleiben.")
+            }
             Button { model.reload() } label: { Label("Neu laden", systemImage: "arrow.clockwise") }
                 .help("Quarantäne neu laden — liest die Einträge der Quarantäne erneut, z. B. nach Änderungen im Terminal.")
         }
+        .confirmationDialog("\(model.emptyOwnEntries.count) leere Einträge entfernen?", isPresented: $confirmRemoveEmpty) {
+            Button("Leere Einträge entfernen", role: .destructive) { Task { await removeEmpty() } }
+        } message: {
+            Text("In diesen Einträgen liegt keine Datei — bei den Versuchen wurde nichts verschoben. Es geht nichts verloren, was sich wiederherstellen ließe.")
+        }
         .onAppear { model.reload() }
-        .sheet(item: $sheet) { target in
-            ActionSheet(request: target.request, performer: Performer.make(store: store)) {
-                model.reload()
-                Task { await store.refresh(reuseBTM: true, reason: .action) }
+    }
+
+    /// The entries by what they hold, newest first within each group.
+    private var grouped: (held: [QuarantineManifest], partial: [QuarantineManifest],
+                          empty: [QuarantineManifest], restored: [QuarantineManifest]) {
+        var result: (held: [QuarantineManifest], partial: [QuarantineManifest],
+                     empty: [QuarantineManifest], restored: [QuarantineManifest]) = ([], [], [], [])
+        for entry in model.entries {
+            switch model.holding(of: entry) {
+            case .complete: result.held.append(entry)
+            case .partial: result.partial.append(entry)
+            case .empty: result.empty.append(entry)
+            case .restored: result.restored.append(entry)
             }
-            .environment(helper)
-            .environment(watch)
-            .environment(queue)
+        }
+        return result
+    }
+
+    /// One titled section, left out when empty.
+    @ViewBuilder private func section(_ title: LocalizedStringKey, _ entries: [QuarantineManifest]) -> some View {
+        if !entries.isEmpty {
+            Section(title) { ForEach(entries, id: \.name) { row($0) } }
+        }
+    }
+
+    private func row(_ entry: QuarantineManifest) -> some View {
+        QuarantineRow(entry: entry, holding: model.holding(of: entry),
+                      markable: model.holding(of: entry) != .restored && model.holding(of: entry) != .empty
+                          && !QuarantineDetail.terminalOnly(entry, system: model.isSystemEntry(entry)),
+                      marks: marks, queue: queue)
+            .tag(entry.name)
+    }
+
+    /// Purges every empty entry of the user's own quarantine — as the user
+    /// (kit 0.13), one engine run per entry, each with its own audit line.
+    private func removeEmpty() async {
+        removingEmpty = true
+        // The folder of each entry, checked again right before its removal —
+        // the list may be minutes old by the time the dialog is confirmed.
+        let candidates = model.emptyOwnEntries.map { ($0.name, model.directory(of: $0)) }
+        let performer = Performer.make(store: store)
+        let (removed, firstProblem) = await Task.detached(priority: .userInitiated) { () -> (Int, String?) in
+            var removed = 0
+            var problem: String?
+            for (name, directory) in candidates {
+                guard QuarantineModel.holdsNoFile(directory) else { continue }
+                let outcome = performer.perform(.purge(quarantine: name, system: false), apply: true)
+                if outcome.state == .done { removed += 1 } else if problem == nil {
+                    switch outcome.state {
+                    case .failed(let detail), .refused(let detail): problem = detail
+                    default: break
+                    }
+                }
+            }
+            return (removed, problem)
+        }.value
+        model.reload()
+        if let selected = selection, !model.entries.contains(where: { $0.name == selected }) { selection = nil }
+        if removed == candidates.count {
+            removalNote = String(localized: "\(removed) leere Einträge entfernt.")
+        } else {
+            removalNote = String(localized: "\(removed) von \(candidates.count) leeren Einträgen entfernt.")
+                + (firstProblem.map { " " + $0 } ?? String(localized: " Die übrigen enthalten inzwischen Dateien und bleiben."))
+        }
+        removingEmpty = false
+    }
+}
+
+/// One line per quarantine entry: what it was, what it holds, when.
+/// Models are passed in — list cells read no environment (see `MarkBox`).
+struct QuarantineRow: View {
+    let entry: QuarantineManifest
+    let holding: QuarantineModel.Holding
+    let markable: Bool
+    let marks: Marks
+    let queue: QueueModel
+
+    var body: some View {
+        HStack {
+            if markable {
+                MarkBox(id: entry.name, set: \.quarantine, marks: marks, queue: queue, targets: [.quarantine(name: entry.name)])
+            }
+            VStack(alignment: .leading, spacing: 1) {
+                Text(QuarantineDetail.title(of: entry)).lineLimit(1)
+                Text(QuarantineDetail.kindLabel(entry.kind)).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(QuarantineDetail.holdingLabel(holding)).font(.caption)
+                .foregroundStyle(holding == .complete ? .green : holding == .empty || holding == .restored ? .secondary : .orange)
+            Text(String(entry.createdAt.prefix(10))).font(.caption).foregroundStyle(.secondary)
         }
     }
 }
@@ -413,6 +485,133 @@ struct BackgroundDetail: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Detail of one quarantine entry: what it holds, each path with its state,
+/// the way back and the one real deletion.
+struct QuarantineDetail: View {
+    let entry: QuarantineManifest
+    @Environment(QuarantineModel.self) private var model
+    @Environment(InventoryStore.self) private var store
+    @Environment(HelperStatus.self) private var helper
+    @Environment(WatchModel.self) private var watch
+    @Environment(QueueModel.self) private var queue
+    /// The open restore or purge sheet.
+    @State private var sheet: QuarantineSheet?
+
+    var body: some View {
+        let holding = model.holding(of: entry)
+        let system = model.isSystemEntry(entry)
+        Form {
+            QueuedBanner(targets: [.quarantine(name: entry.name)])
+            Section {
+                Text(Self.title(of: entry)).font(.title3).bold()
+                LabeledContent("Art", value: Self.kindLabel(entry.kind))
+                LabeledContent("Zustand", value: Self.holdingLabel(holding))
+                LabeledContent("Angelegt", value: String(entry.createdAt.prefix(16)).replacingOccurrences(of: "T", with: " "))
+                LabeledContent("Ablage", value: system ? String(localized: "Quarantäne des Systems (Hilfsprogramm)")
+                                                       : String(localized: "deine Quarantäne"))
+                Text(Self.holdingExplanation(holding)).font(.callout).foregroundStyle(.secondary)
+            }
+            Section("Pfade") {
+                ForEach(entry.moves, id: \.original) { move in
+                    let here = QuarantineModel.exists(move.quarantined)
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: here ? "archivebox.fill" : "minus.circle")
+                            .foregroundStyle(here ? Color.accentColor : .secondary)
+                            .help(here ? String(localized: "liegt in der Quarantäne") : String(localized: "nicht in der Quarantäne"))
+                        Text(move.original).font(.callout).textSelection(.enabled)
+                    }
+                }
+                if entry.forgot { Text("Paketbeleg vergessen — Kopie liegt in der Quarantäne").font(.caption) }
+            }
+            if entry.notes.count > 1 {
+                Section("Begründung") {
+                    ForEach(Array(entry.notes.dropFirst().enumerated()), id: \.offset) { _, note in
+                        Text(note).font(.callout).foregroundStyle(.secondary)
+                    }
+                }
+            }
+            Section {
+                if Self.terminalOnly(entry, system: system) {
+                    // The helper restores only entries it keeps itself (root-owned tree);
+                    // this one is in the user's quarantine and needs root → Terminal.
+                    Text("Wiederherstellen nur im Terminal: launchkeeper quarantine restore \(entry.name)")
+                        .font(.caption.monospaced()).textSelection(.enabled)
+                    Button("Befehl kopieren") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString("launchkeeper quarantine restore \(entry.name)", forType: .string)
+                    }
+                } else if holding != .empty && holding != .restored {
+                    Button("Wiederherstellen…") { sheet = QuarantineSheet(name: entry.name, purge: false) }
+                }
+                Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
+                Button("Endgültig löschen…", role: .destructive) {
+                    sheet = QuarantineSheet(name: entry.name, purge: true, system: system)
+                }
+                .help("Endgültig löschen — zeigt erst den Plan. Danach sind die Dateien dieses Eintrags weg, ohne Rückweg.")
+            }
+        }
+        .formStyle(.grouped)
+        .sheet(item: $sheet) { target in
+            ActionSheet(request: target.request, performer: Performer.make(store: store)) {
+                // After the sheet is gone: a purged entry takes this detail
+                // (and its sheet) out of the hierarchy (review 2026-11-01).
+                DispatchQueue.main.async { model.reload() }
+                Task { await store.refresh(reuseBTM: true, reason: .action) }
+            }
+            .environment(helper)
+            .environment(watch)
+            .environment(queue)
+        }
+    }
+
+    /// An entry of the user's quarantine that moves something outside the
+    /// home: only root can put it back, and the helper restores only its own
+    /// entries (review 2026-09-27) — so the way back is the Terminal.
+    static func terminalOnly(_ entry: QuarantineManifest, system: Bool) -> Bool {
+        !system && entry.moves.contains { !$0.original.hasPrefix(NSHomeDirectory() + "/") }
+    }
+
+    /// What the entry was about: the package, the app's bundle id, or the entry.
+    static func title(of entry: QuarantineManifest) -> String {
+        entry.packageIdentifier ?? entry.notes.first ?? entry.name
+    }
+
+    /// The kind of cleanup that made the entry, in words.
+    static func kindLabel(_ kind: String) -> String {
+        switch kind {
+        case "app-leftovers": return String(localized: "App-Reste")
+        case "uninstall": return String(localized: "Paket deinstalliert")
+        case "remove": return String(localized: "Eintrag entfernt")
+        default: return kind
+        }
+    }
+
+    /// The holding in one or two words.
+    static func holdingLabel(_ holding: QuarantineModel.Holding) -> String {
+        switch holding {
+        case .complete: return String(localized: "in der Quarantäne")
+        case .partial(let held, let total):
+            return held == 0 ? String(localized: "nur der Paketbeleg") : String(localized: "\(held) von \(total) Pfaden")
+        case .empty: return String(localized: "leer")
+        case .restored: return String(localized: "wiederhergestellt")
+        }
+    }
+
+    /// What the holding means for the user.
+    static func holdingExplanation(_ holding: QuarantineModel.Holding) -> String {
+        switch holding {
+        case .complete:
+            return String(localized: "Alles liegt hier und lässt sich wiederherstellen.")
+        case .partial:
+            return String(localized: "Ein Teil kam in die Quarantäne, der Rest blieb an seinem Ort — meist, weil macOS das Verschieben verweigert hat (Daten einer anderen App ohne Festplattenvollzugriff). Wiederherstellen bringt zurück, was hier liegt.")
+        case .empty:
+            return String(localized: "Hier liegt keine Datei — meist hat macOS schon den ersten Schritt verweigert, und die Dateien sind an ihrem Ort geblieben. Der Eintrag kann weg: „Leere Einträge entfernen“ oder „Endgültig löschen…“.")
+        case .restored:
+            return String(localized: "Die Dateien sind zurück an ihrem Ort. Der Eintrag ist nur noch das Protokoll davon.")
+        }
     }
 }
 

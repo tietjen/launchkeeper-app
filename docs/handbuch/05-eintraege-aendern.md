@@ -51,7 +51,10 @@ Entfernen sieht es im Dateisystem nach. Das Ergebnis:
 | „Nicht vollständig: …“ | ein Schritt ist fehlgeschlagen oder die Prüfung sieht die Änderung nicht |
 | Begründung mit erhobener Hand | abgelehnt — nichts ist gelaufen |
 
-Hinweise und Rückweg stehen auch hier.
+Hinweise und Rückweg stehen auch hier. Erkennt LaunchKeeper die Ursache eines Fehlschlags, steht
+seit 1.2.1 unter „Nicht vollständig: …“ zusätzlich eine Erklärung in Worten — beim häufigsten Fall,
+dem fehlenden Festplattenvollzugriff, mit dem Knopf **Festplattenvollzugriff öffnen**
+(siehe [App-Reste und der Festplattenvollzugriff](#app-reste-und-der-festplattenvollzugriff)).
 
 ### 5. Fertig
 
@@ -121,6 +124,40 @@ zuerst.
 
 Einträge, die ein Konfigurationsprofil (MDM) verwaltet, bekommen diesen Schritt nicht: Da
 entscheidet das Profil.
+
+### App-Reste und der Festplattenvollzugriff
+
+Viele Apps legen ihre Daten in einem eigenen Behälter unter `~/Library/Containers` (oder
+`~/Library/Group Containers`) ab. Diese Daten schützt macOS vor anderen Apps — **auch dann noch,
+wenn die App selbst gelöscht ist**. Hat LaunchKeeper keinen **Festplattenvollzugriff**, verweigert
+macOS das Verschieben des Behälters.
+
+So sieht das aus:
+
+- Im Blatt steht „Nicht vollständig: …“ und darunter (seit 1.2.1): „macOS hat das Verschieben
+  verweigert: Die Daten anderer Apps in ~/Library/Containers sind geschützt, auch wenn die App
+  gelöscht ist. …“ mit dem Knopf **Festplattenvollzugriff öffnen**.
+- In der [Warteschlange](06-die-warteschlange.md#fehlgeschlagen-oder-abgelehnt) steht der Eintrag
+  unter **Fehlgeschlagen oder abgelehnt** mit „macOS verweigert den Zugriff — Festplattenvollzugriff
+  fehlt“.
+
+Abhilfe:
+
+1. **Festplattenvollzugriff öffnen** — oder von Hand: Systemeinstellungen › Datenschutz &
+   Sicherheit › Festplattenvollzugriff.
+2. Dort **LaunchKeeper** einschalten (fehlt es in der Liste, mit **+** hinzufügen).
+3. **LaunchKeeper neu starten** — macOS gibt die Freigabe erst einem neu gestarteten Programm.
+4. Erneut versuchen: im Blatt noch einmal **Ausführen…**, in der Warteschlange **Erneut
+   versuchen** und dann **Alle ausführen**.
+
+Den Festplattenvollzugriff zu geben ist deine Entscheidung; LaunchKeeper fragt nicht von sich aus
+danach. Ohne ihn lassen sich Reste außerhalb der Behälter — Caches, Einstellungen (`Preferences`)
+und Ähnliches — weiter verschieben. Ein Lauf hält aber beim ersten verweigerten Schritt an: Hat
+eine App einen Behälter, braucht das Verschieben ihrer Reste den Zugriff. Was vor dem verweigerten
+Schritt schon verschoben war, liegt in der Quarantäne (Abschnitt **Unvollständig**,
+[Kapitel 8](08-quarantaene-und-rueckwege.md#gruppiert-nach-dem-was-wirklich-dort-liegt)). Hat der
+Lauf gar nichts verschoben, behält LaunchKeeper seit LaunchKeeperKit 0.13.1 auch keinen leeren
+Quarantäne-Eintrag mehr.
 
 ## Die Prüfung
 

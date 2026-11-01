@@ -72,12 +72,16 @@ sind in der Warteschlange, der Rest lässt sich noch markieren.
 Du findest sie in der Seitenleiste unter **Stapelverarbeitung › Warteschlange**. Die Zahl
 daneben zählt die Einträge, die noch nicht abgeschlossen sind.
 
-Die Liste hat zwei Abschnitte:
+Die Liste hat bis zu vier Abschnitte (seit 1.2.1; vorher standen die ersten drei zusammen unter
+„Automatisch“). Leere Abschnitte fehlen.
 
-- **Automatisch** — was LaunchKeeper selbst ausführt.
+- **Offen** — was LaunchKeeper selbst ausführt und noch nicht gelaufen ist.
+- **Fehlgeschlagen oder abgelehnt** — was beim letzten Lauf oder der letzten Prüfung nicht ging,
+  mit der Ursache und dem, was du tun kannst (siehe [unten](#fehlgeschlagen-oder-abgelehnt)).
+- **Erledigt** — was ausgeführt und überprüft ist.
 - **Von Hand** — was du selbst an der genannten Stelle erledigst (siehe [unten](#von-hand)).
 
-Jede Zeile im Abschnitt **Automatisch** zeigt den Namen des Eintrags, die Ansicht, aus der er
+Jede Zeile in den ersten drei Abschnitten zeigt den Namen des Eintrags, die Ansicht, aus der er
 kam, den Stand in Worten und rechts die gewählte Aktion. Bietet der Eintrag mehr als eine
 Aktion, ist das ein Auswahlmenü: Du kannst etwa von **Deaktivieren** auf **In die Quarantäne
 verschieben** umstellen. Der Plan wird danach neu geprüft. Das **×** am Ende nimmt die Zeile
@@ -93,12 +97,45 @@ Das Symbol vorne zeigt den Stand:
 | Häkchen, grün | „erledigt und überprüft“ |
 | Warndreieck, orange | „fehlgeschlagen: …“ |
 | erhobene Hand, orange | „abgelehnt: …“ — nichts wurde ausgeführt |
+
+Hinter „fehlgeschlagen:“ und „abgelehnt:“ steht seit 1.2.1 ein kurzer Grund in Worten, wenn
+LaunchKeeper die Ursache erkennt — etwa „macOS verweigert den Zugriff — Festplattenvollzugriff
+fehlt“ oder „nichts mehr zu tun“ —, sonst die Meldung des Kerns.
 | zeigende Hand, lila | „von Hand“ |
 
 Ein Klick auf eine Zeile zeigt rechts die Einzelheiten: **Aktion**, **Aus der Ansicht**, den
 **Befehl**, mit dem du dasselbe im Terminal ausführen würdest (mit `--apply`), und — nach der Prüfung — den **Plan** mit jedem
 Schritt (ein Schloss markiert Schritte mit Administratorrechten), nach dem Lauf das
-**Ergebnis** mit dem **Rückweg**. **Im Inventar zeigen** springt zum Eintrag.
+**Ergebnis** mit dem **Rückweg**. **Im Inventar zeigen** springt zum Eintrag. Bei einem
+fehlgeschlagenen oder abgelehnten Eintrag steht zusätzlich ein Abschnitt **Fehlgeschlagen** bzw.
+**Abgelehnt** (siehe [unten](#fehlgeschlagen-oder-abgelehnt)).
+
+### Fehlgeschlagen oder abgelehnt
+
+Seit 1.2.1 stehen Einträge, die fehlgeschlagen sind oder abgelehnt wurden, in einem eigenen
+Abschnitt: Ein fehlgeschlagener Eintrag ist keine offene Aufgabe, und ein weiterer Klick auf
+**Alle ausführen** hilft nicht, solange die Ursache besteht.
+
+Unter dem Abschnitt steht, dass diese Einträge nicht oder nicht ganz ausgeführt sind. Ist die häufigste
+Ursache dabei — macOS verweigert den Zugriff auf die Daten anderer Apps, weil LaunchKeeper der
+Festplattenvollzugriff fehlt ([Kapitel 5](05-eintraege-aendern.md#app-reste-und-der-festplattenvollzugriff)) —,
+nennt der Text sie und den Weg: Festplattenvollzugriff geben, LaunchKeeper neu starten, dann
+„Erneut versuchen“. Darunter die Knöpfe:
+
+- **Festplattenvollzugriff öffnen** — nur, wenn diese Ursache vorliegt; öffnet Systemeinstellungen
+  › Datenschutz & Sicherheit › Festplattenvollzugriff. Dort LaunchKeeper einschalten (oder mit
+  **+** hinzufügen).
+- **Erneut versuchen** setzt die fehlgeschlagenen und abgelehnten Einträge zurück auf offen;
+  **Alle ausführen** versucht sie dann noch einmal.
+- **Aus der Liste nehmen** entfernt die fehlgeschlagenen und abgelehnten Einträge. Nichts wird
+  ausgeführt.
+
+Ein Klick auf eine Zeile zeigt den Grund des einzelnen Eintrags: In der Detailspalte steht der
+Abschnitt **Fehlgeschlagen** bzw. **Abgelehnt** mit der Erklärung in Worten (wenn LaunchKeeper die
+Ursache erkennt), der unveränderten **Meldung** des Kerns und den Knöpfen **Festplattenvollzugriff
+öffnen** (wenn das die Ursache ist), **Erneut versuchen** (nur für diesen Eintrag; fehlt, wenn
+nichts mehr zu tun ist) und **Aus der Liste nehmen**. Das gilt auch nach einem Neustart der App:
+Das Ergebnis des Laufs wird nicht gespeichert, der Stand des Eintrags samt Meldung schon.
 
 ### Widersprüche
 
@@ -115,7 +152,9 @@ Eintrag. Während er rechnet, steht unten „Plan wird für alle Einträge berec
 
 Danach ist jede Zeile entweder **bereit**, **bereit · Touch ID** oder **abgelehnt** mit
 Begründung. Abgelehnte und fehlgeschlagene Einträge prüft ein erneutes **Plan prüfen** wieder —
-vielleicht hast du inzwischen das Hilfsprogramm eingerichtet oder eine Datei ist zurück.
+vielleicht hast du inzwischen das Hilfsprogramm eingerichtet oder eine Datei ist zurück. Um sie
+gleich noch einmal auszuführen, setzt **Erneut versuchen** sie auf offen
+([oben](#fehlgeschlagen-oder-abgelehnt)).
 
 Unter der Liste steht eine Zeile wie „12 Einträge · 9 offen · 2 erledigt · 1 abgelehnt oder
 fehlgeschlagen“.
@@ -166,7 +205,8 @@ Unter der Liste stehen drei Knöpfe:
 - **Leeren** nimmt alle Einträge aus der Warteschlange — nach der Rückfrage „Warteschlange
   leeren?“ mit **Leeren — nichts wird ausgeführt**. Was schon ausgeführt ist, bleibt ausgeführt.
 - **Erledigte entfernen** nimmt alle erfolgreich ausgeführten und abgehakten Einträge heraus.
-  Offene, abgelehnte und fehlgeschlagene bleiben stehen.
+  Offene, abgelehnte und fehlgeschlagene bleiben stehen — für diese gibt es **Aus der Liste
+  nehmen** unter ihrem Abschnitt ([oben](#fehlgeschlagen-oder-abgelehnt)).
 - **Rückwege hinzufügen (N)** legt für jede Aktion, die **in dieser Sitzung** erledigt wurde, den
   Weg zurück in die Warteschlange: **Deaktivieren** ↔ **Wieder aktivieren**, und für alles, was in
   die Quarantäne gewandert ist, **Aus der Quarantäne wiederherstellen**. Der Knopf erscheint nur,

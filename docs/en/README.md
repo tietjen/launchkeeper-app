@@ -10,6 +10,6 @@
 | **[CHANGELOG](../../CHANGELOG.md)** | what changed in which version — and why |
 | **[Command line `launchkeeper`](https://github.com/tietjen/launchkeeper#readme)** | the manual of the tool underneath the app: all commands, categories, control matrix |
 
-Current as of: app **1.2.0**, helper **0.2.0**, LaunchKeeperKit **0.13.0**; macOS 14 or later.
+Current as of: app **1.2.1**, helper **0.2.0**, LaunchKeeperKit **0.13.1**; macOS 14 or later.
 
 Language: English. The German documentation is here: [Deutsche Dokumentation](../README.md).

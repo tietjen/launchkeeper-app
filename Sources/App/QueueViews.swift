@@ -330,11 +330,34 @@ struct QueuePane: View {
             } else {
                 let conflicts = queue.conflicts { store.row(for: $0)?.item.provenance?.packageIdentifier }
                 let automatic = queue.items.filter { !$0.isManual }
+                let open = automatic.filter { !$0.isFinished }
+                let problems = automatic.filter(\.isProblem)
+                let done = automatic.filter { $0.status == .done }
                 let manual = queue.items.filter(\.isManual)
                 List(selection: $selection) {
-                    if !automatic.isEmpty {
-                        Section("Automatisch") {
-                            ForEach(automatic) { item in
+                    // Open, failed and done apart: a failed item is no open task,
+                    // and it needs a cause, not another click on "run" (TJ 2026-11-01).
+                    if !open.isEmpty {
+                        Section("Offen") {
+                            ForEach(open) { item in
+                                QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
+                            }
+                        }
+                    }
+                    if !problems.isEmpty {
+                        Section {
+                            ForEach(problems) { item in
+                                QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
+                            }
+                        } header: {
+                            Text("Fehlgeschlagen oder abgelehnt")
+                        } footer: {
+                            problemsFooter(problems)
+                        }
+                    }
+                    if !done.isEmpty {
+                        Section("Erledigt") {
+                            ForEach(done) { item in
                                 QueueRow(item: item, conflict: conflicts[item.id], queue: queue, store: store).tag(item.id)
                             }
                         }
@@ -371,6 +394,30 @@ struct QueuePane: View {
         .confirmationDialog("Warteschlange leeren?", isPresented: $confirmClear) {
             Button("Leeren — nichts wird ausgeführt", role: .destructive) { queue.clear() }
         }
+    }
+
+    /// Under the failed items: the common cause in words, and what to do.
+    @ViewBuilder private func problemsFooter(_ problems: [QueueItem]) -> some View {
+        let hints = problems.compactMap(QueueFailureHint.explain)
+        let needsAccess = hints.contains { $0.settingsURL != nil }
+        VStack(alignment: .leading, spacing: 6) {
+            Text(needsAccess
+                 ? "Diese Einträge sind nicht oder nicht ganz ausgeführt. Meist verweigert macOS den Zugriff auf die Daten anderer Apps: Gib LaunchKeeper den Festplattenvollzugriff, starte LaunchKeeper neu und klicke dann „Erneut versuchen“. Den Grund je Eintrag zeigt ein Klick auf die Zeile."
+                 : "Diese Einträge sind nicht oder nicht ganz ausgeführt. Den Grund je Eintrag zeigt ein Klick auf die Zeile; was sich nicht beheben lässt, nimmst du aus der Liste.")
+                .font(.caption).foregroundStyle(.secondary)
+            HStack {
+                if needsAccess, let url = URL(string: QueueFailureHint.fullDiskAccessURL) {
+                    Button("Festplattenvollzugriff öffnen") { NSWorkspace.shared.open(url) }
+                        .help("Öffnet Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff. Dort LaunchKeeper einschalten (oder mit + hinzufügen).")
+                }
+                Button("Erneut versuchen") { queue.retryProblems() }
+                    .help("Erneut versuchen — setzt die fehlgeschlagenen und abgelehnten Einträge zurück auf offen; „Alle ausführen“ versucht sie dann noch einmal.")
+                Button("Aus der Liste nehmen") { queue.clearProblems() }
+                    .help("Aus der Liste nehmen — entfernt die fehlgeschlagenen und abgelehnten Einträge. Nichts wird ausgeführt.")
+            }
+            .disabled(queue.phase != .idle)
+        }
+        .padding(.top, 4)
     }
 
     /// Controls and progress under the list.
@@ -546,8 +593,10 @@ struct QueueRow: View {
         case .planned(let admin): return admin ? String(localized: "bereit · Touch ID") : String(localized: "bereit")
         case .running: return String(localized: "läuft …")
         case .done: return String(localized: "erledigt und überprüft")
-        case .failed(let detail): return String(localized: "fehlgeschlagen: \(detail)")
-        case .refused(let reason): return String(localized: "abgelehnt: \(reason)")
+        case .failed(let detail):
+            return String(localized: "fehlgeschlagen: \(QueueFailureHint.explain(item)?.short ?? detail)")
+        case .refused(let reason):
+            return String(localized: "abgelehnt: \(QueueFailureHint.explain(item)?.short ?? reason)")
         case .manual(let done): return done ? String(localized: "erledigt") : String(localized: "von Hand")
         }
     }
@@ -621,6 +670,31 @@ struct QueueItemDetail: View {
     @Environment(QueueModel.self) private var queue
     @Environment(InventoryStore.self) private var store
 
+    /// Why it failed or was refused, and what to do — also after a restart,
+    /// when the run's outcome is no longer in memory (the status is).
+    @ViewBuilder private var problemSection: some View {
+        let hint = QueueFailureHint.explain(item)
+        Section(item.status.isRefusal ? "Abgelehnt" : "Fehlgeschlagen") {
+            if let hint {
+                Text(hint.text)
+            }
+            if let reason = item.status.reason {
+                LabeledContent("Meldung") { Text(reason).font(.caption.monospaced()).textSelection(.enabled) }
+            }
+            HStack {
+                if let url = hint?.settingsURL.flatMap(URL.init(string:)) {
+                    Button("Festplattenvollzugriff öffnen") { NSWorkspace.shared.open(url) }
+                }
+                if hint?.obsolete != true {
+                    Button("Erneut versuchen") { queue.setPending(item.id) }
+                        .disabled(queue.phase != .idle)
+                }
+                Button("Aus der Liste nehmen") { queue.remove([item.id]) }
+                    .disabled(queue.phase != .idle)
+            }
+        }
+    }
+
     /// What to do by hand, where, and the tick.
     @ViewBuilder private var manualSection: some View {
         Section("Von Hand") {
@@ -656,6 +730,7 @@ struct QueueItemDetail: View {
                 LabeledContent("Aus der Ansicht", value: item.origin)
                 LabeledContent("Befehl") { Text(item.action.cliCommand(apply: true)).font(.caption.monospaced()).textSelection(.enabled) }
             }
+            if item.isProblem { problemSection }
             if let outcome = queue.outcomes[item.id] {
                 Section(item.isFinished ? "Ergebnis" : "Plan") {
                     ForEach(outcome.steps) { step in

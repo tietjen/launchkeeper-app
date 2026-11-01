@@ -33,6 +33,22 @@
         }
       }
     },
+    " Die übrigen enthalten inzwischen Dateien und bleiben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " Die übrigen enthalten inzwischen Dateien und bleiben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " The others now hold files and stay."
+          }
+        }
+      }
+    },
     " · nur alle zehn Minuten (Dateiereignisse nicht verfügbar)": {
       "localizations": {
         "de": {
@@ -209,18 +225,34 @@
         }
       }
     },
-    "%lld Pfad(e)": {
+    "%lld leere Einträge entfernen?": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld Pfad(e)"
+            "value": "%lld leere Einträge entfernen?"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld path(s)"
+            "value": "Remove %lld empty entries?"
+          }
+        }
+      }
+    },
+    "%lld leere Einträge entfernt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld leere Einträge entfernt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld empty entries removed."
           }
         }
       }
@@ -273,6 +305,22 @@
         }
       }
     },
+    "%lld von %lld Pfaden": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld Pfaden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld paths"
+          }
+        }
+      }
+    },
     "%lld von %lld eigenen Dateien fehlen": {
       "localizations": {
         "de": {
@@ -317,6 +365,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld of %lld done"
+          }
+        }
+      }
+    },
+    "%lld von %lld leeren Einträgen entfernt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld von %lld leeren Einträgen entfernt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld empty entries removed."
           }
         }
       }
@@ -445,6 +509,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Abgelehnt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abgelehnt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refused"
+          }
+        }
+      }
+    },
+    "Ablage": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ablage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Store"
           }
         }
       }
@@ -657,6 +753,22 @@
         }
       }
     },
+    "Alles liegt hier und lässt sich wiederherstellen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles liegt hier und lässt sich wiederherstellen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is here and can be restored."
+          }
+        }
+      }
+    },
     "Alles zu einem Eintrag": {
       "localizations": {
         "de": {
@@ -733,6 +845,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "A status light, a plain-language sentence, the facts — and **Next steps**: only actions that are safely possible here.\n\n**Run…** shows the plan first; a second click carries it out. Changes to the system ask for Touch ID."
+          }
+        }
+      }
+    },
+    "Angelegt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angelegt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Created"
           }
         }
       }
@@ -1121,6 +1249,22 @@
         }
       }
     },
+    "Art": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Art"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kind"
+          }
+        }
+      }
+    },
     "Auch vorhandene/unklare zeigen": {
       "localizations": {
         "de": {
@@ -1181,6 +1325,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "From the view"
+          }
+        }
+      }
+    },
+    "Aus der Liste nehmen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Liste nehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from the list"
+          }
+        }
+      }
+    },
+    "Aus der Liste nehmen — entfernt die fehlgeschlagenen und abgelehnten Einträge. Nichts wird ausgeführt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Liste nehmen — entfernt die fehlgeschlagenen und abgelehnten Einträge. Nichts wird ausgeführt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from the list — removes the failed and refused entries. Nothing is run."
           }
         }
       }
@@ -1297,22 +1473,6 @@
         }
       }
     },
-    "Automatisch": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatisch"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatic"
-          }
-        }
-      }
-    },
     "Automatisch nach Updates suchen": {
       "localizations": {
         "de": {
@@ -1421,6 +1581,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Finding"
+          }
+        }
+      }
+    },
+    "Begründung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Begründung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reasons"
           }
         }
       }
@@ -2225,6 +2401,22 @@
         }
       }
     },
+    "Die Dateien sind zurück an ihrem Ort. Der Eintrag ist nur noch das Protokoll davon.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Dateien sind zurück an ihrem Ort. Der Eintrag ist nur noch das Protokoll davon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The files are back in place. The entry is only the record of it now."
+          }
+        }
+      }
+    },
     "Die Detailspalte": {
       "localizations": {
         "de": {
@@ -2465,6 +2657,38 @@
         }
       }
     },
+    "Diese Einträge sind nicht oder nicht ganz ausgeführt. Den Grund je Eintrag zeigt ein Klick auf die Zeile; was sich nicht beheben lässt, nimmst du aus der Liste.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Einträge sind nicht oder nicht ganz ausgeführt. Den Grund je Eintrag zeigt ein Klick auf die Zeile; was sich nicht beheben lässt, nimmst du aus der Liste."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These entries did not run, or not completely. Click a row to see its reason; what cannot be fixed, remove from the list."
+          }
+        }
+      }
+    },
+    "Diese Einträge sind nicht oder nicht ganz ausgeführt. Meist verweigert macOS den Zugriff auf die Daten anderer Apps: Gib LaunchKeeper den Festplattenvollzugriff, starte LaunchKeeper neu und klicke dann „Erneut versuchen“. Den Grund je Eintrag zeigt ein Klick auf die Zeile.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Einträge sind nicht oder nicht ganz ausgeführt. Meist verweigert macOS den Zugriff auf die Daten anderer Apps: Gib LaunchKeeper den Festplattenvollzugriff, starte LaunchKeeper neu und klicke dann „Erneut versuchen“. Den Grund je Eintrag zeigt ein Klick auf die Zeile."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These entries did not run, or not completely. Usually macOS denies access to other apps’ data: give LaunchKeeper Full Disk Access, restart LaunchKeeper, then click “Try again”. Click a row to see its reason."
+          }
+        }
+      }
+    },
     "Diese Hilfe": {
       "localizations": {
         "de": {
@@ -2621,6 +2845,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "A program that accepts connections can only be quit here or switched off in its own settings; the firewall blocks incoming connections (System Settings › Network › Firewall). Tick it off yourself: a program that has quit also disappears from the list."
+          }
+        }
+      }
+    },
+    "Ein Teil kam in die Quarantäne, der Rest blieb an seinem Ort — meist, weil macOS das Verschieben verweigert hat (Daten einer anderen App ohne Festplattenvollzugriff). Wiederherstellen bringt zurück, was hier liegt.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Teil kam in die Quarantäne, der Rest blieb an seinem Ort — meist, weil macOS das Verschieben verweigert hat (Daten einer anderen App ohne Festplattenvollzugriff). Wiederherstellen bringt zurück, was hier liegt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Part of it reached the quarantine, the rest stayed in place — usually because macOS refused the move (another app’s data without Full Disk Access). Restoring brings back what is here."
           }
         }
       }
@@ -2861,6 +3101,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Background Task Management record"
+          }
+        }
+      }
+    },
+    "Eintrag entfernt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eintrag entfernt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entry removed"
           }
         }
       }
@@ -3217,6 +3473,38 @@
         }
       }
     },
+    "Erneut versuchen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "Erneut versuchen — setzt die fehlgeschlagenen und abgelehnten Einträge zurück auf offen; „Alle ausführen“ versucht sie dann noch einmal.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen — setzt die fehlgeschlagenen und abgelehnten Einträge zurück auf offen; „Alle ausführen“ versucht sie dann noch einmal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again — sets the failed and refused entries back to open; “Run all” then tries them once more."
+          }
+        }
+      }
+    },
     "Erst der Plan, dann die Ausführung": {
       "localizations": {
         "de": {
@@ -3345,6 +3633,38 @@
         }
       }
     },
+    "Fehlgeschlagen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlgeschlagen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed"
+          }
+        }
+      }
+    },
+    "Fehlgeschlagen oder abgelehnt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlgeschlagen oder abgelehnt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed or refused"
+          }
+        }
+      }
+    },
     "Fertig": {
       "localizations": {
         "de": {
@@ -3357,6 +3677,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Done"
+          }
+        }
+      }
+    },
+    "Festplattenvollzugriff öffnen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festplattenvollzugriff öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Full Disk Access"
           }
         }
       }
@@ -3709,6 +4045,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Origin & signature"
+          }
+        }
+      }
+    },
+    "Hier ist nichts mehr zu tun — es ist schon weg oder zurück. Der Eintrag kann aus der Liste.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier ist nichts mehr zu tun — es ist schon weg oder zurück. Der Eintrag kann aus der Liste."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing left to do here — it is already gone or back. The entry can leave the list."
+          }
+        }
+      }
+    },
+    "Hier liegt keine Datei — meist hat macOS schon den ersten Schritt verweigert, und die Dateien sind an ihrem Ort geblieben. Der Eintrag kann weg: „Leere Einträge entfernen“ oder „Endgültig löschen…“.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier liegt keine Datei — meist hat macOS schon den ersten Schritt verweigert, und die Dateien sind an ihrem Ort geblieben. Der Eintrag kann weg: „Leere Einträge entfernen“ oder „Endgültig löschen…“."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No file is here — usually macOS refused the very first step, and the files stayed in place. The entry can go: “Remove empty entries” or “Delete for good…”."
           }
         }
       }
@@ -4113,6 +4481,22 @@
         }
       }
     },
+    "In der Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the quarantine"
+          }
+        }
+      }
+    },
     "In der Warteschlange: %@": {
       "localizations": {
         "de": {
@@ -4173,6 +4557,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Move into quarantine"
+          }
+        }
+      }
+    },
+    "In diesen Einträgen liegt keine Datei — bei den Versuchen wurde nichts verschoben. Es geht nichts verloren, was sich wiederherstellen ließe.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In diesen Einträgen liegt keine Datei — bei den Versuchen wurde nichts verschoben. Es geht nichts verloren, was sich wiederherstellen ließe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These entries hold no file — nothing was moved in those attempts. Nothing that could be restored is lost."
           }
         }
       }
@@ -4913,6 +5313,70 @@
         }
       }
     },
+    "Leer — nichts verschoben": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leer — nichts verschoben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty — nothing moved"
+          }
+        }
+      }
+    },
+    "Leere Einträge entfernen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leere Einträge entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove empty entries"
+          }
+        }
+      }
+    },
+    "Leere Einträge entfernen (%lld)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leere Einträge entfernen (%lld)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove empty entries (%lld)"
+          }
+        }
+      }
+    },
+    "Leere Einträge entfernen — löscht die Einträge deiner Quarantäne, in denen keine Datei liegt (gescheiterte Versuche). Einträge mit Dateien bleiben.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leere Einträge entfernen — löscht die Einträge deiner Quarantäne, in denen keine Datei liegt (gescheiterte Versuche). Einträge mit Dateien bleiben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove empty entries — deletes the entries of your quarantine that hold no file (failed attempts). Entries with files stay."
+          }
+        }
+      }
+    },
     "Leeren": {
       "localizations": {
         "de": {
@@ -5213,6 +5677,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usually the files move to the **Quarantine** and can be restored from there. Only orphaned autostart entries whose program is missing are deleted — after LaunchKeeper has backed up the whole folder; the plan names the command to bring them back under **Way back**. Deleting from the Quarantine for good happens only when you explicitly ask: in the **Quarantine** view with **Delete for good…**, one entry at a time."
+          }
+        }
+      }
+    },
+    "Meldung": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meldung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message"
           }
         }
       }
@@ -5857,22 +6337,6 @@
         }
       }
     },
-    "Nur im Terminal: launchkeeper quarantine restore %@": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nur im Terminal: launchkeeper quarantine restore %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Terminal only: launchkeeper quarantine restore %@"
-          }
-        }
-      }
-    },
     "Nur mit fehlenden Dateien": {
       "localizations": {
         "de": {
@@ -6001,6 +6465,22 @@
         }
       }
     },
+    "Offen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        }
+      }
+    },
     "Ohne dein Zutun ändert LaunchKeeper nichts. Jede Änderung zeigt vorher ihren Plan, lässt sich rückgängig machen und wird danach geprüft.": {
       "localizations": {
         "de": {
@@ -6049,6 +6529,22 @@
         }
       }
     },
+    "Paket deinstalliert": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paket deinstalliert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Package uninstalled"
+          }
+        }
+      }
+    },
     "Paketbeleg vergessen — Kopie liegt in der Quarantäne": {
       "localizations": {
         "de": {
@@ -6093,6 +6589,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Path"
+          }
+        }
+      }
+    },
+    "Pfade": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pfade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paths"
           }
         }
       }
@@ -6397,6 +6909,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quarantine"
+          }
+        }
+      }
+    },
+    "Quarantäne des Systems (Hilfsprogramm)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quarantäne des Systems (Hilfsprogramm)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System quarantine (helper)"
           }
         }
       }
@@ -7473,6 +8001,22 @@
         }
       }
     },
+    "Unvollständig — nur ein Teil kam an": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unvollständig — nur ein Teil kam an"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incomplete — only part arrived"
+          }
+        }
+      }
+    },
     "Updates": {
       "localizations": {
         "de": {
@@ -7645,6 +8189,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Version %@"
+          }
+        }
+      }
+    },
+    "Versuche, bei denen macOS schon den ersten Schritt verweigert hat. Sie enthalten keine Dateien; „Leere Einträge entfernen“ räumt sie weg.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versuche, bei denen macOS schon den ersten Schritt verweigert hat. Sie enthalten keine Dateien; „Leere Einträge entfernen“ räumt sie weg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attempts where macOS refused the very first step. They hold no files; “Remove empty entries” clears them away."
           }
         }
       }
@@ -8033,6 +8593,22 @@
         }
       }
     },
+    "Was LaunchKeeper weggenommen hat, mit dem Ort, von dem es kam. Wähle einen Eintrag: rechts stehen die Pfade, das Wiederherstellen und das endgültige Löschen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was LaunchKeeper weggenommen hat, mit dem Ort, von dem es kam. Wähle einen Eintrag: rechts stehen die Pfade, das Wiederherstellen und das endgültige Löschen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What LaunchKeeper took away, with the place it came from. Select an entry: on the right are its paths, restoring and deleting for good."
+          }
+        }
+      }
+    },
     "Was heißt „Verwaist“?": {
       "localizations": {
         "de": {
@@ -8109,6 +8685,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enable again"
+          }
+        }
+      }
+    },
+    "Wiederhergestellt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiederhergestellt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restored"
+          }
+        }
+      }
+    },
+    "Wiederherstellen nur im Terminal: launchkeeper quarantine restore %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiederherstellen nur im Terminal: launchkeeper quarantine restore %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore only in Terminal: launchkeeper quarantine restore %@"
           }
         }
       }
@@ -8593,6 +9201,22 @@
         }
       }
     },
+    "deine Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "deine Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "your quarantine"
+          }
+        }
+      }
+    },
     "der Beleg listet %lld Pfade, davon %lld geteilte Ordner wie /Applications": {
       "localizations": {
         "de": {
@@ -8865,6 +9489,22 @@
         }
       }
     },
+    "in der Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in der Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in the quarantine"
+          }
+        }
+      }
+    },
     "installiert am %@": {
       "localizations": {
         "de": {
@@ -8993,6 +9633,38 @@
         }
       }
     },
+    "leer": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "leer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "empty"
+          }
+        }
+      }
+    },
+    "liegt in der Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "liegt in der Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "is in the quarantine"
+          }
+        }
+      }
+    },
     "läuft": {
       "localizations": {
         "de": {
@@ -9053,6 +9725,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "running …"
+          }
+        }
+      }
+    },
+    "macOS hat das Verschieben verweigert: Die Daten anderer Apps in ~/Library/Containers sind geschützt, auch wenn die App gelöscht ist. Gib LaunchKeeper unter Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff frei, starte LaunchKeeper neu und versuche es erneut. Was schon verschoben war, liegt in der Quarantäne; der Rest blieb an seinem Ort.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS hat das Verschieben verweigert: Die Daten anderer Apps in ~/Library/Containers sind geschützt, auch wenn die App gelöscht ist. Gib LaunchKeeper unter Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff frei, starte LaunchKeeper neu und versuche es erneut. Was schon verschoben war, liegt in der Quarantäne; der Rest blieb an seinem Ort."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS refused the move: other apps’ data in ~/Library/Containers is protected, even when the app is deleted. Allow LaunchKeeper under System Settings › Privacy & Security › Full Disk Access, restart LaunchKeeper and try again. What was already moved is in the quarantine; the rest stayed in place."
+          }
+        }
+      }
+    },
+    "macOS verweigert den Zugriff — Festplattenvollzugriff fehlt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS verweigert den Zugriff — Festplattenvollzugriff fehlt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS denies access — Full Disk Access missing"
           }
         }
       }
@@ -9185,6 +9889,22 @@
         }
       }
     },
+    "nicht in der Quarantäne": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nicht in der Quarantäne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not in the quarantine"
+          }
+        }
+      }
+    },
     "nicht mehr im Inventar": {
       "localizations": {
         "de": {
@@ -9249,6 +9969,22 @@
         }
       }
     },
+    "nichts mehr zu tun": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nichts mehr zu tun"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nothing left to do"
+          }
+        }
+      }
+    },
     "noch nicht gefragt": {
       "localizations": {
         "de": {
@@ -9261,6 +9997,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "not asked yet"
+          }
+        }
+      }
+    },
+    "nur der Paketbeleg": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nur der Paketbeleg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "only the package receipt"
           }
         }
       }
@@ -9505,6 +10257,22 @@
         }
       }
     },
+    "wiederhergestellt": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wiederhergestellt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "restored"
+          }
+        }
+      }
+    },
     "wird gesendet …": {
       "localizations": {
         "de": {
@@ -9661,6 +10429,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open"
+          }
+        }
+      }
+    },
+    "Öffnet Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff. Dort LaunchKeeper einschalten (oder mit + hinzufügen).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff. Dort LaunchKeeper einschalten (oder mit + hinzufügen)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens System Settings › Privacy & Security › Full Disk Access. Switch LaunchKeeper on there (or add it with +)."
           }
         }
       }

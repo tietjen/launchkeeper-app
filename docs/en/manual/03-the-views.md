@@ -140,25 +140,51 @@ individual path is listed with **Show … in Finder**.
 > does not run this action with administrator rights; the sheet then gives the command for
 > Terminal ([chapter 5](05-changing-entries.md)).
 
+> **Data in `~/Library/Containers` needs Full Disk Access.** macOS protects other apps' data in
+> their containers, even after the app is deleted. Without Full Disk Access for LaunchKeeper,
+> macOS refuses the move, and nothing is moved. The fix: System Settings › Privacy & Security ›
+> Full Disk Access → switch LaunchKeeper on (or add it with **+**), restart LaunchKeeper, try
+> again. Details in [chapter 5](05-changing-entries.md#app-leftovers-and-full-disk-access).
+
 ## Quarantine
 
-Everything LaunchKeeper takes away lands here — **moved, not deleted**. Each row is a quarantine
-**entry**: the package or the bundle ID, the number of paths (“… path(s)”), the status (for
-example `applied-ok` or `restored`) and the date.
+Everything LaunchKeeper takes away lands here — **moved, not deleted**. Since 1.2.1 the view is
+a list with selection like the others: each row is a quarantine **entry** with a checkbox (only
+for entries that can be restored in the app), the title — package, the app's bundle ID or entry
+—, the kind below it (“App leftovers”, “Package uninstalled”, “Entry removed”), and the state and
+date on the right.
 
-A click on the triangle expands the entry: the original paths, a note if a package receipt was
-forgotten in the process (“Package receipt forgotten — a copy is in the quarantine”), and the
+The sections follow what an entry holds **right now** — LaunchKeeper checks on disk, not the
+manifest's state:
+
+- **In the quarantine** — all paths are there.
+- **Incomplete — only part arrived** — “N of M paths”; the rest stayed in place.
+- **Empty — nothing moved** — attempts where macOS refused the very first step.
+- **Restored** — the files are back.
+
+Clicking a row shows the detail column on the right: the title, **Kind**, **State**,
+**Created**, **Store** (“your quarantine” or “System quarantine (helper)”), a sentence on what the
+state means, under **Paths** every original path with an icon showing whether it is in the
+quarantine, where applicable “Package receipt forgotten — a copy is in the quarantine”, under
+**Reasons** the evidence (for app leftovers, for example, why the app counts as deleted), and the
 buttons:
 
 - **Restore…** — opens the sheet with the plan, as for every action
   ([chapter 5](05-changing-entries.md)). Restoring never overwrites: if something new is at the
-  old location by now, that path is skipped and named.
+  old location by now, that path is skipped and named. Missing for empty and restored entries.
 - **Show in Finder** — opens the entry's folder.
-- **Delete for good…** (on the right, since 1.2) — opens the sheet with the plan; afterwards
-  there is no way back. More on this below.
+- **Delete for good…** (since 1.2) — opens the sheet with the plan; afterwards there is no way
+  back. More on this below.
 
-**Reload** in the toolbar reads the quarantine again, for example after you changed something in
-Terminal.
+In the toolbar:
+
+- **Remove empty entries (N)** (since 1.2.1) — only when **your** quarantine has empty entries.
+  After asking, it deletes the entries that hold no file, as you and without Touch ID; afterwards
+  it says “N empty entries removed.” Empty entries of the system quarantine stay — you delete
+  those one at a time.
+- **Reload** — reads the quarantine again, for example after you changed something in Terminal.
+
+More in [chapter 8](08-quarantine-and-undo.md#the-quarantine-view).
 
 ### Two quarantines
 
@@ -174,8 +200,8 @@ for Touch ID.
 
 > The helper does not restore an entry in **your** quarantine that moved files outside your
 > home folder — usually created with the command line: it only puts back what it keeps itself.
-> Instead of **Restore…**, the row then says “Terminal only: launchkeeper quarantine restore …”
-> with **Copy command**.
+> Instead of **Restore…**, the detail column then says “Restore only in Terminal: launchkeeper
+> quarantine restore …” with **Copy command**.
 
 ### Deleting for good
 

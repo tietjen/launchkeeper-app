@@ -58,6 +58,21 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
         case refused(String)
         /// By hand (step 4): open until a scan shows the change, or the user ticks it.
         case manual(done: Bool)
+
+        /// `true` for a refusal (nothing ran), `false` for anything else.
+        public var isRefusal: Bool {
+            if case .refused = self { return true }
+            return false
+        }
+
+        /// The engine's reason of a failure or refusal.
+        public var reason: String? {
+            switch self {
+            case .failed(let detail): return detail
+            case .refused(let reason): return reason
+            default: return nil
+            }
+        }
     }
 
     /// Stable id of the queue row.
@@ -106,6 +121,14 @@ public struct QueueItem: Identifiable, Codable, Equatable, Sendable {
     public var isManual: Bool {
         if case .manual = action { return true }
         return false
+    }
+
+    /// `true` when the last run failed or was refused for this item.
+    public var isProblem: Bool {
+        switch status {
+        case .failed, .refused: return true
+        default: return false
+        }
     }
 
     /// `true` once the run is over for this item (done, failed or refused).
@@ -338,6 +361,32 @@ public final class QueueModel {
     /// Removes the items that are done (successful ones only).
     public func clearDone() {
         remove(Set(items.filter { $0.status == .done || $0.status == .manual(done: true) }.map(\.id)))
+    }
+
+    /// Puts failed and refused items back to "not planned yet", so the next
+    /// "Alle ausführen" tries them again — after the cause was fixed (Full
+    /// Disk Access granted, helper set up). Their old outcome goes.
+    public func retryProblems() {
+        guard phase == .idle else { return }
+        // Items with nothing left to do would only be refused again.
+        for index in items.indices where items[index].isProblem && QueueFailureHint.explain(items[index])?.obsolete != true {
+            items[index].status = .pending
+            outcomes[items[index].id] = nil
+        }
+        save()
+    }
+
+    /// Puts one failed or refused item back to "not planned yet".
+    public func setPending(_ id: QueueItem.ID) {
+        guard phase == .idle, let index = items.firstIndex(where: { $0.id == id }), items[index].isProblem else { return }
+        items[index].status = .pending
+        outcomes[id] = nil
+        save()
+    }
+
+    /// Removes the failed and refused items — nothing is executed.
+    public func clearProblems() {
+        remove(Set(items.filter(\.isProblem).map(\.id)))
     }
 
     /// The queue item for a target, if it is queued (views mark queued rows).
@@ -585,4 +634,54 @@ final class StopSignal: @unchecked Sendable {
     func set() { lock.lock(); stopped = true; lock.unlock() }
     func reset() { lock.lock(); stopped = false; lock.unlock() }
     var shouldContinue: Bool { lock.lock(); defer { lock.unlock() }; return !stopped }
+}
+
+// MARK: - Why an item failed
+
+/// A failed or refused queue item in words the user can act on: the
+/// engines' reasons are terse and English ("stopped at: /bin/mv -- …"),
+/// and the commonest cause — macOS protecting another app's data — needs
+/// a setting, not a retry (TJ 2026-11-01).
+public struct QueueFailureHint: Equatable, Sendable {
+    /// What happened and what to do.
+    public var text: String
+    /// Short form for the row.
+    public var short: String
+    /// A System Settings pane that fixes it, when there is one.
+    public var settingsURL: String?
+    /// `true` when the item can simply go — nothing is left to do.
+    public var obsolete: Bool
+
+    /// Full Disk Access in System Settings › Privacy & Security.
+    public static let fullDiskAccessURL = "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+
+    /// The hint for an item, when its failure is one LaunchKeeper recognises.
+    /// - Parameter item: A queue item.
+    /// - Returns: The hint, or `nil` (then the engine's reason is shown as is).
+    public static func explain(_ item: QueueItem) -> QueueFailureHint? { explain(item.status) }
+
+    /// The hint for a failure or refusal (also the action sheet's result).
+    /// - Parameter status: The status, with the engine's reason.
+    /// - Returns: The hint, or `nil` when the reason is not a known one.
+    public static func explain(_ status: QueueItem.Status) -> QueueFailureHint? {
+        switch status {
+        case .failed(let detail):
+            if detail.contains("/Library/Containers/") || detail.contains("/Library/Group Containers/") {
+                return QueueFailureHint(
+                    text: String(localized: "macOS hat das Verschieben verweigert: Die Daten anderer Apps in ~/Library/Containers sind geschützt, auch wenn die App gelöscht ist. Gib LaunchKeeper unter Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff frei, starte LaunchKeeper neu und versuche es erneut. Was schon verschoben war, liegt in der Quarantäne; der Rest blieb an seinem Ort."),
+                    short: String(localized: "macOS verweigert den Zugriff — Festplattenvollzugriff fehlt"),
+                    settingsURL: fullDiskAccessURL, obsolete: false)
+            }
+            return nil
+        case .refused(let reason):
+            if reason == "no leftovers" || reason == "nothing to restore" || reason == "no such quarantine" {
+                return QueueFailureHint(
+                    text: String(localized: "Hier ist nichts mehr zu tun — es ist schon weg oder zurück. Der Eintrag kann aus der Liste."),
+                    short: String(localized: "nichts mehr zu tun"), settingsURL: nil, obsolete: true)
+            }
+            return nil
+        default:
+            return nil
+        }
+    }
 }

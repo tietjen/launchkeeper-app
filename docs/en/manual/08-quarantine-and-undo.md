@@ -50,18 +50,67 @@ together, newest at the top.
 
 ## The Quarantine view
 
-In the sidebar under **Views › Quarantine**. Each row shows the package or the occasion, the
-number of paths (“N path(s)”), the state (`applied-ok` in green; `restored` if the entry has
-already been brought back), and the date. Expanded, it shows the original paths and, for
-packages, “Package receipt forgotten — a copy is in the quarantine”.
+In the sidebar under **Views › Quarantine**. Since 1.2.1 it is a list with selection like the
+other views: clicking a row shows everything about that entry in the detail column on the right;
+there is nothing to expand any more.
 
-- **Restore…** opens the sheet with the plan — as with every action
-  ([chapter 5](05-changing-entries.md)). Only a second click runs it.
-- **Show in Finder** opens the entry's folder.
-- **Delete for good…** (on the right of the expanded row, since 1.2) deletes the entry with no
-  way back — only after the plan, see [below](#deleting-for-good).
-- **Reload** in the toolbar reads the quarantine again, for example after you changed something in
-  Terminal.
+Each row shows
+
+- a **checkbox** — only for entries that can be restored in the app (not for empty ones, restored
+  ones, or those that only go back in Terminal),
+- the **title**: the package, the app's bundle ID or the entry, with the **kind** below in small
+  print: “App leftovers”, “Package uninstalled” or “Entry removed”,
+- on the right, the **state** and the **date**.
+
+### Grouped by what is really there
+
+The sections follow what an entry holds **right now** — LaunchKeeper checks on disk whether each
+moved path is in the quarantine, rather than relying on the state in `manifest.json` (which says
+`applied-fail(5)`, for example, both for an entry that holds nothing and for one that lacks only
+one path):
+
+| Section | State in the row | Meaning |
+|---|---|---|
+| **In the quarantine** | “in the quarantine” (green) | all paths are there and can be restored |
+| **Incomplete — only part arrived** | “N of M paths” (orange) | part of it arrived, the rest stayed in place — usually because macOS refused the move ([Full Disk Access](05-changing-entries.md#app-leftovers-and-full-disk-access)) |
+| **Empty — nothing moved** | “empty” | attempts where macOS refused the very first step; they hold no files |
+| **Restored** | “restored” | the files are back; the entry is only the record of it now |
+
+Empty sections are left out. Within a section the newest entries are at the top.
+
+### The detail column
+
+For the selected entry, the right-hand side shows:
+
+- the title, **Kind**, **State**, **Created** (date and time) and **Store** — “your quarantine”
+  or “System quarantine (helper)”, see [above](#two-stores) —, with a sentence below on what the
+  state means;
+- **Paths**: every original path, with an icon in front showing whether it is in the quarantine
+  or not; for packages also “Package receipt forgotten — a copy is in the quarantine”;
+- **Reasons**: the evidence that led to the action — for app leftovers, for example, why the app
+  counts as deleted;
+- the buttons:
+  - **Restore…** opens the sheet with the plan — as with every action
+    ([chapter 5](05-changing-entries.md)). Only a second click runs it. Empty and restored
+    entries have no such button; for entries that only go back in Terminal, the command with
+    **Copy command** takes its place ([below](#who-restores-what)).
+  - **Show in Finder** opens the entry's folder.
+  - **Delete for good…** (since 1.2) deletes the entry with no way back — only after the plan,
+    see [below](#deleting-for-good).
+
+### Toolbar
+
+- **Remove empty entries (N)** (since 1.2.1) appears only when **your** quarantine has empty
+  entries. After asking (“Remove N empty entries?”) it deletes exactly the entries that hold no
+  file — failed attempts — as you, without Touch ID. Entries with files stay; nothing that could
+  be restored is lost. Afterwards the line “N empty entries removed.” appears below the
+  introduction. Empty entries of **the system's** store are not cleared with it — they stay a
+  decision per entry with **Delete for good…** and Touch ID.
+- **Reload** reads the quarantine again, for example after you changed something in Terminal.
+
+Since LaunchKeeperKit 0.13.1 no new empty entries appear: if a run moves nothing, the core keeps
+no entry either. Before, every retry added an empty entry with the state `applied-fail`;
+**Remove empty entries** clears those old ones away.
 
 Several entries at once: set the checkboxes, on the right choose **Restore from quarantine**, then
 run it in the [queue](06-the-queue.md) — system entries with a single Touch ID prompt.
@@ -76,8 +125,9 @@ run it in the [queue](06-the-queue.md) — system entries with a single Touch ID
 
 The last row mainly concerns packages you uninstalled with the command line: the command line puts
 such entries into your store too, but putting them back needs administrator rights. The helper
-only restores entries it created itself. Instead of **Restore…**, the row therefore shows
-“Terminal only: launchkeeper quarantine restore <name>” with the **Copy command** button:
+only restores entries it created itself. Instead of **Restore…**, the detail column therefore
+shows “Restore only in Terminal: launchkeeper quarantine restore <name>” with the **Copy command**
+button:
 
 ```bash
 launchkeeper quarantine restore 2026-09-27-101500Z-uninstall-com.example.tool    # the plan first
@@ -112,8 +162,8 @@ Terminal.
 
 ### In the app
 
-Since 1.2, every expanded row of the **Quarantine** view has **Delete for good…** on the right.
-The button opens the usual sheet:
+Since 1.2 the **Quarantine** view has **Delete for good…** — since 1.2.1 in the detail column of
+the selected entry. The button opens the usual sheet:
 
 - **The plan first.** A single step, `rm -rf -- <entry folder>` — “delete the quarantine entry
   for good — NOT restorable” (the core's messages stay in English); plus the core's note on how

@@ -49,18 +49,68 @@ Einträge zusammen, die neuesten oben.
 
 ## Die Ansicht Quarantäne
 
-In der Seitenleiste unter **Ansichten › Quarantäne**. Jede Zeile zeigt das Paket oder den
-Anlass, die Zahl der Pfade („N Pfad(e)“), den Stand (`applied-ok` grün; `restored`, wenn der
-Eintrag schon zurückgeholt wurde) und das Datum. Aufgeklappt stehen dort die ursprünglichen Pfade
-und, bei Paketen, „Paketbeleg vergessen — Kopie liegt in der Quarantäne“.
+In der Seitenleiste unter **Ansichten › Quarantäne**. Seit 1.2.1 ist sie eine Liste mit Auswahl
+wie die anderen Ansichten: Ein Klick auf eine Zeile zeigt rechts in der Detailspalte alles zu
+diesem Eintrag; aufklappen musst du nichts mehr.
 
-- **Wiederherstellen…** öffnet das Blatt mit dem Plan — wie bei jeder Aktion
-  ([Kapitel 5](05-eintraege-aendern.md)). Erst ein zweiter Klick führt aus.
-- **Im Finder zeigen** öffnet den Ordner des Eintrags.
-- **Endgültig löschen…** (rechts in der aufgeklappten Zeile, seit 1.2) löscht den Eintrag ohne
-  Rückweg — erst nach dem Plan, siehe [unten](#endgültig-löschen).
-- **Neu laden** in der Symbolleiste liest die Quarantäne erneut, etwa nachdem du im Terminal
-  etwas geändert hast.
+Jede Zeile zeigt
+
+- ein **Häkchen** — nur bei Einträgen, die sich in der App wiederherstellen lassen (nicht bei
+  leeren, wiederhergestellten und solchen, die nur im Terminal zurückgehen),
+- den **Titel**: das Paket, die Bundle-ID der App oder den Eintrag, darunter klein die **Art**:
+  „App-Reste“, „Paket deinstalliert“ oder „Eintrag entfernt“,
+- rechts den **Zustand** und das **Datum**.
+
+### Gruppiert nach dem, was wirklich dort liegt
+
+Die Abschnitte richten sich danach, was ein Eintrag **jetzt** enthält — LaunchKeeper sieht dafür
+auf der Festplatte nach, ob jeder verschobene Pfad in der Quarantäne liegt, und verlässt sich
+nicht auf den Stand im `manifest.json` (dort steht etwa `applied-fail(5)` sowohl für einen
+Eintrag, der nichts enthält, als auch für einen, dem nur ein Pfad fehlt):
+
+| Abschnitt | Zustand in der Zeile | Bedeutung |
+|---|---|---|
+| **In der Quarantäne** | „in der Quarantäne“ (grün) | alle Pfade liegen dort und lassen sich wiederherstellen |
+| **Unvollständig — nur ein Teil kam an** | „N von M Pfaden“ (orange) | ein Teil kam an, der Rest blieb an seinem Ort — meist, weil macOS das Verschieben verweigert hat ([Festplattenvollzugriff](05-eintraege-aendern.md#app-reste-und-der-festplattenvollzugriff)) |
+| **Leer — nichts verschoben** | „leer“ | Versuche, bei denen macOS schon den ersten Schritt verweigert hat; sie enthalten keine Dateien |
+| **Wiederhergestellt** | „wiederhergestellt“ | die Dateien sind zurück; der Eintrag ist nur noch das Protokoll davon |
+
+Leere Abschnitte fehlen. Innerhalb eines Abschnitts stehen die neuesten Einträge oben.
+
+### Die Detailspalte
+
+Zum gewählten Eintrag stehen rechts:
+
+- der Titel, **Art**, **Zustand**, **Angelegt** (Datum und Uhrzeit) und **Ablage** — „deine
+  Quarantäne“ oder „Quarantäne des Systems (Hilfsprogramm)“, siehe [oben](#zwei-ablagen) —,
+  darunter ein Satz, was der Zustand bedeutet;
+- **Pfade**: jeder ursprüngliche Pfad, davor ein Symbol, ob er in der Quarantäne liegt oder nicht;
+  bei Paketen zusätzlich „Paketbeleg vergessen — Kopie liegt in der Quarantäne“;
+- **Begründung**: die Belege, die zur Aktion geführt haben — bei App-Resten etwa, warum die App
+  als gelöscht gilt;
+- die Knöpfe:
+  - **Wiederherstellen…** öffnet das Blatt mit dem Plan — wie bei jeder Aktion
+    ([Kapitel 5](05-eintraege-aendern.md)). Erst ein zweiter Klick führt aus. Bei leeren und
+    wiederhergestellten Einträgen fehlt der Knopf; bei Einträgen, die nur im Terminal zurückgehen,
+    steht an seiner Stelle der Befehl mit **Befehl kopieren** ([unten](#wer-was-wiederherstellt)).
+  - **Im Finder zeigen** öffnet den Ordner des Eintrags.
+  - **Endgültig löschen…** (seit 1.2) löscht den Eintrag ohne Rückweg — erst nach dem Plan,
+    siehe [unten](#endgültig-löschen).
+
+### Symbolleiste
+
+- **Leere Einträge entfernen (N)** (seit 1.2.1) erscheint nur, wenn **deine** Quarantäne leere
+  Einträge hat. Nach einer Rückfrage („N leere Einträge entfernen?“) löscht es genau die Einträge,
+  in denen keine Datei liegt — gescheiterte Versuche —, unter deinem Namen, ohne Touch ID.
+  Einträge mit Dateien bleiben; es geht nichts verloren, was sich wiederherstellen ließe. Danach
+  steht unter der Einleitung „N leere Einträge entfernt.“ Leere Einträge der Ablage **des
+  Systems** räumt der Knopf nicht mit weg — sie bleiben eine Entscheidung je Eintrag mit
+  **Endgültig löschen…** und Touch ID.
+- **Neu laden** liest die Quarantäne erneut, etwa nachdem du im Terminal etwas geändert hast.
+
+Seit LaunchKeeperKit 0.13.1 entstehen keine neuen leeren Einträge mehr: Verschiebt ein Lauf
+nichts, behält der Kern auch keinen Eintrag. Vorher legte jeder erneute Versuch einen leeren
+Eintrag mit dem Stand `applied-fail` an; diese alten räumt **Leere Einträge entfernen** weg.
 
 Mehrere Einträge auf einmal: Häkchen setzen, rechts **Aus der Quarantäne wiederherstellen**,
 dann in der [Warteschlange](06-die-warteschlange.md) ausführen — Einträge des Systems mit einer
@@ -77,8 +127,8 @@ einzigen Touch-ID-Abfrage.
 Die letzte Zeile betrifft vor allem Pakete, die du mit der Kommandozeile deinstalliert hast:
 Die Kommandozeile legt auch solche Einträge in deine Ablage, das Zurücklegen braucht aber
 Administratorrechte. Das Hilfsprogramm stellt nur Einträge wieder her, die es selbst angelegt
-hat. Statt **Wiederherstellen…** zeigt die Zeile deshalb „Nur im Terminal: launchkeeper
-quarantine restore <Name>“ mit dem Knopf **Befehl kopieren**:
+hat. Statt **Wiederherstellen…** zeigt die Detailspalte deshalb „Wiederherstellen nur im
+Terminal: launchkeeper quarantine restore <Name>“ mit dem Knopf **Befehl kopieren**:
 
 ```bash
 launchkeeper quarantine restore 2026-09-27-101500Z-uninstall-com.example.tool    # erst der Plan
@@ -114,8 +164,8 @@ dem anderen — in der App oder im Terminal.
 
 ### In der App
 
-Seit 1.2 steht in jeder aufgeklappten Zeile der Ansicht **Quarantäne** rechts
-**Endgültig löschen…**. Der Knopf öffnet das gewohnte Blatt:
+Seit 1.2 gibt es in der Ansicht **Quarantäne** **Endgültig löschen…** — seit 1.2.1 in der
+Detailspalte des gewählten Eintrags. Der Knopf öffnet das gewohnte Blatt:
 
 - **Erst der Plan.** Ein einziger Schritt, `rm -rf -- <Ordner des Eintrags>` — „delete the
   quarantine entry for good — NOT restorable“ (Meldungen des Kerns bleiben englisch); dazu der

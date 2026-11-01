@@ -22,6 +22,9 @@ struct ContentView: View {
     @State private var selectedLeftover: String?
     /// Selected row in the background view (`BackgroundEntry.id` — unique, unlike the BTM identifier).
     @State private var selectedBackground: String?
+    /// Selected entry name in the quarantine view.
+    @State private var selectedQuarantine: String?
+    @Environment(QuarantineModel.self) private var quarantine
     /// Selected record in the watch view.
     @State private var selectedRecord: WatchRecord.ID?
     @Environment(WatchModel.self) private var watch
@@ -58,7 +61,7 @@ struct ContentView: View {
                 case .background: BackgroundPane(selection: $selectedBackground)
                 case .receipts: ReceiptsPane(selection: $selectedPackage)
                 case .leftovers: LeftoversPane(selection: $selectedLeftover)
-                case .quarantine: QuarantinePane()
+                case .quarantine: QuarantinePane(selection: $selectedQuarantine)
                 case .watch: WatchPane(selection: $selectedRecord)
                 case .queue: QueuePane(selection: $selectedQueueItem)
                 case .all, .orphans, .category:
@@ -145,7 +148,7 @@ struct ContentView: View {
         case .receipts: return store.receipts?.rows.contains { $0.id == selectedPackage } == true
         case .leftovers: return leftovers.candidates.contains { $0.bundleIdentifier == selectedLeftover }
         case .background: return selectedBackground != nil
-        case .quarantine: return false
+        case .quarantine: return quarantine.entries.contains { $0.name == selectedQuarantine }
         case .watch: return watch.records.contains { $0.id == selectedRecord }
         case .queue: return queue.items.contains { $0.id == selectedQueueItem }
         }
@@ -170,7 +173,9 @@ struct ContentView: View {
                 BackgroundDetail(entry: entry)
             } else { nothingSelected }
         case .quarantine:
-            nothingSelected
+            if let entry = quarantine.entries.first(where: { $0.name == selectedQuarantine }) {
+                QuarantineDetail(entry: entry).id(entry.name)
+            } else { nothingSelected }
         case .watch:
             if let record = watch.records.first(where: { $0.id == selectedRecord }) {
                 WatchRecordDetail(record: record)

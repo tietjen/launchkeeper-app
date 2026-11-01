@@ -5,6 +5,34 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [1.2.1] — 2026-11-01
+
+### Changed
+- **Quarantine view like every other view** (TJ: "unübersichtlich, keine
+  direkte Auswahl, ich muss immer zuerst aufklappen"): a list with
+  selection, grouped by what each entry holds right now — read from the
+  disk, not from the manifest's "applied-fail(5)": in the quarantine,
+  incomplete ("N of M paths"), empty (nothing moved), restored. The detail
+  column shows kind, state with an explanation, store, every path with its
+  state, the reasons, and Restore / Show in Finder / Delete for good.
+- **Remove empty entries** (toolbar, with confirmation): deletes the
+  entries of your own quarantine that hold no file — failed attempts —
+  as you, without Touch ID.
+- **Queue: open, failed and done apart.** Failed or refused items have
+  their own section with the cause in words, "Try again" (back to open)
+  and "Remove from the list"; when macOS refused another app's data, the
+  footer says so and opens Full Disk Access. The detail of a failed item
+  explains it even after a restart (the run's outcome is not kept, the
+  status is). The action sheet's failed result gives the same hint.
+
+### Fixed
+- App leftovers in `~/Library/Containers` failed with a cut-off English
+  "stopped at: /bin/mv -- …" and nothing said why: macOS protects other
+  apps' data, also after the app is gone, unless LaunchKeeper has Full
+  Disk Access. Now named, with the way to grant it.
+- LaunchKeeperKit 0.13.1: a run that moves nothing keeps no empty
+  quarantine entry (every retry used to add one).
+
 ## [1.2.0] — 2026-11-01
 
 ### Added

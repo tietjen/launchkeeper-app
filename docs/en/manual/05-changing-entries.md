@@ -53,7 +53,10 @@ in the file system. The result:
 | “Incomplete: …” | a step failed, or the check does not see the change |
 | Reason with a raised hand | refused — nothing ran |
 
-Notes and the way back are shown here too.
+Notes and the way back are shown here too. If LaunchKeeper recognises the cause of a failure,
+since 1.2.1 an explanation in words also appears below “Incomplete: …” — for the commonest case,
+missing Full Disk Access, with the **Open Full Disk Access** button
+(see [App leftovers and Full Disk Access](#app-leftovers-and-full-disk-access)).
 
 ### 5. Done
 
@@ -120,6 +123,37 @@ Because the lock stays in place, the entry does not start even if an app recreat
 file. Disabling is the gentler step and is usually enough; that is why it comes first.
 
 Entries managed by a configuration profile (MDM) don't get this step: there, the profile decides.
+
+### App leftovers and Full Disk Access
+
+Many apps keep their data in a container of their own under `~/Library/Containers` (or
+`~/Library/Group Containers`). macOS protects this data from other apps — **even after the app
+itself has been deleted**. If LaunchKeeper does not have **Full Disk Access**, macOS refuses to
+move the container.
+
+This is how it shows:
+
+- The sheet says “Incomplete: …” and below it (since 1.2.1): “macOS refused the move: other apps’
+  data in ~/Library/Containers is protected, even when the app is deleted. …” with the **Open Full
+  Disk Access** button.
+- In the [queue](06-the-queue.md#failed-or-refused) the entry is listed under **Failed or refused**
+  with “macOS denies access — Full Disk Access missing”.
+
+The fix:
+
+1. **Open Full Disk Access** — or by hand: System Settings › Privacy & Security › Full Disk
+   Access.
+2. Switch **LaunchKeeper** on there (if it is not in the list, add it with **+**).
+3. **Restart LaunchKeeper** — macOS gives the access only to a freshly started program.
+4. Try again: in the sheet, **Run…** once more; in the queue, **Try again** and then **Run all**.
+
+Granting Full Disk Access is your decision; LaunchKeeper does not ask for it on its own. Without
+it, leftovers outside the containers — caches, settings (`Preferences`) and the like — still
+move. But a run stops at the first refused step: if an app has a container, moving its leftovers
+needs the access. Whatever was moved before the refused step is in the quarantine (section
+**Incomplete**, [chapter 8](08-quarantine-and-undo.md#grouped-by-what-is-really-there)). If the
+run moved nothing at all, since LaunchKeeperKit 0.13.1 LaunchKeeper keeps no empty quarantine
+entry either.
 
 ## The check
 

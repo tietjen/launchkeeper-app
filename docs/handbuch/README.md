@@ -12,7 +12,7 @@ In der Reihenfolge, in der man es braucht. Die ersten drei Kapitel reichen, um l
 | 6 | [Die Warteschlange](06-die-warteschlange.md) | Markieren, sammeln, ein gemeinsamer Plan, eine Touch-ID-Abfrage, Rückwege, „Von Hand“ |
 | 7 | [Beobachtung und Mitteilungen](07-beobachtung.md) | Was gemeldet wird und was nicht, Menüleiste, Start bei der Anmeldung, fehlende Banner |
 | 8 | [Quarantäne und Rückwege](08-quarantaene-und-rueckwege.md) | Wohin Entferntes geht, wie es zurückkommt, was nur im Terminal geht |
-| 9 | [Sicherheit und Datenschutz](09-sicherheit-und-datenschutz.md) | Was das Hilfsprogramm darf und was nicht, was den Mac verlässt, die Grenzen |
+| 9 | [Sicherheit und Datenschutz](09-sicherheit-und-datenschutz.md) | Was das Hilfsprogramm darf und was nicht, Festplattenvollzugriff, was den Mac verlässt, die Grenzen |
 | 10 | [Die Kommandozeile `launchkeeper`](10-kommandozeile.md) | Dasselbe Inventar im Terminal, Skripte, die Quarantäne leeren |
 
 **In der App:** **⌘?** öffnet die Hilfe im Programm — dieselben Themen in Kurzform und

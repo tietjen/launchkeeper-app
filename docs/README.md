@@ -8,6 +8,6 @@
 | **[CHANGELOG](../CHANGELOG.md)** | was sich in welcher Version geändert hat — und warum |
 | **[Kommandozeile `launchkeeper`](https://github.com/tietjen/launchkeeper#readme)** | das Handbuch des Werkzeugs unter der App: alle Befehle, Kategorien, Steuerungsmatrix |
 
-Stand: App **1.2.0**, Hilfsprogramm **0.2.0**, LaunchKeeperKit **0.13.0**; macOS 14 oder neuer.
+Stand: App **1.2.1**, Hilfsprogramm **0.2.0**, LaunchKeeperKit **0.13.1**; macOS 14 oder neuer.
 
 Sprache: Deutsch. English version: [docs/en](en/README.md).

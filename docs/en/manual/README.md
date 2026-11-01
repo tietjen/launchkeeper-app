@@ -14,7 +14,7 @@ In the order you need it. The first three chapters are enough to get started.
 | 6 | [The queue](06-the-queue.md) | Mark, collect, one shared plan, one Touch ID prompt, ways back, “By hand” |
 | 7 | [Watch and notifications](07-watch.md) | What gets reported and what doesn't, menu bar, launch at login, missing banners |
 | 8 | [Quarantine and ways back](08-quarantine-and-undo.md) | Where removed items go, how they come back, what only works in Terminal |
-| 9 | [Security and privacy](09-security-and-privacy.md) | What the helper may and may not do, what leaves the Mac, the limits |
+| 9 | [Security and privacy](09-security-and-privacy.md) | What the helper may and may not do, Full Disk Access, what leaves the Mac, the limits |
 | 10 | [The `launchkeeper` command line](10-command-line.md) | The same inventory in Terminal, scripts, emptying the quarantine |
 
 **In the app:** **⌘?** opens the in-app help — the same topics in short form and searchable,

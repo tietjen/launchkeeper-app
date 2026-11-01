@@ -130,6 +130,26 @@ dieses Macs bekommst du nicht zu sehen.
 > **ohne** Administratorrechte, sofern das Hilfsprogramm eingerichtet ist, die systemweiten
 > Hintergrundeinträge — ohne Rückfrage. Die meisten davon sind ohnehin in `/Library` lesbar.
 
+## Festplattenvollzugriff
+
+LaunchKeeper braucht den **Festplattenvollzugriff** nicht, um zu laufen, und fragt nicht von sich
+aus danach. Ihn zu geben ist deine Entscheidung. Er wird nur für eines gebraucht: um die Reste
+gelöschter Apps zu verschieben, die in `~/Library/Containers` (oder `~/Library/Group Containers`)
+liegen. Diese Daten schützt macOS vor anderen Apps, auch wenn die App gelöscht ist; ohne die
+Freigabe verweigert macOS das Verschieben, und es wird nichts verschoben.
+
+- **Ohne** Festplattenvollzugriff lassen sich Reste außerhalb der Behälter — Caches,
+  Einstellungen und Ähnliches — weiter verschieben. Ein Lauf hält aber beim ersten verweigerten
+  Schritt an; die Reste einer App mit Behälter brauchen deshalb die Freigabe.
+- **Geben:** Systemeinstellungen › Datenschutz & Sicherheit › Festplattenvollzugriff →
+  LaunchKeeper einschalten (oder mit **+** hinzufügen), dann LaunchKeeper neu starten. Den Knopf
+  **Festplattenvollzugriff öffnen** zeigt die App, wenn ein Schritt daran gescheitert ist (seit
+  1.2.1).
+- **Widerrufen:** an derselben Stelle ausschalten.
+
+Die Reste gelöschter Apps verschiebt immer die App selbst, nie das Hilfsprogramm. Einzelheiten
+in [Kapitel 5](05-eintraege-aendern.md#app-reste-und-der-festplattenvollzugriff).
+
 ## Was den Mac verlässt
 
 | | Verlässt den Mac? |

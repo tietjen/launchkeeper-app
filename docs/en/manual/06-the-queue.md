@@ -73,12 +73,16 @@ still be selected.
 You find it in the sidebar under **Batch processing › Queue**. The number next to it counts the
 entries that are not finished yet.
 
-The list has two sections:
+The list has up to four sections (since 1.2.1; before, the first three were together under
+“Automatic”). Empty sections are left out.
 
-- **Automatic** — what LaunchKeeper runs itself.
+- **Open** — what LaunchKeeper runs itself and has not run yet.
+- **Failed or refused** — what did not work in the last run or the last check, with the cause and
+  what you can do (see [below](#failed-or-refused)).
+- **Done** — what has run and been verified.
 - **By hand** — what you do yourself at the place named (see [below](#by-hand)).
 
-Each row in the **Automatic** section shows the entry's name, the view it came from, its state in
+Each row in the first three sections shows the entry's name, the view it came from, its state in
 words, and on the right the chosen action. If the entry offers more than one action, this is a
 pop-up menu: you can switch from **Disable** to **Move into quarantine**, for example. The plan is
 checked again afterwards. The **×** at the end takes the row out.
@@ -93,12 +97,40 @@ The symbol at the front shows the state:
 | checkmark, green | “done and verified” |
 | warning triangle, orange | “failed: …” |
 | raised hand, orange | “refused: …” — nothing was run |
+
+Since 1.2.1, “failed:” and “refused:” are followed by a short reason in words when LaunchKeeper
+recognises the cause — such as “macOS denies access — Full Disk Access missing” or “nothing left
+to do” —, otherwise by the core's message.
 | pointing hand, purple | “by hand” |
 
 Clicking a row shows the details on the right: **Action**, **From the view**, the **Command** you
 would use to do the same in Terminal (with `--apply`), and — after the check — the **Plan** with
 every step (a lock marks steps that need administrator rights); after the run, the **Result** with
-the **Way back**. **Show in inventory** jumps to the entry.
+the **Way back**. **Show in inventory** jumps to the entry. A failed or refused entry also has a
+**Failed** or **Refused** section (see [below](#failed-or-refused)).
+
+### Failed or refused
+
+Since 1.2.1, entries that failed or were refused have a section of their own: a failed entry is no
+open task, and another click on **Run all** does not help while the cause remains.
+
+Below the section it says that these entries did not run, or not completely. If the commonest cause is
+among them — macOS denies access to other apps' data because LaunchKeeper lacks Full Disk Access
+([chapter 5](05-changing-entries.md#app-leftovers-and-full-disk-access)) —, the text names it and
+the way out: give Full Disk Access, restart LaunchKeeper, then “Try again”. Below are the buttons:
+
+- **Open Full Disk Access** — only when this cause applies; opens System Settings › Privacy &
+  Security › Full Disk Access. Switch LaunchKeeper on there (or add it with **+**).
+- **Try again** sets the failed and refused entries back to open; **Run all** then tries them once
+  more.
+- **Remove from the list** removes the failed and refused entries. Nothing is run.
+
+Clicking a row shows the reason for that one entry: the detail column has a **Failed** or
+**Refused** section with the explanation in words (when LaunchKeeper recognises the cause), the
+core's unchanged **Message**, and the buttons **Open Full Disk Access** (when that is the cause),
+**Try again** (for this entry only; missing when there is nothing left to do) and **Remove from
+the list**. This also holds after the app restarts: the run's outcome is not kept, the entry's
+state with its message is.
 
 ### Conflicts
 
@@ -115,7 +147,8 @@ the bottom shows “Computing the plan for all entries …”.
 
 Afterwards each row is either **ready**, **ready · Touch ID**, or **refused** with a reason.
 Another **Check plan** checks refused and failed entries again — perhaps you have set up the
-helper in the meantime, or a file is back.
+helper in the meantime, or a file is back. To run them again straight away, **Try again** sets them
+back to open ([above](#failed-or-refused)).
 
 Below the list is a line like “12 entries · 9 open · 2 done · 1 refused or failed”.
 
@@ -164,7 +197,8 @@ Below the list are three buttons:
 - **Clear** takes all entries out of the queue — after the question “Clear the queue?” with
   **Clear — nothing runs**. What has already run stays run.
 - **Remove finished** takes out all entries that ran successfully or were ticked off. Open,
-  refused, and failed ones stay.
+  refused, and failed ones stay — for those there is **Remove from the list** below their section
+  ([above](#failed-or-refused)).
 - **Add ways back (N)** puts the way back into the queue for every action that was done **in this
   session**: **Disable** ↔ **Enable again**, and for everything that went into the quarantine,
   **Restore from quarantine**. The button only appears when there are such ways back.

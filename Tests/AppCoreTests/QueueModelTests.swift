@@ -328,3 +328,42 @@ final class QueueModelTests: XCTestCase {
         XCTAssertNil(ManualGuide.for(item(.kernelExtension, .systemExtensions)).url, "only the vendor's uninstaller")
     }
 }
+
+// MARK: - Failures in words (1.2.1)
+
+final class QueueFailureHintTests: XCTestCase {
+    func testAnotherAppsContainerAsksForFullDiskAccess() {
+        let failed = QueueItem.Status.failed("stopped at: /bin/mv -- /Users/x/Library/Containers/ru.if.radio.mac /Users/x/q/ (exit 1)")
+        let hint = QueueFailureHint.explain(failed)
+        XCTAssertEqual(hint?.settingsURL, QueueFailureHint.fullDiskAccessURL)
+        XCTAssertEqual(hint?.obsolete, false)
+        XCTAssertNil(QueueFailureHint.explain(.failed("service still loaded after bootout")), "unknown reasons stay as they are")
+    }
+
+    @MainActor
+    func testFailedItemsCanBeRetriedOrRemovedWithoutTouchingTheRest() async {
+        let local = StubBatch()
+        let a = ActionRequest.leftovers(bundleID: "org.a.app"), b = ActionRequest.leftovers(bundleID: "org.b.app")
+        local.failures = [a: "stopped at: /bin/mv -- /Users/x/Library/Containers/org.a.app (exit 1)"]
+        let queue = QueueModel(local: local, storeURL: nil)
+        queue.add([QueueItem(target: .leftovers(bundleID: "org.a.app"), title: "a", origin: "x", action: a),
+                   QueueItem(target: .leftovers(bundleID: "org.b.app"), title: "b", origin: "x", action: b)])
+        await queue.execute()
+        XCTAssertEqual(queue.items.map(\.isProblem), [true, false])
+        queue.retryProblems()
+        XCTAssertEqual(queue.items.map(\.status), [.pending, .done], "only the failed one is open again")
+        XCTAssertNil(queue.outcomes[queue.items[0].id])
+        local.failures = [:]
+        await queue.execute()
+        XCTAssertEqual(queue.items.map(\.status), [.done, .done])
+        queue.clearProblems()
+        XCTAssertEqual(queue.items.count, 2, "nothing failed — nothing removed")
+    }
+
+    func testNothingLeftToDoIsObsolete() {
+        XCTAssertEqual(QueueFailureHint.explain(.refused("no leftovers"))?.obsolete, true)
+        XCTAssertNil(QueueFailureHint.explain(.refused("app present (running)")))
+        XCTAssertNil(QueueFailureHint.explain(.done))
+    }
+}
+

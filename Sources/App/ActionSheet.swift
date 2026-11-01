@@ -253,6 +253,12 @@ struct ActionSheet: View {
         case .failed(let detail):
             Label("Nicht vollständig: \(detail)", systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange).font(.headline)
+            if let hint = QueueFailureHint.explain(.failed(detail)) {
+                Text(hint.text).font(.callout)
+                if let url = hint.settingsURL.flatMap(URL.init(string:)) {
+                    Button("Festplattenvollzugriff öffnen") { NSWorkspace.shared.open(url) }
+                }
+            }
         case .refused(let reason):
             Label(reason, systemImage: "hand.raised.fill").foregroundStyle(.orange)
         case .planned:

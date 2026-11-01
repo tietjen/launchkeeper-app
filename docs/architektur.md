@@ -300,6 +300,14 @@ vollständigem Scan — oder beim Einreihen an und jetzt aus. Netzwerkdienste ha
 **Rückwege** gibt es nur für Einträge, die in **dieser** Sitzung gelaufen sind: Ein Status, der
 aus der Datei gelesen wurde, beweist nichts.
 
+**Fehlschläge** (seit 1.2.1) stehen in einem eigenen Abschnitt, nicht zwischen den offenen
+Einträgen. Die Erklärung (`QueueFailureHint`) wird aus dem gespeicherten Status samt Meldung
+des Kerns abgeleitet, nicht aus dem Ergebnis des Laufs — sie steht deshalb auch nach einem
+Neustart da. Erkannt werden bisher zwei Fälle: ein von macOS verweigertes Verschieben unter
+`~/Library/Containers` bzw. `Group Containers` (fehlender Festplattenvollzugriff, mit Link in die
+Systemeinstellungen) und „nichts mehr zu tun“. „Erneut versuchen“ setzt den Status auf offen
+zurück und verwirft das alte Ergebnis.
+
 **Speichern.** Die Warteschlange liegt in
 `~/Library/Application Support/de.paranoidsecurity.LaunchKeeper/queue.json` — sie listet, was mit
 Administratorrechten laufen soll, und wird deshalb vom ersten Byte an nur für den Besitzer lesbar
@@ -410,6 +418,8 @@ Die meisten Regeln oben sind nicht entworfen, sondern gefunden — in Live-Läuf
 | **Netzwerkdienste hakt der Mensch ab** (0.3.3) | Ein Dienst steht nur im Inventar, solange sein Programm läuft; sein Verschwinden kann einfach „beendet“ heißen. |
 | **Die Warteschlange überlebt einen Rückschritt** (0.3.3) | Ältere Versionen leerten die ganze Warteschlange, wenn sie einen Eintrag nicht lesen konnten. Seitdem: eintragsweise lesen, Original daneben legen, im Zweifel gar nicht speichern. |
 | **Stabile Schlüssel statt Nummern** | Positionsnummern zeigen nach einem Scan mit anderer Zusammensetzung auf andere Einträge — der Kern hatte das in V0.4.3 gelernt, als ein Scan ohne BTM-Schicht anders nummerierte. |
+| **Der Zustand eines Quarantäne-Eintrags kommt von der Festplatte** (1.2.1) | Das Manifest sagte `applied-fail(5)` für einen Eintrag, der nichts enthielt, ebenso wie für einen, dem nur ein Pfad fehlte. Die Ansicht prüft deshalb jeden verschobenen Pfad (`lstat`, Links werden nicht verfolgt) und gruppiert danach: vollständig, unvollständig, leer, wiederhergestellt. |
+| **Kein leerer Eintrag für einen Lauf, der nichts verschoben hat** (Kern 0.13.1) | Verweigerte macOS schon den ersten Schritt, legte jeder erneute Versuch einen leeren `applied-fail`-Eintrag an. Jetzt behält der Kern keinen; die alten räumt „Leere Einträge entfernen“ weg — nur in deiner Quarantäne, die des Systems bleibt eine Touch-ID-Entscheidung je Eintrag. |
 | **Ein Hauptfenster** (1.1.0) | Inventar, Warteschlange und Einführung gibt es einmal; ein zweites Fenster verdoppelte sie nur. |
 | **Hilfe im Code, nicht als Help Book** (1.1.0) | Sie wird über denselben String-Katalog übersetzt wie die Oberfläche; Hilfe und Bedienung können im Wortlaut nicht auseinanderlaufen, und es braucht keinen Hilfe-Indexer. |
 | **Einführung als Popover an den echten Ansichten** (1.1.0/1.1.1) | Die Spalten des Fensters werden getrennt gehostet; eine gezeichnete Überlagerung bekäme ihre Lage nicht mit. Wo eine Karte nicht erscheinen kann, kommt nach einer Sekunde ein Blatt. |

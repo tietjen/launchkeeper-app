@@ -113,6 +113,68 @@ public final class QuarantineModel {
     public func isSystemEntry(_ entry: QuarantineManifest) -> Bool {
         stores.count > 1 && stores[1].load(entry.name) != nil
     }
+
+    /// What an entry holds right now, read from the disk — the manifest's
+    /// status alone says "applied-fail(5)" for an entry that holds nothing
+    /// and for one that holds all but one path (TJ 2026-11-01).
+    public enum Holding: Equatable, Sendable {
+        /// Every moved path is in the quarantine.
+        case complete
+        /// Some paths are in the quarantine, others never got there.
+        case partial(held: Int, of: Int)
+        /// Nothing reached the quarantine (macOS refused the first move);
+        /// there is nothing to restore and nothing to lose by removing it.
+        case empty
+        /// Moved back.
+        case restored
+    }
+
+    /// What an entry holds right now.
+    /// - Parameter entry: A listed entry.
+    /// - Returns: Its holding, by the presence of each quarantined path.
+    public func holding(of entry: QuarantineManifest) -> Holding {
+        if entry.status == "restored" { return .restored }
+        let held = entry.moves.filter { Self.exists($0.quarantined) }.count
+        let receipts = entry.receiptCopies.contains(where: Self.exists)
+        if held == 0 && !receipts { return .empty }
+        return held == entry.moves.count ? .complete : .partial(held: held, of: entry.moves.count)
+    }
+
+    /// `true` for a path that is there — a link counts, it is not followed.
+    /// Only "no such file" counts as absent: a path that cannot be read
+    /// (permissions, a loop) is treated as there, so an entry is never called
+    /// empty on a guess (review 2026-11-01, S2).
+    nonisolated public static func exists(_ path: String) -> Bool {
+        var info = stat()
+        return lstat(path, &info) == 0 || errno != ENOENT
+    }
+
+    /// `true` when nothing but directories lies in an entry's folder besides
+    /// its manifest — the check right before an entry is removed as empty.
+    /// - Parameter directory: The entry's folder.
+    nonisolated public static func holdsNoFile(_ directory: String) -> Bool {
+        var pending = [directory]
+        while let path = pending.popLast() {
+            guard let children = try? FileManager.default.contentsOfDirectory(atPath: path) else { return false }
+            for child in children {
+                let full = path + "/" + child
+                if path == directory && child == "manifest.json" { continue }
+                var info = stat()
+                guard lstat(full, &info) == 0, (info.st_mode & S_IFMT) == S_IFDIR else { return false }
+                pending.append(full)
+            }
+        }
+        return true
+    }
+
+    /// Entries of the user's own quarantine that hold nothing: failed runs
+    /// that moved nothing. Only these are removed in one go ("Leere Einträge
+    /// entfernen"); the root-owned store's entries stay a single, Touch-ID
+    /// decision. A "planned" entry is a run in progress (or one that
+    /// crashed): its moves may still come, so it never counts (review B1).
+    public var emptyOwnEntries: [QuarantineManifest] {
+        entries.filter { !isSystemEntry($0) && $0.status != "planned" && holding(of: $0) == .empty }
+    }
 }
 
 // MARK: - Signature in depth
