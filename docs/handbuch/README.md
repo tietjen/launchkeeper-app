@@ -35,8 +35,10 @@ Wenn LaunchKeeper sich einmal anders verhält als erwartet, liegt es fast immer 
    nach einem zweiten Klick, und danach prüft LaunchKeeper, ob der Eintrag wirklich im
    erwarteten Zustand ist.
 3. **Entfernen heißt Quarantäne — es gibt immer einen Rückweg.** Dateien werden verschoben oder
-   vorher gesichert, nicht einfach gelöscht. Endgültig löschen geht nur ausdrücklich, im
-   Terminal mit `launchkeeper quarantine purge`.
+   vorher gesichert, nicht einfach gelöscht. Endgültig löschen geht nur ausdrücklich, einen
+   Eintrag nach dem anderen: in der Ansicht **Quarantäne** mit **Endgültig löschen…** (oder im
+   Terminal mit `launchkeeper quarantine purge`). Bis zu diesem Schritt gibt es immer einen
+   Rückweg.
 4. **Root nur über das Hilfsprogramm — und das nimmt nur „was mit welchem Eintrag“, nie
    Befehle.** Jede Ausführung fragt neu nach Touch ID oder Passwort; das Hilfsprogramm sucht
    den Eintrag selbst, prüft selbst und hält Quarantäne und Sicherungen nur in einem Ordner,

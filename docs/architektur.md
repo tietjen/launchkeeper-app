@@ -21,7 +21,9 @@ Fast jede Eigenart von LaunchKeeper lässt sich auf einen dieser Sätze zurückf
    Zustand stimmt, und schreibt eine Protokollzeile.
 3. **Entfernen heißt Quarantäne — es gibt immer einen Rückweg.** Dateien werden verschoben (mit
    Manifest) oder vor dem Löschen gesichert. Deaktivieren lässt sich mit Aktivieren umkehren.
-   Endgültig gelöscht wird nur im Terminal, mit `launchkeeper quarantine purge --apply`.
+   Endgültig gelöscht wird nur ausdrücklich, ein Quarantäne-Eintrag nach dem anderen: in der
+   Ansicht Quarantäne mit „Endgültig löschen…“ oder im Terminal mit
+   `launchkeeper quarantine purge --apply`.
 4. **Root nur über das Hilfsprogramm — und das nimmt nur „was mit welchem Eintrag“, nie
    Befehle.** Die App selbst führt keinen einzigen `sudo`-Schritt aus. Das Hilfsprogramm
    bekommt eine Operation und einen Namen, sucht den Eintrag selbst, plant selbst und fragt bei
@@ -213,7 +215,7 @@ sequenceDiagram
 | **Nur das echte Hilfsprogramm** | Die App verlangt dasselbe umgekehrt (Kennung `de.paranoidsecurity.LaunchKeeper.Helper`) und spricht nie mit einem Hilfsprogramm einer anderen Version (`0.2.0` ist in beide eingebaut). |
 | **Ein eigenes Recht** | `de.paranoidsecurity.LaunchKeeper.modify`: Administrator, nicht geteilt, Zeitfenster 0, drei Versuche, eigener Dialogtext auf Deutsch und Englisch. Fehlt das Recht, legt das Hilfsprogramm es beim Start an; eine bestehende Regel lässt es bis auf den Dialogtext, wie sie ist — ein Administrator könnte sie verschärft haben. |
 | **Die Abfrage am Ort der Tat** | Die App schickt eine **leere** Autorisierung; erst das Hilfsprogramm fordert das Recht mit erlaubter Interaktion an, direkt vor der Aktion. Eine Freigabe, die die App selbst einholt, wäre bei Zeitfenster 0 schon verbraucht, bevor das Hilfsprogramm sie prüft (live 2026-09-26). |
-| **Keine Befehle** | Eine Anfrage ist `kind` (disable, enable, remove, remove-working, restore, purge, uninstall — `purge` schickt die App nie) plus `target` (Schlüssel, Quarantäne-Name oder Paket-ID). Leer, länger als 1 024 Byte, mit Steuerzeichen oder mit führendem „-“ wird abgelehnt, bevor eine Engine sie sieht. |
+| **Keine Befehle** | Eine Anfrage ist `kind` (disable, enable, remove, remove-working, restore, purge, uninstall — `purge` schickt die App nur für Einträge der Quarantäne des Hilfsprogramms, seit 1.2) plus `target` (Schlüssel, Quarantäne-Name oder Paket-ID). Leer, länger als 1 024 Byte, mit Steuerzeichen oder mit führendem „-“ wird abgelehnt, bevor eine Engine sie sieht. |
 | **Wer fragt, sagt die Verbindung** | UID und Benutzerordner kommen aus der XPC-Verbindung und der Benutzerdatenbank, nie aus der Anfrage. root als Aufrufer wird abgelehnt. |
 | **Eins nach dem anderen** | Aktionen laufen auf einer seriellen Warteschlange — zwei Aktionen, die um denselben launchd-Zustand konkurrieren, würden die Prüfung danach wertlos machen. |
 | **Nur der Systembereich** | `systemScopeOnly`: Einträge eines Benutzers (Benutzer-Domäne, App-Erweiterungen, eine Datei im Benutzerordner) lehnt das Hilfsprogramm ab — die ändert die App ohne Administratorrechte. Startdateien entfernt und sichert es nur in `/Library/LaunchAgents` und `/Library/LaunchDaemons`. Ein Systemdienst, dessen **Programm** in einem Benutzerordner liegt, bleibt entfernbar: geschrieben wird dort nichts. |
@@ -232,7 +234,7 @@ lehnt es ab und nennt die Reparatur (`sudo chown -R root:wheel …` und `sudo ch
 
 Geschrieben wird dort nur als root — vom Hilfsprogramm oder über `sudo` von der Kommandozeile
 (`quarantine restore/purge --apply`); die App und `launchkeeper` ohne sudo lesen nur (Liste,
-Planung einer Wiederherstellung). Sonst wäre „gehört root“ kein Beweis mehr.
+Planung einer Wiederherstellung oder Löschung). Sonst wäre „gehört root“ kein Beweis mehr.
 
 Bevor das Hilfsprogramm etwas daraus **wiederherstellt**, prüft es den Eintrag noch einmal
 (`QuarantineTrust.verifyEntry`): Eintrag, Manifest und jeder Ordner auf dem Weg zu den Dateien
@@ -241,6 +243,14 @@ Ursprung zurück; Ursprünge sind saubere absolute Pfade, nie unter `/System`, n
 des Aufrufers und nie an Orten, die Benutzer ändern können; Kopien von Paketbelegen heißen genau
 `receipt/<paket>.bom` bzw. `.plist`. Einträge **deiner** Quarantäne (von der Kommandozeile oder
 älteren Versionen) legt es nie zurück; dafür nennt es den Terminal-Befehl.
+
+Dasselbe gilt für das **endgültige Löschen** (seit 1.2): Das Hilfsprogramm löscht nur Einträge
+seiner eigenen Quarantäne, nachdem es geprüft hat, dass der Eintrag root gehört und für niemand sonst
+schreibbar war — mit Touch ID bei jeder Ausführung. Einen Eintrag **deiner**
+Quarantäne, der durch und durch dir gehört (jeder Ordner darin dir gehörend und für dich
+schreibbar, keine gesperrten Dateien), löscht die App selbst ohne Administratorrechte; der Kern
+plant `rm` dafür ohne `sudo` (LaunchKeeperKit 0.13). Enthält er Dateien oder Ordner, die du nicht
+löschen darfst (root gehörend oder gesperrt), zeigt die App den Plan und nennt den Terminal-Befehl.
 
 ## Die Warteschlange
 

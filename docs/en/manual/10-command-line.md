@@ -148,8 +148,10 @@ launchkeeper quarantine purge <name>             # plan
 launchkeeper quarantine purge <name> --apply     # delete for good — NOT recoverable
 ```
 
-`purge` is the only real deletion in LaunchKeeper, and it exists only here. What the two stores
-are, and when putting things back works only in the Terminal, is described in
+`purge` is the only real deletion in LaunchKeeper; since app 1.2 it is also in the **Quarantine**
+view (**Delete for good…**). An entry of your store that is yours through and through `purge`
+deletes without `sudo`; otherwise `sudo` asks for your password. What the two stores are, and
+when putting things back or deleting works only in the Terminal, is described in
 [chapter 8](08-quarantine-and-undo.md).
 
 ## Backups of the launch folders
@@ -199,7 +201,8 @@ command** — without `--apply`, the command first shows the plan in the Termina
 | Many changes with administrator rights | the app — one Touch ID prompt for the whole queue |
 | Watching with notifications, even with the window closed | the app |
 | Scripts, nightly comparisons, JSON, CSV | the command line |
-| Deleting from the quarantine for good | **only** the command line |
+| Deleting from the quarantine for good | the app (**Delete for good…**), one at a time |
+| Deleting entries of your store for good that contain files only root may delete | **only** the command line |
 | Putting back entries from your store whose paths lie outside your home folder | **only** the command line |
 | Creating and restoring backups of the launch folders | the command line |
 | Checking another system from its files (Time Machine backup, drive) | **only** the command line: `launchkeeper list --root <folder>` |

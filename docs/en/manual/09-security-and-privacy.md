@@ -58,7 +58,7 @@ Each side checks the other's code signature:
 ### What it accepts
 
 **No commands.** A request contains only “what to do with which entry”: disable, enable again,
-remove, move into the quarantine, restore, uninstall — and the name of the entry, the quarantine
+remove, move into the quarantine, restore, delete for good, uninstall — and the name of the entry, the quarantine
 entry or the package. The helper scans by itself, resolves the entry by itself and sends it
 through the same check as the command line.
 
@@ -102,6 +102,9 @@ That is why:
   (`quarantine restore/purge --apply`); the app and `launchkeeper` without `sudo` only read.
 - Before restoring, the helper checks each entry once more: owner, no links, every path matches
   its origin, no origin in your home folder or under `/System`.
+- **Deleting for good** (since 1.2) only entries of this tree: the helper first checks that the
+  entry is one of its own — owned by root, writable for nobody else — and asks for Touch ID every time. Entries
+  of your own quarantine it does not delete.
 - Backups never follow links, copy only regular files, and no copy is readable by more people
   than its original.
 

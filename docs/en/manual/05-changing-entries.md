@@ -188,7 +188,8 @@ leftovers, launch files of working entries, package files, app leftovers. From t
 back with **Restore…** ([chapter 3](03-the-views.md), [chapter 8](08-quarantine-and-undo.md)).
 
 The only exception is the orphaned launch file on **Remove** — and that is backed up first.
-Permanent deletion from the quarantine happens only in Terminal, with
+Deleting from the quarantine for good happens only explicitly, one entry at a time: in the
+**Quarantine** view with **Delete for good…** or in Terminal with
 `launchkeeper quarantine purge`.
 
 ## Backups

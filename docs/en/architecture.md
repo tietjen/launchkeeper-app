@@ -23,7 +23,8 @@ Almost every quirk of LaunchKeeper can be traced back to one of these statements
    writes a log line.
 3. **Removing means quarantine — there is always a way back.** Files are moved (with a manifest)
    or backed up before they are deleted. Disable can be reversed with Enable. Deleting for good
-   happens only in the Terminal, with `launchkeeper quarantine purge --apply`.
+   happens only explicitly, one quarantine entry at a time: in the Quarantine view with
+   “Delete for good…” or in the Terminal with `launchkeeper quarantine purge --apply`.
 4. **Root only through the helper — and it accepts only “what to do with which entry”, never
    commands.** The app itself does not run a single `sudo` step. The helper receives an
    operation and a name, looks up the entry itself, plans itself and asks for Touch ID or the
@@ -210,7 +211,7 @@ sequenceDiagram
 | **Only the real helper** | The app requires the same in reverse (identifier `de.paranoidsecurity.LaunchKeeper.Helper`) and never talks to a helper of a different version (`0.2.0` is built into both). |
 | **A right of its own** | `de.paranoidsecurity.LaunchKeeper.modify`: administrator, not shared, timeout 0, three attempts, its own dialog text in German and English. If the right is missing, the helper creates it at launch; an existing rule it leaves as it is, apart from the dialog text — an administrator might have tightened it. |
 | **The prompt where the action happens** | The app sends an **empty** authorization; only the helper requests the right with interaction allowed, right before the action. A grant the app obtained itself would already be used up at timeout 0 before the helper checks it (live 2026-09-26). |
-| **No commands** | A request is `kind` (disable, enable, remove, remove-working, restore, purge, uninstall — the app never sends `purge`) plus `target` (key, quarantine name or package ID). Empty, longer than 1,024 bytes, with control characters or with a leading “-” is rejected before any engine sees it. |
+| **No commands** | A request is `kind` (disable, enable, remove, remove-working, restore, purge, uninstall — the app sends `purge` only for entries of the helper's quarantine, since 1.2) plus `target` (key, quarantine name or package ID). Empty, longer than 1,024 bytes, with control characters or with a leading “-” is rejected before any engine sees it. |
 | **The connection says who is asking** | UID and home folder come from the XPC connection and the user database, never from the request. root as the caller is rejected. |
 | **One at a time** | Actions run on a serial queue — two actions competing for the same launchd state would make the verification afterwards worthless. |
 | **System domain only** | `systemScopeOnly`: the helper rejects a user's entries (user domain, app extensions, a file in the home folder) — the app changes those without administrator rights. It removes and backs up launch files only in `/Library/LaunchAgents` and `/Library/LaunchDaemons`. A system service whose **program** lives in a home folder stays removable: nothing is written there. |
@@ -229,7 +230,7 @@ the fix (`sudo chown -R root:wheel …` and `sudo chmod -R go-w …`).
 
 Only root writes there — the helper, or the command line via `sudo`
 (`quarantine restore/purge --apply`); the app and `launchkeeper` without sudo only read (list,
-planning a restore). Otherwise “owned by root” would no longer prove anything.
+planning a restore or a deletion). Otherwise “owned by root” would no longer prove anything.
 
 Before the helper **restores** anything from it, it checks the entry once more
 (`QuarantineTrust.verifyEntry`): the entry, the manifest and every folder on the way to the files
@@ -238,6 +239,15 @@ origin; origins are clean absolute paths, never under `/System`, never in the ca
 and never in places users can change; copies of package receipts are named exactly
 `receipt/<package>.bom` or `.plist`. Entries of **your** quarantine (from the command line or
 older versions) it never puts back; for those it names the Terminal command.
+
+The same holds for **deleting for good** (since 1.2): the helper deletes only entries of its own
+quarantine, after checking that the entry belongs to root and was writable for nobody else
+— with Touch ID on every execution. An entry of **your** quarantine that is yours through and
+through (every folder in it owned by you and writable for you, no locked files) the app deletes
+itself without administrator rights; the core plans `rm` for it without `sudo` (LaunchKeeperKit
+0.13). If it contains files or folders you may not delete
+(owned by root or locked), the app shows the plan and names the Terminal
+command.
 
 ## The queue
 

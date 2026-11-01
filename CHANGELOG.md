@@ -5,6 +5,26 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The engine
 underneath is [launchkeeper](https://github.com/tietjen/launchkeeper)
 (`LaunchKeeperKit`); its changes are listed there.
 
+## [1.2.0] — 2026-11-01
+
+### Added
+- **Delete for good from the Quarantine view** („Endgültig löschen…“ on every
+  entry) — until now only `launchkeeper quarantine purge` in Terminal. The
+  usual sheet shows the plan first, a red "cannot be restored" notice, and a
+  button named for what it does ("Delete for good"); Return never triggers
+  it. One entry at a time, not queueable.
+  - Entries of the helper's root-owned quarantine go through the helper,
+    with Touch ID every time; it deletes only entries it verifies as its own.
+  - Entries of your own quarantine that are yours through and through (app
+    leftovers, for example) the app deletes itself — kit 0.13 plans them
+    without `sudo`.
+  - Entries of your own quarantine with root-owned files (a package
+    uninstall run from the CLI) stay a Terminal job, like restoring them;
+    the sheet says why and offers the command.
+
+### Changed
+- LaunchKeeperKit 0.13.0. Helper unchanged (0.2.0).
+
 ## [1.1.4] — 2026-10-31
 
 ### Added

@@ -154,6 +154,8 @@ und die Knöpfe:
   ([Kapitel 5](05-eintraege-aendern.md)). Wiederherstellen überschreibt nie: Steht am alten Ort
   inzwischen etwas Neues, wird dieser Pfad übersprungen und genannt.
 - **Im Finder zeigen** — öffnet den Ordner des Eintrags.
+- **Endgültig löschen…** (rechts, seit 1.2) — öffnet das Blatt mit dem Plan; danach gibt es
+  keinen Rückweg. Mehr dazu unten.
 
 **Neu laden** in der Symbolleiste liest die Quarantäne neu, etwa nachdem du im Terminal etwas
 geändert hast.
@@ -177,17 +179,24 @@ und fragt nach Touch ID.
 
 ### Endgültig löschen
 
-In der App gibt es das nicht, mit Absicht. Endgültig gelöscht wird nur im Terminal, ein Eintrag
-nach dem anderen:
+**Endgültig löschen…** ist die einzige echte Löschung in der App — ein Eintrag nach dem anderen,
+nie über Häkchen oder die Warteschlange. Das Blatt zeigt erst den Plan: einen Schritt, der den
+Ordner des Eintrags löscht, und wie viele Pfade dabei verschwinden. Darüber steht rot
+„Nicht wiederherstellbar: Die Dateien dieses Eintrags werden gelöscht, nicht in den Papierkorb
+gelegt. Es gibt danach keinen Rückweg.“ Ausgeführt wird nur mit einem Klick auf **Endgültig
+löschen**; die Eingabetaste löst ihn nicht aus.
+
+Einträge des Hilfsprogramms löscht das Hilfsprogramm, mit Touch ID bei jedem Mal. Deine eigenen
+löscht die App ohne Administratorrechte — es sei denn, darin liegen Dateien, die nur root löschen
+darf; dann nennt das Blatt den Befehl für das Terminal:
 
 ```bash
 launchkeeper quarantine purge <name>          # zeigt nur den Plan
 launchkeeper quarantine purge <name> --apply  # löscht wirklich
 ```
 
-`purge` löscht immer über `sudo`; das Terminal fragt nach deinem Passwort. Mehr zu
-Rückwegen in [Kapitel 8](08-quarantaene-und-rueckwege.md), zur Kommandozeile in
-[Kapitel 10](10-kommandozeile.md).
+Welcher Eintrag wohin gehört, steht in [Kapitel 8](08-quarantaene-und-rueckwege.md#endgültig-löschen),
+zur Kommandozeile in [Kapitel 10](10-kommandozeile.md).
 
 ## Beobachtung
 

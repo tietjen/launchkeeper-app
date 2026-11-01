@@ -162,7 +162,7 @@ App-Erweiterungen (pluginkit) und deine crontab brauchen keine.
 | **Entfernen** | Einstellungen | Administrator-Aktionen gehen danach nicht mehr; Einlesen fragt wieder selbst nach den Hintergrundaufgaben |
 | **Hilfsprogramm neu starten** | Einstellungen, Plan-Blatt | erscheint, wenn eine andere Version als die der App läuft; bis dahin schickt die App ihm nichts |
 | **Touch ID / Passwort** | macOS-Dialog | bei **jeder** Ausführung neu, ohne Schonfrist; die Warteschlange fragt einmal je Lauf und nennt die Anzahl |
-| **Was es ausführt** | — | Deaktivieren, Aktivieren, Entfernen, In die Quarantäne verschieben für systemweite Einträge — Startdateien entfernt und sichert es nur in `/Library/LaunchAgents` und `/Library/LaunchDaemons`; Wiederherstellen nur eigener Quarantäne-Einträge; Paket-Deinstallation |
+| **Was es ausführt** | — | Deaktivieren, Aktivieren, Entfernen, In die Quarantäne verschieben für systemweite Einträge — Startdateien entfernt und sichert es nur in `/Library/LaunchAgents` und `/Library/LaunchDaemons`; Wiederherstellen und endgültig Löschen nur eigener Quarantäne-Einträge; Paket-Deinstallation |
 | **Was es ablehnt** | — | Einträge eines Benutzers (Benutzer-Domäne, App-Erweiterungen, Dateien im Benutzerordner) — die ändert die App selbst ohne Administratorrechte; Verschieben aus Orten, die Nicht-Administratoren ändern können (`/Users`, temporäre Ordner, `/Volumes`, `/opt/homebrew`, jeder Ordner auf dem Weg, der nicht root gehört oder für alle schreibbar ist) |
 | **Werkzeuge** | — | nur `launchctl`, `rm`, `cp`, `mv`, `mkdir`, `defaults`, `pkgutil`, `cksum` und `socketfilterfw`, an festen Pfaden; jeder andere Schritt wird abgelehnt |
 | **Hintergrundaufgaben lesen** | bei jedem frischen Einlesen | als root, ohne Touch ID; gibt nur die systemweiten Abschnitte und deine eigenen zurück, nie die anderer Benutzer |
@@ -179,7 +179,7 @@ App-Erweiterungen (pluginkit) und deine crontab brauchen keine.
 | **Nur im Terminal** | aufgeklappte Zeile | ein Eintrag **deiner** Quarantäne, der Dateien außerhalb deines Benutzerordners zurücklegen müsste (von der Kommandozeile oder einer älteren Version): „Befehl kopieren“ gibt `launchkeeper quarantine restore <name>` |
 | **Was das Hilfsprogramm zurücklegt** | — | nur Einträge, die es selbst angelegt hat, nach Prüfung von Besitz und Bedeutung: jede Datei genau an ihren Ursprung, nie nach `/System`, nie in deinen Benutzerordner, nie an Orte, die Benutzer ändern können |
 | **Im Finder zeigen** | aufgeklappte Zeile | den Ordner des Eintrags |
-| **Endgültig löschen** | — | **nicht in der App**: im Terminal mit `launchkeeper quarantine purge` (ohne `--apply` nur der Plan) |
+| **Endgültig löschen…** | aufgeklappte Zeile, rechts | seit 1.2; öffnet das Plan-Blatt: ein Schritt `rm -rf -- <Ordner des Eintrags>`, die Zahl der Pfade, roter Hinweis „Nicht wiederherstellbar …“. Ausführen mit **Endgültig löschen** bzw. „Endgültig löschen (Touch ID)“ — nur per Klick, nie mit ↩. Einträge des Hilfsprogramms löscht das Hilfsprogramm (nur eigene, Touch ID jedes Mal); deine eigenen, die dir durch und durch gehören, die App ohne Administratorrechte; deine mit Dateien, die nur root löschen darf, nur das Terminal (`launchkeeper quarantine purge <name> --apply`). Einzeln, nicht in der Warteschlange; auch bei wiederhergestellten Einträgen |
 | **Neu laden** | Symbolleiste | liest die Einträge neu, etwa nach Änderungen im Terminal |
 | **Markieren** | Häkchen | nicht bei wiederhergestellten und nicht bei „Nur im Terminal“ |
 
@@ -212,7 +212,7 @@ Einstellungen (⌘,) haben vier Abschnitte:
 | ⌥⌘E | Basis- oder Expertenmodus |
 | ⌘, | Einstellungen |
 | ⌘? | LaunchKeeper-Hilfe |
-| ↩ | im Plan-Blatt: Ausführen · in der Warteschlange: Alle ausführen |
+| ↩ | im Plan-Blatt: Ausführen (nicht bei **Endgültig löschen**) · in der Warteschlange: Alle ausführen |
 | esc | im Plan-Blatt: Abbrechen |
 
 ## Grenzen und feste Werte
@@ -248,7 +248,8 @@ Einstellungen (⌘,) haben vier Abschnitte:
   in der Warteschlange.
 - **Einträge von Apple** (`com.apple.*`) und alles unter `/System` — nur lesen, auch mit
   Administratorrechten.
-- **Endgültig löschen** — nur im Terminal.
+- **Endgültig löschen ohne deinen ausdrücklichen Klick** — nur einzeln, nach dem Plan, nie mit ↩
+  und nie in der Warteschlange.
 - **Etwas hochladen** — auch nicht zu VirusTotal. Ins Netz geht nur die Suche nach Updates.
 - **Einträge anderer Benutzer zeigen** — das Hilfsprogramm gibt sie nicht heraus.
 - **Befehle an das Hilfsprogramm schicken** — es nimmt nur „was mit welchem Eintrag“ und plant selbst.

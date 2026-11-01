@@ -193,7 +193,8 @@ Startdateien funktionierender Einträge, Paketdateien, App-Reste. Von dort holst
 [Kapitel 8](08-quarantaene-und-rueckwege.md)).
 
 Die einzige Ausnahme ist die verwaiste Startdatei beim **Entfernen** — und die wird vorher
-gesichert. Endgültig gelöscht wird aus der Quarantäne nur im Terminal, mit
+gesichert. Endgültig gelöscht wird aus der Quarantäne nur ausdrücklich, ein Eintrag nach dem
+anderen: in der Ansicht **Quarantäne** mit **Endgültig löschen…** oder im Terminal mit
 `launchkeeper quarantine purge`.
 
 ## Sicherungen

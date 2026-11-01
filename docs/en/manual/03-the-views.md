@@ -154,6 +154,8 @@ buttons:
   ([chapter 5](05-changing-entries.md)). Restoring never overwrites: if something new is at the
   old location by now, that path is skipped and named.
 - **Show in Finder** — opens the entry's folder.
+- **Delete for good…** (on the right, since 1.2) — opens the sheet with the plan; afterwards
+  there is no way back. More on this below.
 
 **Reload** in the toolbar reads the quarantine again, for example after you changed something in
 Terminal.
@@ -177,17 +179,23 @@ for Touch ID.
 
 ### Deleting for good
 
-The app doesn't do that, on purpose. Deleting for good happens only in Terminal, one entry at a
-time:
+**Delete for good…** is the only real deletion in the app — one entry at a time, never through
+checkboxes or the queue. The sheet shows the plan first: one step that deletes the entry's
+folder, and how many paths go with it. Above the buttons it says in red “Cannot be restored: the
+files of this entry are deleted, not moved to the Trash. There is no way back afterwards.” It
+runs only with a click on **Delete for good**; Return does not trigger it.
+
+The helper's entries are deleted by the helper, with Touch ID every time. Your own the app
+deletes without administrator rights — unless they contain files only root may delete; then the
+sheet gives the command for Terminal:
 
 ```bash
 launchkeeper quarantine purge <name>          # shows the plan only
 launchkeeper quarantine purge <name> --apply  # really deletes
 ```
 
-`purge` always deletes via `sudo`; Terminal asks for your password. More about ways back in
-[chapter 8](08-quarantine-and-undo.md), about the command line in
-[chapter 10](10-command-line.md).
+Which entry goes where is in [chapter 8](08-quarantine-and-undo.md#deleting-for-good), about the
+command line in [chapter 10](10-command-line.md).
 
 ## Watch
 

@@ -254,8 +254,7 @@ struct LeftoverRow: View {
 // MARK: - Quarantäne
 
 /// What cleanup moved away: one row per quarantine entry with its moved
-/// paths. Restore and purge arrive with Phase 4; until then the CLI command
-/// is shown.
+/// paths, its way back (restore) and the one real deletion (purge, 1.2).
 struct QuarantinePane: View {
     @Environment(QuarantineModel.self) private var model
     @Environment(Marks.self) private var marks
@@ -263,8 +262,8 @@ struct QuarantinePane: View {
     @Environment(HelperStatus.self) private var helper
     @Environment(WatchModel.self) private var watch
     @Environment(QueueModel.self) private var queue
-    /// The entry whose restore sheet is open.
-    @State private var restoring: String?
+    /// The entry whose restore or purge sheet is open.
+    @State private var sheet: QuarantineSheet?
 
     /// An entry of the user's quarantine that moves something outside the
     /// home: only root can put it back, and the helper restores only its own
@@ -296,13 +295,15 @@ struct QuarantinePane: View {
                                     NSPasteboard.general.setString("launchkeeper quarantine restore \(entry.name)", forType: .string)
                                 }
                             } else {
-                                Button("Wiederherstellen…") { restoring = entry.name }
+                                Button("Wiederherstellen…") { sheet = QuarantineSheet(name: entry.name, purge: false) }
                                     .disabled(entry.status == "restored")
                             }
                             Button("Im Finder zeigen") { revealInFinder(model.directory(of: entry)) }
                             Spacer()
-                            Text("Endgültig löschen: im Terminal mit launchkeeper quarantine purge")
-                                .font(.caption).foregroundStyle(.secondary)
+                            Button("Endgültig löschen…", role: .destructive) {
+                                sheet = QuarantineSheet(name: entry.name, purge: true, system: model.isSystemEntry(entry))
+                            }
+                            .help("Endgültig löschen — zeigt erst den Plan. Danach sind die Dateien dieses Eintrags weg, ohne Rückweg.")
                         }
                     } label: {
                         HStack {
@@ -324,8 +325,8 @@ struct QuarantinePane: View {
                 .help("Quarantäne neu laden — liest die Einträge der Quarantäne erneut, z. B. nach Änderungen im Terminal.")
         }
         .onAppear { model.reload() }
-        .sheet(item: Binding(get: { restoring.map(RestoreTarget.init) }, set: { restoring = $0?.name })) { target in
-            ActionSheet(request: .restore(quarantine: target.name), performer: Performer.make(store: store)) {
+        .sheet(item: $sheet) { target in
+            ActionSheet(request: target.request, performer: Performer.make(store: store)) {
                 model.reload()
                 Task { await store.refresh(reuseBTM: true, reason: .action) }
             }
@@ -415,8 +416,19 @@ struct BackgroundDetail: View {
     }
 }
 
-/// Identifies the quarantine entry of an open restore sheet (`sheet(item:)` needs `Identifiable`).
-struct RestoreTarget: Identifiable {
+/// The open sheet of the Quarantine view: restore or purge one entry
+/// (`sheet(item:)` needs `Identifiable`).
+struct QuarantineSheet: Identifiable {
+    /// The entry's name.
     let name: String
-    var id: String { name }
+    /// `true` deletes for good, `false` restores.
+    let purge: Bool
+    /// The entry sits in the helper's root-owned store (purge goes to the helper).
+    var system = false
+    var id: String { (purge ? "purge:" : "restore:") + name }
+
+    /// The action the sheet runs.
+    var request: ActionRequest {
+        purge ? .purge(quarantine: name, system: system) : .restore(quarantine: name)
+    }
 }

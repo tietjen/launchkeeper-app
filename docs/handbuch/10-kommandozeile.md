@@ -145,8 +145,10 @@ launchkeeper quarantine purge <Name>             # Plan
 launchkeeper quarantine purge <Name> --apply     # endgültig löschen — NICHT wiederherstellbar
 ```
 
-`purge` ist die einzige echte Löschung in LaunchKeeper, und es gibt sie nur hier. Was die
-beiden Ablagen sind und wann das Zurücklegen nur im Terminal geht, steht in
+`purge` ist die einzige echte Löschung in LaunchKeeper; seit App 1.2 gibt es sie auch in der
+Ansicht **Quarantäne** (**Endgültig löschen…**). Einen Eintrag deiner Ablage, der durch und durch
+dir gehört, löscht `purge` ohne `sudo`; sonst fragt `sudo` nach deinem Passwort. Was die beiden
+Ablagen sind und wann Zurücklegen oder Löschen nur im Terminal geht, steht in
 [Kapitel 8](08-quarantaene-und-rueckwege.md).
 
 ## Sicherungen der Startordner
@@ -196,7 +198,8 @@ kopieren** an — ohne `--apply` zeigt der Befehl im Terminal erst den Plan.
 | Viele Änderungen mit Administratorrechten | die App — eine Touch-ID-Abfrage für die ganze Warteschlange |
 | Beobachten mit Mitteilungen, auch mit geschlossenem Fenster | die App |
 | Skripte, nächtliche Vergleiche, JSON, CSV | die Kommandozeile |
-| Aus der Quarantäne endgültig löschen | **nur** die Kommandozeile |
+| Aus der Quarantäne endgültig löschen | die App (**Endgültig löschen…**), einzeln |
+| Einträge deiner Ablage endgültig löschen, die Dateien enthalten, die nur root löschen darf | **nur** die Kommandozeile |
 | Einträge deiner Ablage zurücklegen, die Pfade außerhalb deines Benutzerordners haben | **nur** die Kommandozeile |
 | Sicherungen der Startordner anlegen und zurückkopieren | die Kommandozeile |
 | Ein anderes System aus seinen Dateien prüfen (Time-Machine-Backup, Laufwerk) | **nur** die Kommandozeile: `launchkeeper list --root <Ordner>` |

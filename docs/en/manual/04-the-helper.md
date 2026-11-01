@@ -91,12 +91,13 @@ The helper accepts **no commands**. It understands only “what with which entry
 | Request | Target |
 |---|---|
 | disable, enable, remove, move into quarantine | an inventory entry |
-| restore | a quarantine entry |
+| restore, delete for good (since 1.2) | an entry of its own quarantine |
 | uninstall | a package, by its exact package ID |
 
-The protocol between the app and the helper also knows “delete for good” (`purge`) for a
-quarantine entry. The app never sends this request — deleting for good happens only in Terminal
-([chapter 8](08-quarantine-and-undo.md)).
+The app sends delete for good (`purge`) only for entries the helper keeps itself; before
+deleting, the helper checks that the entry belongs to root and was writable for nobody else. Entries of your own
+quarantine are deleted by the app itself or, if they contain files only root may delete, in
+Terminal ([chapter 8](08-quarantine-and-undo.md#deleting-for-good)).
 
 It works out everything else **itself**: it scans the Mac itself, looks up the entry itself and
 runs it through the same check as the command line. What doesn't pass there, it doesn't run. A

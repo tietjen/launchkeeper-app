@@ -57,6 +57,8 @@ und, bei Paketen, „Paketbeleg vergessen — Kopie liegt in der Quarantäne“.
 - **Wiederherstellen…** öffnet das Blatt mit dem Plan — wie bei jeder Aktion
   ([Kapitel 5](05-eintraege-aendern.md)). Erst ein zweiter Klick führt aus.
 - **Im Finder zeigen** öffnet den Ordner des Eintrags.
+- **Endgültig löschen…** (rechts in der aufgeklappten Zeile, seit 1.2) löscht den Eintrag ohne
+  Rückweg — erst nach dem Plan, siehe [unten](#endgültig-löschen).
 - **Neu laden** in der Symbolleiste liest die Quarantäne erneut, etwa nachdem du im Terminal
   etwas geändert hast.
 
@@ -104,10 +106,53 @@ restore <Name>` im Terminal.
 > **Wiederherstellen überschreibt nie.** Liegt am ursprünglichen Ort inzwischen etwas Neues, wird
 > dieser Pfad übersprungen und im Ergebnis genannt.
 
-## Endgültig löschen — nur im Terminal
+## Endgültig löschen
 
-Die App löscht nichts aus der Quarantäne. Das ist die einzige echte Löschung in LaunchKeeper, und
-sie gehört ins Terminal — einen Eintrag nach dem anderen:
+Einen Eintrag der Quarantäne endgültig zu löschen ist die einzige echte Löschung in LaunchKeeper.
+Danach gibt es keinen Rückweg mehr. Deshalb geschieht es nur ausdrücklich und einen Eintrag nach
+dem anderen — in der App oder im Terminal.
+
+### In der App
+
+Seit 1.2 steht in jeder aufgeklappten Zeile der Ansicht **Quarantäne** rechts
+**Endgültig löschen…**. Der Knopf öffnet das gewohnte Blatt:
+
+- **Erst der Plan.** Ein einziger Schritt, `rm -rf -- <Ordner des Eintrags>` — „delete the
+  quarantine entry for good — NOT restorable“ (Meldungen des Kerns bleiben englisch); dazu der
+  Hinweis des Kerns, wie viele Pfade gelöscht würden, und eine Warnung, wenn der Eintrag nicht
+  vollständig angelegt wurde.
+- **Ein roter Hinweis** über den Knöpfen: „Nicht wiederherstellbar: Die Dateien dieses Eintrags
+  werden gelöscht, nicht in den Papierkorb gelegt. Es gibt danach keinen Rückweg.“
+- **Endgültig löschen** führt aus — „Endgültig löschen (Touch ID)“, wenn es über das
+  Hilfsprogramm geht. Die Eingabetaste löst diesen Knopf nicht aus; es braucht einen bewussten
+  Klick.
+
+Es gibt dafür keine Häkchen und keinen Platz in der Warteschlange. Auch wiederhergestellte
+Einträge lassen sich löschen; dann verschwindet, was von ihnen noch übrig ist.
+
+### Wer was löscht
+
+| Eintrag | Endgültig löschen |
+|---|---|
+| in der Ablage **des Systems** | das Hilfsprogramm, nach Touch ID oder Passwort — jedes Mal |
+| in **deiner** Ablage, durch und durch deiner | die App selbst, ohne Administratorrechte und ohne Touch ID |
+| in **deiner** Ablage, mit Dateien, die nur root löschen darf | **nur im Terminal** |
+
+- **Ablage des Systems:** Alles, was die App mit Administratorrechten getan hat. Bevor das
+  Hilfsprogramm löscht, prüft es, dass der Eintrag einer seiner eigenen ist — er gehört root und
+  war für niemand sonst schreibbar.
+- **Durch und durch deiner** heißt: Jeder Ordner im Eintrag gehört dir und ist für dich
+  schreibbar, und keine Datei ist gesperrt oder unveränderbar. Das ist der typische Fall bei
+  App-Resten.
+- **Mit Dateien, die nur root löschen darf** — etwa ein Paket, das du mit der Kommandozeile über
+  `sudo` deinstalliert hast: Das Blatt zeigt den Plan, kann ihn aber nicht ausführen. Unter
+  „Braucht Administratorrechte“ erklärt es, dass das Hilfsprogramm nur Einträge löscht, die es
+  selbst angelegt hat, und nennt den Befehl `launchkeeper quarantine purge <Name> --apply` mit
+  **Kopieren**; im Terminal fragt macOS nach deinem Passwort (gesperrte Dateien vorher mit
+  `chflags -R nouchg` entsperren). Es ist dieselbe Regel wie beim
+  [Wiederherstellen](#wer-was-wiederherstellt) solcher Einträge.
+
+### Im Terminal
 
 ```bash
 launchkeeper quarantine list                     # was liegt dort, mit Namen
@@ -117,9 +162,10 @@ launchkeeper quarantine purge <Name> --apply     # endgültig löschen — NICHT
 
 - **Ohne `--apply` passiert nichts.** Der Plan nennt, wie viele Pfade gelöscht würden, und warnt,
   wenn der Eintrag nicht vollständig angelegt wurde — dann erst `quarantine restore` prüfen.
-- Gelöscht wird mit `sudo rm -rf` genau dieser eine Ordner; vorher prüft `launchkeeper`, dass er
-  direkt in einer der beiden Quarantänen liegt. Für `sudo` fragt das Terminal nach deinem
-  Passwort.
+- Gelöscht wird genau dieser eine Ordner; vorher prüft `launchkeeper`, dass er direkt in einer
+  der beiden Quarantänen liegt. Einen Eintrag deiner Ablage, der durch und durch dir gehört,
+  löscht es ohne `sudo` (seit LaunchKeeperKit 0.13); sonst mit `sudo rm -rf`, und das Terminal
+  fragt nach deinem Passwort.
 - Danach prüft `launchkeeper`, dass der Ordner wirklich weg ist.
 
 ## Andere Rückwege

@@ -30,6 +30,11 @@ public enum ActionRequest: Hashable, Sendable, Codable {
     case leftovers(bundleID: String)
     /// Move a quarantine entry back, by name.
     case restore(quarantine: String)
+    /// Delete a quarantine entry for good, by name — the one real deletion.
+    /// `system` says the entry sits in the helper's root-owned store: only
+    /// those go to the helper; an entry of the user's own quarantine the app
+    /// deletes itself when it can (kit 0.13), otherwise the Terminal does.
+    case purge(quarantine: String, system: Bool)
     /// Uninstall an installer package by its receipt, by exact package id.
     case uninstall(package: String)
     /// Nothing the app runs — the user does it by hand (`ManualGuide`);
@@ -49,6 +54,7 @@ public enum ActionRequest: Hashable, Sendable, Codable {
             }
         case .leftovers: return String(localized: "Reste in die Quarantäne verschieben")
         case .restore: return String(localized: "Aus der Quarantäne wiederherstellen")
+        case .purge: return String(localized: "Endgültig löschen")
         case .uninstall: return String(localized: "Paket deinstallieren")
         case .manual: return String(localized: "Von Hand erledigen")
         }
@@ -64,6 +70,8 @@ public enum ActionRequest: Hashable, Sendable, Codable {
                   [.disable, .enable, .remove, .removeWorking].contains(kind) else { return nil }
             return PrivilegedRequest(kind: kind, target: key)
         case .restore(let name): return PrivilegedRequest(kind: .restore, target: name)
+        // The helper deletes only entries it keeps itself (root-owned store).
+        case .purge(let name, let system): return system ? PrivilegedRequest(kind: .purge, target: name) : nil
         case .uninstall(let id): return PrivilegedRequest(kind: .uninstall, target: id)
         case .leftovers, .manual: return nil
         }
@@ -81,10 +89,18 @@ public enum ActionRequest: Hashable, Sendable, Codable {
                 : "launchkeeper \(operation) \(EntrySummary.quote(key))"
         case .leftovers(let id): base = "launchkeeper leftovers \(EntrySummary.quote(id))"
         case .restore(let name): base = "launchkeeper quarantine restore \(EntrySummary.quote(name))"
+        case .purge(let name, _): base = "launchkeeper quarantine purge \(EntrySummary.quote(name))"
         case .uninstall(let id): base = "launchkeeper uninstall \(EntrySummary.quote(id))"
         case .manual(let key): return "launchkeeper inspect \(EntrySummary.quote(key))"
         }
         return apply ? base + " --apply" : base
+    }
+
+    /// `true` for a request whose result cannot be undone — the sheet warns
+    /// and never makes its button the default (Return does not delete).
+    public var isIrreversible: Bool {
+        if case .purge = self { return true }
+        return false
     }
 }
 
@@ -259,6 +275,12 @@ public struct EnginePerformer: ActionPerforming, @unchecked Sendable {
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .restore(let name):
             let result = CleanupEngine(environment: CleanupEnvironment(runner: runner)).restore(name: name, apply: apply)
+            return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
+        case .purge(let name, _):
+            // Both stores: the kit finds the entry, and plans `rm` as the user
+            // only for an entry of the user's own quarantine that is theirs
+            // through and through (kit 0.13); everything else is `sudo` → helper.
+            let result = CleanupEngine(environment: CleanupEnvironment(runner: runner)).purge(name: name, apply: apply)
             return .from(status: result.status, plan: result.plan, messages: result.messages, undo: result.undoHint)
         case .manual:
             return ActionOutcome(state: .refused(String(localized: "von Hand — LaunchKeeper führt das nicht aus")),

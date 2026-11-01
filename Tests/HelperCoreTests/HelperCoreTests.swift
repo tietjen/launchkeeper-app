@@ -271,6 +271,33 @@ final class QuarantineTrustTests: XCTestCase {
         XCTAssertEqual(none.detail, "no such quarantine entry")
     }
 
+    func testPurgeDeletesTheHelpersOwnEntryAsRootAndNeverTheUsers() throws {
+        // The real path: kit plans `sudo /bin/rm -rf` (both roots are one in the
+        // helper), RootRunner strips sudo and resolves /bin/rm, the entry is gone.
+        let base = try temp()
+        defer { try? FileManager.default.removeItem(atPath: base) }
+        let home = base + "/home"
+        let name = "2026-11-01-1Z-uninstall-com.vendor.tool"
+        let bookkeeping = Bookkeeping(quarantine: base + "/quarantine", backups: base + "/backups",
+                                      configSnapshots: base + "/config-snapshots", trustedUID: getuid(), prepare: { nil })
+        let manifest = QuarantineManifest(name: name, kind: "uninstall", createdAt: "2026-11-01T00:00:00Z", toolVersion: "test",
+                                          packageIdentifier: "com.vendor.tool", version: nil, moves: [], receiptCopies: [],
+                                          forgot: false, status: "applied-ok", notes: [])
+        for root in [base + "/quarantine", home + "/Library/Application Support/launchkeeper/quarantine"] {
+            try FileManager.default.createDirectory(atPath: root + "/" + name + "/files", withIntermediateDirectories: true,
+                                                    attributes: [.posixPermissions: 0o755])
+            XCTAssertNil(QuarantineStore(root: root).write(manifest))
+        }
+        let executor = PrivilegedExecutor(runner: RootRunner(inner: SystemCommandRunner()),
+                                          auditDirectory: base + "/logs", bookkeeping: bookkeeping)
+        let outcome = executor.perform(PrivilegedRequest(kind: .purge, target: name), client: ClientContext(uid: Int(getuid()), home: home))
+        XCTAssertEqual(outcome.state, "done", outcome.detail ?? "\(outcome.messages)")
+        XCTAssertEqual(outcome.steps.first?.first, "/usr/bin/sudo /bin/rm -rf -- \(base)/quarantine/\(name)")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: base + "/quarantine/" + name))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: home + "/Library/Application Support/launchkeeper/quarantine/" + name),
+                      "the user's same-named entry is not the helper's")
+    }
+
     func testUnsafeBookkeepingRefusesEverything() {
         let broken = Bookkeeping(quarantine: "/nonexistent/q", backups: "/nonexistent/b", configSnapshots: "/nonexistent/c",
                                  trustedUID: 0, prepare: { "symlink: /Library/Application Support/launchkeeper" })

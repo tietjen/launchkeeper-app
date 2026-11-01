@@ -58,6 +58,8 @@ packages, “Package receipt forgotten — a copy is in the quarantine”.
 - **Restore…** opens the sheet with the plan — as with every action
   ([chapter 5](05-changing-entries.md)). Only a second click runs it.
 - **Show in Finder** opens the entry's folder.
+- **Delete for good…** (on the right of the expanded row, since 1.2) deletes the entry with no
+  way back — only after the plan, see [below](#deleting-for-good).
 - **Reload** in the toolbar reads the quarantine again, for example after you changed something in
   Terminal.
 
@@ -102,10 +104,49 @@ restore <name>` in Terminal.
 > **Restoring never overwrites.** If something new is at the original location in the meantime,
 > that path is skipped and named in the result.
 
-## Deleting permanently — Terminal only
+## Deleting for good
 
-The app deletes nothing from the quarantine. This is the only real deletion in LaunchKeeper, and
-it belongs in Terminal — one entry at a time:
+Deleting a quarantine entry for good is the only real deletion in LaunchKeeper. Afterwards there
+is no way back. That is why it happens only explicitly and one entry at a time — in the app or in
+Terminal.
+
+### In the app
+
+Since 1.2, every expanded row of the **Quarantine** view has **Delete for good…** on the right.
+The button opens the usual sheet:
+
+- **The plan first.** A single step, `rm -rf -- <entry folder>` — “delete the quarantine entry
+  for good — NOT restorable” (the core's messages stay in English); plus the core's note on how
+  many paths would be deleted, and a warning if the entry was not created completely.
+- **A red notice** above the buttons: “Cannot be restored: the files of this entry are deleted,
+  not moved to the Trash. There is no way back afterwards.”
+- **Delete for good** runs it — “Delete for good (Touch ID)” when it goes through the helper.
+  Return does not trigger this button; it takes a deliberate click.
+
+There are no checkboxes for it and no place in the queue. Restored entries can be deleted too;
+then whatever is left of them goes.
+
+### Who deletes what
+
+| Entry | Delete for good |
+|---|---|
+| in **the system's** store | the helper, after Touch ID or password — every time |
+| in **your** store, yours through and through | the app itself, without administrator rights and without Touch ID |
+| in **your** store, with files only root may delete | **Terminal only** |
+
+- **The system's store:** everything the app did with administrator rights. Before the helper
+  deletes, it checks that the entry is one of its own — it belongs to root and was
+  writable for nobody else.
+- **Yours through and through** means: every folder in the entry belongs to you and is writable
+  for you, and no file is locked or immutable. That is the typical case for app leftovers.
+- **With files only root may delete** — for example a package you uninstalled with the command
+  line via `sudo`: the sheet shows the plan but cannot run it. Under “Needs administrator rights”
+  it explains that the helper only deletes entries it made itself, and gives the command
+  `launchkeeper quarantine purge <name> --apply` with **Copy**; in Terminal, macOS asks for your
+  password (unlock locked files first with `chflags -R nouchg`). It is the same rule as for
+  [restoring](#who-restores-what) such entries.
+
+### In Terminal
 
 ```bash
 launchkeeper quarantine list                     # what is in there, with names
@@ -115,8 +156,10 @@ launchkeeper quarantine purge <name> --apply     # delete permanently — NOT re
 
 - **Without `--apply`, nothing happens.** The plan states how many paths would be deleted, and
   warns if the entry was not created completely — then check `quarantine restore` first.
-- Deletion uses `sudo rm -rf` on exactly this one folder; before that, `launchkeeper` checks that
-  it lies directly inside one of the two quarantines. For `sudo`, Terminal asks for your password.
+- Exactly this one folder is deleted; before that, `launchkeeper` checks that it lies directly
+  inside one of the two quarantines. An entry of your store that is yours through and through it
+  deletes without `sudo` (since LaunchKeeperKit 0.13); otherwise with `sudo rm -rf`, and Terminal
+  asks for your password.
 - Afterwards, `launchkeeper` checks that the folder is really gone.
 
 ## Other ways back

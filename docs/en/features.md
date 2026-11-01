@@ -164,7 +164,7 @@ extensions (pluginkit) and your crontab need none.
 | **Removing** | Settings | administrator actions no longer work afterwards; scanning asks for the background tasks by itself again |
 | **Restart helper** | Settings, plan sheet | appears when a different version than the app's is running; until then the app sends it nothing |
 | **Touch ID / password** | macOS dialog | anew for **every** execution, no grace period; the queue asks once per run and states the number |
-| **What it runs** | — | Disable, Enable, Remove, Move into quarantine for system-wide entries — it removes and backs up launch files only in `/Library/LaunchAgents` and `/Library/LaunchDaemons`; Restore only of its own quarantine entries; package uninstall |
+| **What it runs** | — | Disable, Enable, Remove, Move into quarantine for system-wide entries — it removes and backs up launch files only in `/Library/LaunchAgents` and `/Library/LaunchDaemons`; Restore and Delete for good only of its own quarantine entries; package uninstall |
 | **What it rejects** | — | a user's entries (user domain, app extensions, files in the home folder) — the app changes those itself without administrator rights; moving from places that non-administrators can change (`/Users`, temporary folders, `/Volumes`, `/opt/homebrew`, any folder on the path that does not belong to root or is writable by everyone) |
 | **Tools** | — | only `launchctl`, `rm`, `cp`, `mv`, `mkdir`, `defaults`, `pkgutil`, `cksum` and `socketfilterfw`, at fixed paths; any other step is rejected |
 | **Reading the background tasks** | on every fresh scan | as root, without Touch ID; returns only the system-wide sections and your own, never those of other users |
@@ -181,7 +181,7 @@ extensions (pluginkit) and your crontab need none.
 | **Terminal only** | expanded row | an entry of **your** quarantine that would have to put back files outside your home folder (from the command line or an older version): **Copy command** gives `launchkeeper quarantine restore <name>` |
 | **What the helper puts back** | — | only entries it created itself, after checking ownership and meaning: every file exactly to its origin, never to `/System`, never into your home folder, never to places users can change |
 | **Show in Finder** | expanded row | the entry's folder |
-| **Delete for good** | — | **not in the app**: in the Terminal with `launchkeeper quarantine purge` (without `--apply`, only the plan) |
+| **Delete for good…** | expanded row, right | since 1.2; opens the plan sheet: one step `rm -rf -- <entry folder>`, the number of paths, red notice “Cannot be restored …”. Run with **Delete for good** or “Delete for good (Touch ID)” — by click only, never with ↩. The helper's entries are deleted by the helper (only its own, Touch ID every time); your own that are yours through and through by the app without administrator rights; yours with files only root may delete only by the Terminal (`launchkeeper quarantine purge <name> --apply`). One at a time, not in the queue; restored entries too |
 | **Reload** | toolbar | reads the entries again, for example after changes in the Terminal |
 | **Selecting** | checkbox | not for restored entries and not for **Terminal only** |
 
@@ -214,7 +214,7 @@ Settings (⌘,) have four sections:
 | ⌥⌘E | Basic or Expert mode |
 | ⌘, | Settings |
 | ⌘? | LaunchKeeper Help |
-| ↩ | in the plan sheet: Run · in the queue: Run all |
+| ↩ | in the plan sheet: Run (not for **Delete for good**) · in the queue: Run all |
 | esc | in the plan sheet: Cancel |
 
 ## Limits and fixed values
@@ -249,7 +249,8 @@ Settings (⌘,) have four sections:
   accept network connections. For these there is **By hand** in the queue.
 - **Entries from Apple** (`com.apple.*`) and everything under `/System` — read only, even with
   administrator rights.
-- **Deleting for good** — only in the Terminal.
+- **Deleting for good without your explicit click** — only one entry at a time, after the plan,
+  never with ↩ and never in the queue.
 - **Uploading anything** — not even to VirusTotal. The only thing that goes to the network is the
   update check.
 - **Showing other users' entries** — the helper does not hand them out.

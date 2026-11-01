@@ -57,7 +57,7 @@ Beide Seiten prüfen die Code-Signatur der anderen:
 ### Was es annimmt
 
 **Keine Befehle.** Eine Anfrage enthält nur „was mit welchem Eintrag“: Deaktivieren,
-Wieder aktivieren, Entfernen, In die Quarantäne verschieben, Wiederherstellen, Deinstallieren —
+Wieder aktivieren, Entfernen, In die Quarantäne verschieben, Wiederherstellen, Endgültig löschen, Deinstallieren —
 und den Namen des Eintrags, der Quarantäne oder des Pakets. Das Hilfsprogramm liest selbst ein,
 löst den Eintrag selbst auf und schickt ihn durch dieselbe Prüfung wie die Kommandozeile.
 
@@ -104,6 +104,9 @@ Deshalb gilt:
 - Vor dem Wiederherstellen prüft das Hilfsprogramm jeden Eintrag noch einmal: Besitzer, keine
   Verweise, jeder Pfad passt zu seinem Ursprung, kein Ursprung in deinem Benutzerordner oder
   unter `/System`.
+- **Endgültig löschen** (seit 1.2) nur Einträge dieses Baums: Das Hilfsprogramm prüft vorher,
+  dass der Eintrag einer seiner eigenen ist — gehört root, für niemand sonst schreibbar — und fragt jedes Mal nach
+  Touch ID. Einträge deiner eigenen Quarantäne löscht es nicht.
 - Sicherungen folgen nie Verweisen, kopieren nur gewöhnliche Dateien, und keine Kopie ist für
   mehr Leute lesbar als ihr Original.
 

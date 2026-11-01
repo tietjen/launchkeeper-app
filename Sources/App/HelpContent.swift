@@ -101,7 +101,7 @@ enum HelpContent {
                 .item(symbol: "leaf", color: .accentColor, title: String(localized: "App-Reste"),
                       text: String(localized: "Einstellungen, Caches und Hintergrunddienste von Apps, die nicht mehr installiert sind — mit Urteil und Begründung, warum etwas als Rest gilt.")),
                 .item(symbol: "archivebox", color: .accentColor, title: String(localized: "Quarantäne"),
-                      text: String(localized: "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).")),
+                      text: String(localized: "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen oder endgültig löschen — Löschen zeigt erst den Plan und hat danach keinen Rückweg.")),
                 .item(symbol: "eye", color: .accentColor, title: String(localized: "Beobachtung"),
                       text: String(localized: "Was neu hinzukam oder sich geändert hat, seit die Beobachtung läuft (siehe eigenes Kapitel).")),
                 .item(symbol: "tray.full", color: .accentColor, title: String(localized: "Warteschlange"),
@@ -120,7 +120,7 @@ enum HelpContent {
             ]),
             HelpSection(title: String(localized: "Nichts geht verloren"), blocks: [
                 .item(symbol: "archivebox", color: .accentColor, title: String(localized: "Entfernen hat immer einen Rückweg"),
-                      text: String(localized: "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.")),
+                      text: String(localized: "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch: in der Ansicht **Quarantäne** mit **Endgültig löschen…**, einzeln je Eintrag.")),
                 .item(symbol: "arrow.uturn.backward", color: .accentColor, title: String(localized: "Deaktivieren lässt sich umkehren"),
                       text: String(localized: "Aktivieren stellt den vorherigen Zustand wieder her.")),
                 .item(symbol: "doc.text", color: .accentColor, title: String(localized: "Protokoll"),

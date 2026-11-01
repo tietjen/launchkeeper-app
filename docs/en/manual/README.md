@@ -36,8 +36,9 @@ When LaunchKeeper behaves differently than you expect, it is almost always becau
 2. **Plan → Run → Verify.** Every change shows its plan first; it runs only after a second
    click, and afterwards LaunchKeeper checks whether the entry really is in the expected state.
 3. **Removing means quarantine — there is always a way back.** Files are moved or backed up
-   first, not simply deleted. Deleting for good only happens explicitly, in Terminal with
-   `launchkeeper quarantine purge`.
+   first, not simply deleted. Deleting for good only happens explicitly, one entry at a time:
+   in the **Quarantine** view with **Delete for good…** (or in Terminal with
+   `launchkeeper quarantine purge`). Until that step there is always a way back.
 4. **Root only through the helper — and it accepts only “what with which entry”, never
    commands.** Every run asks again for Touch ID or your password; the helper looks up the entry
    itself, checks it itself, and keeps quarantine and backups only in a folder that only root

@@ -124,6 +124,29 @@ final class PrivilegedRoutingTests: XCTestCase {
         XCTAssertNil(ActionRequest.leftovers(bundleID: "org.x").privileged)
     }
 
+    func testPurgeGoesToTheHelperOnlyForItsOwnEntriesAndIsIrreversible() async {
+        // The helper deletes only entries of its root-owned store; an entry of
+        // the user's quarantine that needs root stays a Terminal job.
+        XCTAssertEqual(ActionRequest.purge(quarantine: "n", system: true).privileged, PrivilegedRequest(kind: .purge, target: "n"))
+        XCTAssertNil(ActionRequest.purge(quarantine: "n", system: false).privileged)
+        XCTAssertEqual(ActionRequest.purge(quarantine: "2026-11-01-1Z-leftovers-org.x", system: false).cliCommand(apply: true),
+                       "launchkeeper quarantine purge 2026-11-01-1Z-leftovers-org.x --apply")
+        XCTAssertTrue(ActionRequest.purge(quarantine: "n", system: true).isIrreversible)
+        XCTAssertFalse(ActionRequest.restore(quarantine: "n").isIrreversible)
+
+        // A root plan for a user entry: shown, never executable from the app.
+        let rootPlan = ActionOutcome(state: .planned,
+                                     steps: [ActionOutcome.Step(id: 0, command: "/usr/bin/sudo /bin/rm -rf -- /q/n",
+                                                                description: "delete", needsAdmin: true)],
+                                     messages: [], undo: nil)
+        let done = ActionOutcome(state: .done, steps: [], messages: [], undo: nil)
+        let model = ActionModel(request: .purge(quarantine: "n", system: false),
+                                performer: StubPerformer(planned: rootPlan, executed: done),
+                                privileged: StubPerformer(planned: rootPlan, executed: done))
+        await model.plan()
+        XCTAssertFalse(model.canExecute)
+    }
+
     func testAdminPlansGoToTheHelperOnlyWhenItIsThere() async {
         let adminPlan = ActionOutcome(state: .planned,
                                       steps: [ActionOutcome.Step(id: 0, command: "/usr/bin/sudo launchctl disable system/x",

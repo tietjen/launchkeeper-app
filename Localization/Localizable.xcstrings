@@ -673,18 +673,18 @@
         }
       }
     },
-    "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile).": {
+    "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen oder endgültig löschen — Löschen zeigt erst den Plan und hat danach keinen Rückweg.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen; endgültig löschen geht im Terminal (siehe Kommandozeile)."
+            "value": "Alles, was LaunchKeeper in die Quarantäne verschoben hat, mit dem Ort, von dem es kam. Von hier aus wiederherstellen oder endgültig löschen — Löschen zeigt erst den Plan und hat danach keinen Rückweg."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Everything LaunchKeeper moved to the Quarantine, with the place it came from. Restore from here; deleting for good is done in Terminal (see Command line)."
+            "value": "Everything LaunchKeeper moved to the Quarantine, with the place it came from. Restore or delete for good from here — deleting shows the plan first and has no way back afterwards."
           }
         }
       }
@@ -2513,6 +2513,22 @@
         }
       }
     },
+    "Dieser Eintrag liegt in deiner eigenen Quarantäne, enthält aber Dateien oder Ordner, die du nicht löschen darfst — sie gehören root oder sind gesperrt. Das Hilfsprogramm löscht nur Einträge, die es selbst angelegt hat. Im Terminal geht es; dort fragt macOS nach deinem Passwort (gesperrte Dateien vorher mit chflags -R nouchg entsperren):": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Eintrag liegt in deiner eigenen Quarantäne, enthält aber Dateien oder Ordner, die du nicht löschen darfst — sie gehören root oder sind gesperrt. Das Hilfsprogramm löscht nur Einträge, die es selbst angelegt hat. Im Terminal geht es; dort fragt macOS nach deinem Passwort (gesperrte Dateien vorher mit chflags -R nouchg entsperren):"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry is in your own quarantine but contains files or folders you may not delete — they belong to root or are locked. The helper deletes only entries it made itself. It works in Terminal, where macOS asks for your password (unlock locked files first with chflags -R nouchg):"
+          }
+        }
+      }
+    },
     "Dort lässt sich die Komponente einzeln steuern.": {
       "localizations": {
         "de": {
@@ -2881,6 +2897,38 @@
         }
       }
     },
+    "Endgültig löschen": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete for good"
+          }
+        }
+      }
+    },
+    "Endgültig löschen (Touch ID)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen (Touch ID)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete for good (Touch ID)"
+          }
+        }
+      }
+    },
     "Endgültig löschen — ohne `--apply` nur der Plan": {
       "localizations": {
         "de": {
@@ -2897,18 +2945,34 @@
         }
       }
     },
-    "Endgültig löschen: im Terminal mit launchkeeper quarantine purge": {
+    "Endgültig löschen — zeigt erst den Plan. Danach sind die Dateien dieses Eintrags weg, ohne Rückweg.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Endgültig löschen: im Terminal mit launchkeeper quarantine purge"
+            "value": "Endgültig löschen — zeigt erst den Plan. Danach sind die Dateien dieses Eintrags weg, ohne Rückweg."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete for good: in Terminal with launchkeeper quarantine purge"
+            "value": "Delete for good — shows the plan first. Afterwards the files of this entry are gone, with no way back."
+          }
+        }
+      }
+    },
+    "Endgültig löschen…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endgültig löschen…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete for good…"
           }
         }
       }
@@ -5137,18 +5201,18 @@
         }
       }
     },
-    "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`.": {
+    "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch: in der Ansicht **Quarantäne** mit **Endgültig löschen…**, einzeln je Eintrag.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch — im Terminal mit `launchkeeper quarantine purge`."
+            "value": "Meist wandern die Dateien in die **Quarantäne** und lassen sich dort wiederherstellen. Nur verwaiste Autostart-Einträge, deren Programm fehlt, werden gelöscht — erst nachdem LaunchKeeper den ganzen Ordner gesichert hat; der Plan nennt unter **Rückweg** den Befehl zum Zurückholen. Aus der Quarantäne endgültig gelöscht wird nur auf ausdrücklichen Wunsch: in der Ansicht **Quarantäne** mit **Endgültig löschen…**, einzeln je Eintrag."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Usually the files move to the **Quarantine** and can be restored from there. Only orphaned autostart entries whose program is missing are deleted — after LaunchKeeper has backed up the whole folder; the plan names the command to bring them back under **Way back**. Deleting from the Quarantine for good happens only when you explicitly ask — in Terminal with `launchkeeper quarantine purge`."
+            "value": "Usually the files move to the **Quarantine** and can be restored from there. Only orphaned autostart entries whose program is missing are deleted — after LaunchKeeper has backed up the whole folder; the plan names the command to bring them back under **Way back**. Deleting from the Quarantine for good happens only when you explicitly ask: in the **Quarantine** view with **Delete for good…**, one entry at a time."
           }
         }
       }
@@ -5629,6 +5693,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Incomplete: %@"
+          }
+        }
+      }
+    },
+    "Nicht wiederherstellbar: Die Dateien dieses Eintrags werden gelöscht, nicht in den Papierkorb gelegt. Es gibt danach keinen Rückweg.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht wiederherstellbar: Die Dateien dieses Eintrags werden gelöscht, nicht in den Papierkorb gelegt. Es gibt danach keinen Rückweg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot be restored: the files of this entry are deleted, not moved to the Trash. There is no way back afterwards."
           }
         }
       }

@@ -91,12 +91,13 @@ Das Hilfsprogramm nimmt **keine Befehle** entgegen. Es versteht nur „was mit w
 | Anfrage | Ziel |
 |---|---|
 | deaktivieren, aktivieren, entfernen, in die Quarantäne verschieben | ein Eintrag des Inventars |
-| wiederherstellen | ein Eintrag der Quarantäne |
+| wiederherstellen, endgültig löschen (seit 1.2) | ein Eintrag seiner eigenen Quarantäne |
 | deinstallieren | ein Paket, über seine genaue Paket-ID |
 
-Das Protokoll zwischen App und Hilfsprogramm kennt außerdem „endgültig löschen“ (`purge`) für einen
-Eintrag der Quarantäne. Die App schickt diese Anfrage nie — endgültig gelöscht wird nur im
-Terminal ([Kapitel 8](08-quarantaene-und-rueckwege.md)).
+Endgültig löschen (`purge`) schickt die App nur für Einträge, die das Hilfsprogramm selbst
+verwahrt; vor dem Löschen prüft es, dass der Eintrag root gehört und für niemand sonst schreibbar war. Einträge
+deiner eigenen Quarantäne löscht die App selbst oder, wenn darin Dateien liegen, die nur root
+löschen darf, das Terminal ([Kapitel 8](08-quarantaene-und-rueckwege.md#endgültig-löschen)).
 
 Alles andere rechnet es **selbst** aus: Es liest den Mac selbst ein, sucht den Eintrag selbst
 heraus und lässt ihn durch dieselbe Prüfung laufen wie die Kommandozeile. Was dort nicht

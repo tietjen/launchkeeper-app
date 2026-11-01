@@ -49,6 +49,7 @@ struct ActionSheet: View {
             .frame(minHeight: 120, maxHeight: 360)
             // Outside the scroll view: a long plan must never push the reason
             // why "Ausführen" is unavailable (and the way out) out of sight.
+            irreversibleNotice
             adminFooter
             buttons
         }
@@ -86,6 +87,15 @@ struct ActionSheet: View {
             planView(outcome, heading: "Plan:")
         case .finished(let outcome):
             resultView(outcome)
+        }
+    }
+
+    /// The one action without a way back says so before the button, in red.
+    @ViewBuilder private var irreversibleNotice: some View {
+        if model.request.isIrreversible, case .planned(let outcome) = model.phase, case .planned = outcome.state {
+            Label("Nicht wiederherstellbar: Die Dateien dieses Eintrags werden gelöscht, nicht in den Papierkorb gelegt. Es gibt danach keinen Rückweg.",
+                  systemImage: "exclamationmark.octagon.fill")
+                .font(.callout).foregroundStyle(.red)
         }
     }
 
@@ -202,7 +212,12 @@ struct ActionSheet: View {
         let command = model.request.cliCommand(apply: true)
         return VStack(alignment: .leading, spacing: 6) {
             Label("Braucht Administratorrechte", systemImage: "lock.fill").font(.headline)
-            if model.request.privileged == nil {
+            if case .purge = model.request, model.request.privileged == nil {
+                // An entry of the user's own quarantine with files only root may delete
+                // (a package uninstall from the CLI): the helper deletes only its own entries.
+                Text("Dieser Eintrag liegt in deiner eigenen Quarantäne, enthält aber Dateien oder Ordner, die du nicht löschen darfst — sie gehören root oder sind gesperrt. Das Hilfsprogramm löscht nur Einträge, die es selbst angelegt hat. Im Terminal geht es; dort fragt macOS nach deinem Passwort (gesperrte Dateien vorher mit chflags -R nouchg entsperren):")
+                    .font(.callout)
+            } else if model.request.privileged == nil {
                 Text("Diese Aktion führt die App noch nicht mit Administratorrechten aus. Im Terminal geht es; dort fragt macOS nach deinem Passwort:")
                     .font(.callout)
             } else {
@@ -248,6 +263,18 @@ struct ActionSheet: View {
 
     // MARK: Buttons
 
+    /// The execute button's title — it names a deletion as one.
+    private var executeTitle: LocalizedStringKey {
+        // "(Touch ID)" only when the helper really takes it — a root plan the app
+        // cannot run (Terminal only) keeps the plain title (review 2026-11-01).
+        switch (model.request.isIrreversible, model.executesPrivileged && model.request.privileged != nil) {
+        case (true, true): return "Endgültig löschen (Touch ID)"
+        case (true, false): return "Endgültig löschen"
+        case (false, true): return "Ausführen (Touch ID)"
+        case (false, false): return "Ausführen"
+        }
+    }
+
     @ViewBuilder private var buttons: some View {
         HStack {
             Spacer()
@@ -256,14 +283,15 @@ struct ActionSheet: View {
                 Button("Abbrechen") { dismiss() }.disabled(true)
             case .planned:
                 Button("Abbrechen", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
-                Button(model.executesPrivileged ? "Ausführen (Touch ID)" : "Ausführen") {
+                Button(executeTitle, role: model.request.isIrreversible ? .destructive : nil) {
                     Task {
                         watch.ownActionStarted()
                         await model.execute()
                         watch.ownActionFinished()
                     }
                 }
-                    .keyboardShortcut(.defaultAction)
+                    // Return never deletes for good: that click stays deliberate.
+                    .keyboardShortcut(model.request.isIrreversible ? nil : .defaultAction)
                     .disabled(!model.canExecute || queue.phase != .idle)
                     .help(queue.phase != .idle ? String(localized: "Die Warteschlange läuft gerade — danach geht es weiter.") : "")
             case .finished:
