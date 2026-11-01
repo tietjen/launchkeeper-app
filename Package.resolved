@@ -1,13 +1,13 @@
 {
-  "originHash" : "f383ed2d049ef6759991703b6243ee08f1c2d298959958274c72410cb0aa61d2",
+  "originHash" : "fdddf1f22a432cf62d0fabf7fe84cad871cfa788045785da046ed15eef21211b",
   "pins" : [
     {
       "identity" : "launchkeeper",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tietjen/launchkeeper",
       "state" : {
-        "revision" : "6b974a1b7b520a709b6669386c4ab05957bd9472",
-        "version" : "0.12.2"
+        "revision" : "a3f2378707576c10d634a867456775a677feaad2",
+        "version" : "0.13.0"
       }
     },
     {
